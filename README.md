@@ -4,6 +4,8 @@
 ## Overview
 The Predictive Investment Analytics Platform is designed to empower retail investors by providing AI-driven predictions for stock and cryptocurrency trends. Leveraging blockchain data and quantitative finance models, this platform offers users actionable insights for smarter investments.
 
+> **Note**: QuantumVest is currently under active development. Features and functionalities are being added and improved continuously to enhance user experience.
+
 ## Features
 - AI-powered predictive analytics for stocks and cryptocurrencies.
 - Blockchain transparency for transaction tracking and trend analysis.
