@@ -1,1 +1,16 @@
-Placeholder content for /mnt/data/Predictive_Investment_Analytics_Platform/code/blockchain/tests/test_datatracking.js
+const DataTracking = artifacts.require("DataTracking");
+
+contract("DataTracking", (accounts) => {
+  let instance;
+  const admin = accounts[0];
+
+  before(async () => {
+    instance = await DataTracking.deployed();
+  });
+
+  it("should store market data", async () => {
+    await instance.addDataPoint("ETH", 2500, 1000000, {from: admin});
+    const data = await instance.getHistoricalData("ETH");
+    assert.equal(data.length, 1, "Data storage failed");
+  });
+});
