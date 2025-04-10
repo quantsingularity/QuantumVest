@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../styles/PredictionChart.css';
+import '../../styles/PredictionChart.css';
 
 export default function PredictionChart() {
   const [predictionData, setPredictionData] = useState([]);

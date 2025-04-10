@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../styles/PortfolioOptimization.css';
+import '../../styles/PortfolioOptimization.css';
 
 export default function PortfolioOptimization() {
   const [risk, setRisk] = useState(5);
