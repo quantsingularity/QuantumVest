@@ -34,9 +34,18 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               whileHover={{ x: 5 }}
               transition={{ duration: 0.2 }}
             >
-              <Link to="/" className={`nav-link ${isActive('/')}`}>
+              <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}>
                 <i className="nav-icon dashboard-icon"></i>
                 <span>Dashboard</span>
+              </Link>
+            </motion.li>
+            <motion.li
+              whileHover={{ x: 5 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Link to="/" className={`nav-link ${isActive('/')}`}>
+                <i className="nav-icon home-icon"></i>
+                <span>Home</span>
               </Link>
             </motion.li>
             <motion.li
