@@ -19,8 +19,8 @@ Before installing QuantumVest, ensure you have the following prerequisites insta
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-organization/quantumvest.git
-cd quantumvest
+git clone https://github.com/abrar2030/QuantumVest.git
+cd QuantumVest
 ```
 
 ### 2. Backend Setup
