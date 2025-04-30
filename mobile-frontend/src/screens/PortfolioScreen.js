@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, ActivityIndicator, Alert, FlatList } from 'react-native';
+import { View, StyleSheet, Alert, FlatList } from 'react-native';
+import { Appbar, Card, Text, TextInput, Button, ActivityIndicator, List, Divider, useTheme } from 'react-native-paper';
 import { optimizePortfolio } from '../services/api';
 
-const PortfolioScreen = () => {
+const PortfolioScreen = ({ navigation }) => {
   const [assetsInput, setAssetsInput] = useState('BTC,ETH,ADA'); // Example input
   const [riskToleranceInput, setRiskToleranceInput] = useState('0.5'); // Example input
   const [optimizationResult, setOptimizationResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
   const handleOptimizePortfolio = async () => {
     const assets = assetsInput.split(',').map(a => a.trim().toUpperCase()).filter(a => a);
@@ -43,52 +45,74 @@ const PortfolioScreen = () => {
   };
 
   const renderWeightItem = ({ item }) => (
-    <View style={styles.weightItem}>
-      <Text style={styles.assetText}>{item.asset}:</Text>
-      <Text style={styles.weightText}>{(item.weight * 100).toFixed(2)}%</Text>
-    </View>
+    <List.Item
+      title={item.asset}
+      description={`${(item.weight * 100).toFixed(2)}%`}
+      left={props => <List.Icon {...props} icon="chart-pie" />} // Example icon
+    />
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Portfolio Optimization</Text>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Appbar.Header>
+        {navigation.canGoBack() && <Appbar.BackAction onPress={() => navigation.goBack()} />}
+        <Appbar.Content title="Portfolio Optimization" />
+      </Appbar.Header>
 
-      <Text style={styles.label}>Assets (comma-separated, e.g., BTC,ETH):</Text>
-      <TextInput
-        style={styles.input}
-        value={assetsInput}
-        onChangeText={setAssetsInput}
-        placeholder="Enter asset symbols"
-        autoCapitalize="characters"
-      />
+      <View style={styles.contentContainer}>
+        <Card style={styles.card} elevation={2}>
+          <Card.Content>
+            <TextInput
+              label="Assets (comma-separated)"
+              value={assetsInput}
+              onChangeText={setAssetsInput}
+              mode="outlined"
+              style={styles.input}
+              autoCapitalize="characters"
+              placeholder="e.g., BTC,ETH,ADA"
+            />
+            <TextInput
+              label="Risk Tolerance (0.0 to 1.0)"
+              value={riskToleranceInput}
+              onChangeText={setRiskToleranceInput}
+              mode="outlined"
+              style={styles.input}
+              keyboardType="numeric"
+              placeholder="e.g., 0.5"
+            />
+            <Button 
+              mode="contained" 
+              onPress={handleOptimizePortfolio} 
+              disabled={loading} 
+              loading={loading}
+              style={styles.button}
+              icon="calculator-variant" // Example icon
+            >
+              Optimize Portfolio
+            </Button>
+          </Card.Content>
+        </Card>
 
-      <Text style={styles.label}>Risk Tolerance (0.0 to 1.0):</Text>
-      <TextInput
-        style={styles.input}
-        value={riskToleranceInput}
-        onChangeText={setRiskToleranceInput}
-        placeholder="Enter risk tolerance (e.g., 0.5)"
-        keyboardType="numeric"
-      />
+        {loading && <ActivityIndicator animating={true} size="large" style={styles.loader} />}
 
-      <Button title="Optimize Portfolio" onPress={handleOptimizePortfolio} disabled={loading} />
-
-      {loading && <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />}
-
-      {optimizationResult && (
-        <View style={styles.resultContainer}>
-          <Text style={styles.resultTitle}>Optimization Result:</Text>
-          <Text>Expected Return: {optimizationResult.expected_return.toFixed(2)}%</Text>
-          <Text>Volatility: {optimizationResult.volatility.toFixed(2)}%</Text>
-          <Text>Sharpe Ratio: {optimizationResult.sharpe_ratio.toFixed(2)}</Text>
-          <Text style={styles.weightsTitle}>Optimal Weights:</Text>
-          <FlatList
-            data={optimizationResult.weightedAssets}
-            renderItem={renderWeightItem}
-            keyExtractor={(item) => item.asset}
-          />
-        </View>
-      )}
+        {optimizationResult && (
+          <Card style={[styles.card, styles.resultCard]} elevation={2}>
+            <Card.Title title="Optimization Result" titleVariant="headlineSmall" />
+            <Card.Content>
+              <Text variant="bodyLarge">Expected Return: {optimizationResult.expected_return.toFixed(2)}%</Text>
+              <Text variant="bodyLarge">Volatility: {optimizationResult.volatility.toFixed(2)}%</Text>
+              <Text variant="bodyLarge">Sharpe Ratio: {optimizationResult.sharpe_ratio.toFixed(2)}</Text>
+              <List.Subheader style={styles.weightsTitle}>Optimal Weights</List.Subheader>
+              <FlatList
+                data={optimizationResult.weightedAssets}
+                renderItem={renderWeightItem}
+                keyExtractor={(item) => item.asset}
+                ItemSeparatorComponent={Divider}
+              />
+            </Card.Content>
+          </Card>
+        )}
+      </View>
     </View>
   );
 };
@@ -96,63 +120,31 @@ const PortfolioScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  contentContainer: {
+    flex: 1,
+    padding: 15,
+  },
+  card: {
     marginBottom: 20,
-    textAlign: 'center',
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
   },
   input: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ddd',
     marginBottom: 15,
+  },
+  button: {
+    marginTop: 10,
   },
   loader: {
     marginTop: 20,
   },
-  resultContainer: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#e0f2f7',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#b2dcef',
-  },
-  resultTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  resultCard: {
+    // Add specific styling for result card if needed
   },
   weightsTitle: {
-    fontSize: 16,
+    fontSize: 18, // Adjust as needed
     fontWeight: 'bold',
     marginTop: 10,
-    marginBottom: 5,
-  },
-  weightItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  assetText: {
-    fontSize: 16,
-  },
-  weightText: {
-    fontSize: 16,
-    fontWeight: '500',
+    marginLeft: -8, // Align with List.Item
   },
 });
 
