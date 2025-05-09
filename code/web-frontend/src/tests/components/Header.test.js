@@ -108,4 +108,21 @@ describe('Header Component', () => {
     const themeToggle = document.querySelector('.theme-toggle');
     expect(themeToggle).toBeInTheDocument();
   });
+
+  test('search functionality works correctly', () => {
+    const mockOnSearch = jest.fn();
+    render(<Header onSearch={mockOnSearch} />);
+    const searchInput = screen.getByPlaceholderText('Search...');
+    fireEvent.change(searchInput, { target: { value: 'test query' } });
+    expect(mockOnSearch).toHaveBeenCalledWith('test query');
+  });
+
+  test('notification center toggles correctly', () => {
+    render(<Header />);
+    const notificationBell = screen.getByTestId('notification-bell');
+    fireEvent.click(notificationBell);
+    expect(screen.getByTestId('notification-center')).toBeInTheDocument();
+    fireEvent.click(notificationBell);
+    expect(screen.queryByTestId('notification-center')).not.toBeInTheDocument();
+  });
 });
