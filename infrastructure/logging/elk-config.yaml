@@ -1,0 +1,541 @@
+# Centralized Logging Infrastructure Configuration
+
+# Elasticsearch Configuration
+elasticsearch:
+  cluster:
+    name: quantumvest-logging
+    initial_master_nodes: ["es-master-1", "es-master-2", "es-master-3"]
+    
+  node:
+    name: ${HOSTNAME}
+    roles: ["master", "data", "ingest"]
+    
+  network:
+    host: 0.0.0.0
+    publish_host: ${ES_PUBLISH_HOST}
+    
+  discovery:
+    seed_hosts: ["es-master-1:9300", "es-master-2:9300", "es-master-3:9300"]
+    
+  security:
+    enabled: true
+    transport:
+      ssl:
+        enabled: true
+        verification_mode: certificate
+        keystore.path: certs/elastic-certificates.p12
+        truststore.path: certs/elastic-certificates.p12
+    http:
+      ssl:
+        enabled: true
+        keystore.path: certs/elastic-certificates.p12
+        
+  xpack:
+    security:
+      enabled: true
+      authc:
+        realms:
+          native:
+            native1:
+              order: 0
+          ldap:
+            ldap1:
+              order: 1
+              url: ["ldaps://ldap.quantumvest.com:636"]
+              bind_dn: "cn=elasticsearch,ou=services,dc=quantumvest,dc=com"
+              user_search:
+                base_dn: "ou=users,dc=quantumvest,dc=com"
+                filter: "(cn={0})"
+                
+    monitoring:
+      enabled: true
+      collection:
+        enabled: true
+        
+  indices:
+    lifecycle:
+      policies:
+        quantumvest_policy:
+          phases:
+            hot:
+              actions:
+                rollover:
+                  max_size: 10gb
+                  max_age: 1d
+                set_priority:
+                  priority: 100
+            warm:
+              min_age: 7d
+              actions:
+                set_priority:
+                  priority: 50
+                allocate:
+                  number_of_replicas: 0
+            cold:
+              min_age: 30d
+              actions:
+                set_priority:
+                  priority: 0
+                allocate:
+                  number_of_replicas: 0
+            delete:
+              min_age: 2555d  # 7 years for financial compliance
+              
+  index_templates:
+    - name: quantumvest-logs
+      index_patterns: ["quantumvest-*"]
+      template:
+        settings:
+          number_of_shards: 3
+          number_of_replicas: 1
+          index.lifecycle.name: quantumvest_policy
+          index.lifecycle.rollover_alias: quantumvest-logs
+        mappings:
+          properties:
+            "@timestamp":
+              type: date
+            level:
+              type: keyword
+            message:
+              type: text
+              analyzer: standard
+            service:
+              type: keyword
+            environment:
+              type: keyword
+            user_id:
+              type: keyword
+            session_id:
+              type: keyword
+            transaction_id:
+              type: keyword
+            ip_address:
+              type: ip
+            user_agent:
+              type: text
+            request_id:
+              type: keyword
+            duration:
+              type: long
+            status_code:
+              type: integer
+
+# Logstash Configuration
+logstash:
+  pipeline:
+    workers: 4
+    batch:
+      size: 1000
+      delay: 50
+      
+  config:
+    reload:
+      automatic: true
+      interval: 3s
+      
+  monitoring:
+    enabled: true
+    elasticsearch:
+      hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      username: logstash_system
+      password: ${LOGSTASH_PASSWORD}
+      ssl:
+        certificate_authority: "/usr/share/logstash/config/certs/ca.crt"
+        
+  pipelines:
+    - pipeline.id: application-logs
+      path.config: "/usr/share/logstash/pipeline/application-logs.conf"
+      pipeline.workers: 2
+      
+    - pipeline.id: security-logs
+      path.config: "/usr/share/logstash/pipeline/security-logs.conf"
+      pipeline.workers: 2
+      
+    - pipeline.id: audit-logs
+      path.config: "/usr/share/logstash/pipeline/audit-logs.conf"
+      pipeline.workers: 1
+      
+    - pipeline.id: system-logs
+      path.config: "/usr/share/logstash/pipeline/system-logs.conf"
+      pipeline.workers: 1
+
+# Kibana Configuration
+kibana:
+  server:
+    port: 5601
+    host: "0.0.0.0"
+    publicBaseUrl: "https://logs.quantumvest.com"
+    ssl:
+      enabled: true
+      certificate: /usr/share/kibana/config/certs/kibana.crt
+      key: /usr/share/kibana/config/certs/kibana.key
+      
+  elasticsearch:
+    hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+    username: kibana_system
+    password: ${KIBANA_PASSWORD}
+    ssl:
+      certificateAuthorities: ["/usr/share/kibana/config/certs/ca.crt"]
+      verificationMode: certificate
+      
+  security:
+    encryptionKey: ${KIBANA_ENCRYPTION_KEY}
+    session:
+      idleTimeout: "1h"
+      lifespan: "8h"
+      
+  xpack:
+    security:
+      enabled: true
+      authc:
+        providers:
+          saml:
+            saml1:
+              order: 0
+              realm: saml1
+          basic:
+            basic1:
+              order: 1
+              
+    monitoring:
+      enabled: true
+      kibana:
+        collection:
+          enabled: true
+          
+    alerting:
+      enabled: true
+      
+    actions:
+      enabled: true
+      
+  logging:
+    appenders:
+      file:
+        type: file
+        fileName: /var/log/kibana/kibana.log
+        layout:
+          type: json
+    loggers:
+      - name: http.server.response
+        level: debug
+        appenders: [file]
+        
+# Filebeat Configuration
+filebeat:
+  filebeat:
+    inputs:
+      - type: log
+        enabled: true
+        paths:
+          - /var/log/quantumvest/application/*.log
+        fields:
+          log_type: application
+          service: quantumvest-api
+        fields_under_root: true
+        multiline:
+          pattern: '^\d{4}-\d{2}-\d{2}'
+          negate: true
+          match: after
+          
+      - type: log
+        enabled: true
+        paths:
+          - /var/log/quantumvest/security/*.log
+        fields:
+          log_type: security
+          service: security-service
+        fields_under_root: true
+        
+      - type: log
+        enabled: true
+        paths:
+          - /var/log/quantumvest/audit/*.log
+        fields:
+          log_type: audit
+          service: audit-service
+        fields_under_root: true
+        
+      - type: docker
+        enabled: true
+        containers:
+          path: "/var/lib/docker/containers"
+          stream: "all"
+        processors:
+          - add_docker_metadata:
+              host: "unix:///var/run/docker.sock"
+              
+      - type: kubernetes
+        enabled: true
+        hints:
+          enabled: true
+          default_config:
+            type: container
+            paths:
+              - /var/log/containers/*${data.kubernetes.container.id}.log
+              
+  processors:
+    - add_host_metadata:
+        when.not.contains.tags: forwarded
+        
+    - add_kubernetes_metadata:
+        host: ${NODE_NAME}
+        matchers:
+          - logs_path:
+              logs_path: "/var/log/containers/"
+              
+    - drop_event:
+        when:
+          regexp:
+            message: "^DEBUG"
+            
+  output:
+    logstash:
+      hosts: ["logstash-1:5044", "logstash-2:5044", "logstash-3:5044"]
+      loadbalance: true
+      ssl:
+        certificate_authorities: ["/etc/filebeat/certs/ca.crt"]
+        certificate: "/etc/filebeat/certs/filebeat.crt"
+        key: "/etc/filebeat/certs/filebeat.key"
+        
+  logging:
+    level: info
+    to_files: true
+    files:
+      path: /var/log/filebeat
+      name: filebeat
+      keepfiles: 7
+      permissions: 0644
+
+# Log Processing Pipelines
+log_pipelines:
+  application_logs:
+    input: |
+      beats {
+        port => 5044
+        ssl => true
+        ssl_certificate => "/usr/share/logstash/config/certs/logstash.crt"
+        ssl_key => "/usr/share/logstash/config/certs/logstash.key"
+        ssl_certificate_authorities => ["/usr/share/logstash/config/certs/ca.crt"]
+      }
+      
+    filter: |
+      if [log_type] == "application" {
+        grok {
+          match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} \[%{DATA:thread}\] %{DATA:logger} - %{GREEDYDATA:log_message}" }
+        }
+        
+        date {
+          match => [ "timestamp", "ISO8601" ]
+        }
+        
+        if [log_message] =~ /transaction/ {
+          grok {
+            match => { "log_message" => "transaction_id=%{DATA:transaction_id} user_id=%{DATA:user_id} amount=%{NUMBER:amount:float} currency=%{WORD:currency}" }
+          }
+        }
+        
+        if [log_message] =~ /api_request/ {
+          grok {
+            match => { "log_message" => "method=%{WORD:http_method} path=%{URIPATH:request_path} status=%{NUMBER:status_code:int} duration=%{NUMBER:duration:float}" }
+          }
+        }
+        
+        mutate {
+          add_field => { "[@metadata][index]" => "quantumvest-application-%{+YYYY.MM.dd}" }
+        }
+      }
+      
+    output: |
+      elasticsearch {
+        hosts => ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+        index => "%{[@metadata][index]}"
+        user => "logstash_writer"
+        password => "${LOGSTASH_WRITER_PASSWORD}"
+        ssl => true
+        ssl_certificate_verification => true
+        cacert => "/usr/share/logstash/config/certs/ca.crt"
+      }
+      
+  security_logs:
+    input: |
+      beats {
+        port => 5045
+        ssl => true
+        ssl_certificate => "/usr/share/logstash/config/certs/logstash.crt"
+        ssl_key => "/usr/share/logstash/config/certs/logstash.key"
+        ssl_certificate_authorities => ["/usr/share/logstash/config/certs/ca.crt"]
+      }
+      
+    filter: |
+      if [log_type] == "security" {
+        grok {
+          match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{DATA:event_type} user=%{DATA:username} ip=%{IP:source_ip} %{GREEDYDATA:details}" }
+        }
+        
+        date {
+          match => [ "timestamp", "ISO8601" ]
+        }
+        
+        if [event_type] == "LOGIN_FAILED" {
+          mutate {
+            add_tag => ["security_alert"]
+            add_field => { "alert_severity" => "medium" }
+          }
+        }
+        
+        if [event_type] == "PRIVILEGE_ESCALATION" {
+          mutate {
+            add_tag => ["security_alert"]
+            add_field => { "alert_severity" => "high" }
+          }
+        }
+        
+        geoip {
+          source => "source_ip"
+          target => "geoip"
+        }
+        
+        mutate {
+          add_field => { "[@metadata][index]" => "quantumvest-security-%{+YYYY.MM.dd}" }
+        }
+      }
+      
+    output: |
+      elasticsearch {
+        hosts => ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+        index => "%{[@metadata][index]}"
+        user => "logstash_writer"
+        password => "${LOGSTASH_WRITER_PASSWORD}"
+        ssl => true
+        ssl_certificate_verification => true
+        cacert => "/usr/share/logstash/config/certs/ca.crt"
+      }
+      
+      if "security_alert" in [tags] {
+        email {
+          to => "security@quantumvest.com"
+          subject => "Security Alert: %{event_type}"
+          body => "Security event detected:\nType: %{event_type}\nUser: %{username}\nIP: %{source_ip}\nDetails: %{details}"
+        }
+      }
+
+# Log Retention and Archival
+log_retention:
+  policies:
+    application_logs:
+      hot_phase: "7d"
+      warm_phase: "30d"
+      cold_phase: "365d"
+      delete_phase: "2555d"  # 7 years
+      
+    security_logs:
+      hot_phase: "30d"
+      warm_phase: "90d"
+      cold_phase: "365d"
+      delete_phase: "2555d"  # 7 years
+      
+    audit_logs:
+      hot_phase: "90d"
+      warm_phase: "365d"
+      cold_phase: "1825d"  # 5 years
+      delete_phase: "2555d"  # 7 years
+      
+    system_logs:
+      hot_phase: "7d"
+      warm_phase: "30d"
+      cold_phase: "90d"
+      delete_phase: "365d"
+      
+  archival:
+    enabled: true
+    destination: "s3://quantumvest-log-archive"
+    compression: "gzip"
+    encryption: "AES-256"
+    
+# Log Analysis and Alerting
+log_alerting:
+  watchers:
+    - name: "high_error_rate"
+      schedule: "0 */5 * * * ?"  # Every 5 minutes
+      query: |
+        {
+          "query": {
+            "bool": {
+              "must": [
+                {"range": {"@timestamp": {"gte": "now-5m"}}},
+                {"term": {"level": "ERROR"}}
+              ]
+            }
+          },
+          "aggs": {
+            "error_count": {
+              "cardinality": {
+                "field": "message.keyword"
+              }
+            }
+          }
+        }
+      condition: "ctx.payload.aggregations.error_count.value > 10"
+      actions:
+        - email:
+            to: ["ops@quantumvest.com"]
+            subject: "High Error Rate Alert"
+            
+    - name: "failed_login_attempts"
+      schedule: "0 */1 * * * ?"  # Every minute
+      query: |
+        {
+          "query": {
+            "bool": {
+              "must": [
+                {"range": {"@timestamp": {"gte": "now-1m"}}},
+                {"term": {"event_type": "LOGIN_FAILED"}}
+              ]
+            }
+          },
+          "aggs": {
+            "by_ip": {
+              "terms": {
+                "field": "source_ip",
+                "size": 10
+              }
+            }
+          }
+        }
+      condition: "ctx.payload.aggregations.by_ip.buckets.stream().anyMatch(bucket -> bucket.doc_count > 5)"
+      actions:
+        - email:
+            to: ["security@quantumvest.com"]
+            subject: "Multiple Failed Login Attempts"
+            
+# Compliance Logging
+compliance_logging:
+  audit_events:
+    - "user_authentication"
+    - "data_access"
+    - "configuration_changes"
+    - "privilege_escalation"
+    - "data_export"
+    - "system_administration"
+    
+  required_fields:
+    - "timestamp"
+    - "user_id"
+    - "session_id"
+    - "source_ip"
+    - "action"
+    - "resource"
+    - "result"
+    - "details"
+    
+  immutability:
+    enabled: true
+    method: "blockchain_hash"
+    verification_interval: "daily"
+    
+  encryption:
+    enabled: true
+    algorithm: "AES-256-GCM"
+    key_rotation: "monthly"
+

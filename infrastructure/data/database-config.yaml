@@ -1,0 +1,450 @@
+# Database Infrastructure Configuration for QuantumVest
+
+# PostgreSQL Primary Configuration
+postgresql_primary:
+  version: "15.4"
+  
+  # Connection settings
+  connection:
+    max_connections: 200
+    shared_preload_libraries: 'pg_stat_statements,pg_audit,auto_explain'
+    
+  # Memory settings
+  memory:
+    shared_buffers: '4GB'
+    effective_cache_size: '12GB'
+    work_mem: '64MB'
+    maintenance_work_mem: '1GB'
+    wal_buffers: '64MB'
+    
+  # WAL and replication settings
+  wal:
+    wal_level: 'replica'
+    max_wal_senders: 10
+    max_replication_slots: 10
+    wal_keep_size: '10GB'
+    archive_mode: 'on'
+    archive_command: 'aws s3 cp %p s3://quantumvest-wal-archive/%f'
+    
+  # Checkpoint settings
+  checkpoint:
+    checkpoint_completion_target: 0.9
+    checkpoint_timeout: '15min'
+    max_wal_size: '4GB'
+    min_wal_size: '1GB'
+    
+  # Query optimization
+  query_optimization:
+    random_page_cost: 1.1
+    effective_io_concurrency: 200
+    default_statistics_target: 1000
+    
+  # Logging configuration
+  logging:
+    log_destination: 'stderr,csvlog'
+    logging_collector: 'on'
+    log_directory: '/var/log/postgresql'
+    log_filename: 'postgresql-%Y-%m-%d_%H%M%S.log'
+    log_rotation_age: '1d'
+    log_rotation_size: '100MB'
+    log_min_duration_statement: '1000ms'
+    log_checkpoints: 'on'
+    log_connections: 'on'
+    log_disconnections: 'on'
+    log_lock_waits: 'on'
+    log_statement: 'ddl'
+    log_temp_files: '0'
+    
+  # Security settings
+  security:
+    ssl: 'on'
+    ssl_cert_file: '/etc/ssl/certs/server.crt'
+    ssl_key_file: '/etc/ssl/private/server.key'
+    ssl_ca_file: '/etc/ssl/certs/ca.crt'
+    ssl_crl_file: '/etc/ssl/certs/server.crl'
+    ssl_ciphers: 'ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256'
+    ssl_prefer_server_ciphers: 'on'
+    password_encryption: 'scram-sha-256'
+    
+  # Audit configuration
+  audit:
+    pg_audit.log: 'all'
+    pg_audit.log_catalog: 'off'
+    pg_audit.log_parameter: 'on'
+    pg_audit.log_statement_once: 'on'
+    pg_audit.log_level: 'log'
+    
+  # Performance monitoring
+  monitoring:
+    pg_stat_statements.max: 10000
+    pg_stat_statements.track: 'all'
+    auto_explain.log_min_duration: '5s'
+    auto_explain.log_analyze: 'on'
+    auto_explain.log_buffers: 'on'
+    auto_explain.log_timing: 'on'
+    auto_explain.log_triggers: 'on'
+    auto_explain.log_verbose: 'on'
+
+# PostgreSQL Read Replicas Configuration
+postgresql_replicas:
+  count: 2
+  
+  replica_1:
+    host: 'postgres-replica-1'
+    port: 5432
+    lag_threshold: '100MB'
+    
+  replica_2:
+    host: 'postgres-replica-2'
+    port: 5432
+    lag_threshold: '100MB'
+    
+  # Hot standby settings
+  hot_standby: 'on'
+  max_standby_archive_delay: '30s'
+  max_standby_streaming_delay: '30s'
+  hot_standby_feedback: 'on'
+  
+  # Recovery settings
+  recovery_target_timeline: 'latest'
+  restore_command: 'aws s3 cp s3://quantumvest-wal-archive/%f %p'
+
+# Database Schema Management
+schema_management:
+  migrations:
+    tool: 'flyway'
+    location: '/migrations'
+    baseline_on_migrate: true
+    validate_on_migrate: true
+    
+  versioning:
+    strategy: 'semantic'
+    auto_increment: true
+    
+  rollback:
+    enabled: true
+    retention_days: 30
+
+# Data Partitioning Strategy
+partitioning:
+  transactions:
+    type: 'range'
+    column: 'created_at'
+    interval: 'monthly'
+    retention: '7_years'
+    
+  audit_logs:
+    type: 'range'
+    column: 'timestamp'
+    interval: 'monthly'
+    retention: '7_years'
+    
+  user_activities:
+    type: 'range'
+    column: 'activity_date'
+    interval: 'quarterly'
+    retention: '2_years'
+
+# Backup Configuration
+backup:
+  strategy: 'continuous'
+  
+  # Full backups
+  full_backup:
+    schedule: '0 2 * * 0'  # Weekly on Sunday
+    retention: '12_weeks'
+    compression: 'gzip'
+    encryption: 'AES-256'
+    destination: 's3://quantumvest-db-backups/full/'
+    
+  # Incremental backups
+  incremental_backup:
+    schedule: '0 2 * * 1-6'  # Daily except Sunday
+    retention: '4_weeks'
+    compression: 'gzip'
+    encryption: 'AES-256'
+    destination: 's3://quantumvest-db-backups/incremental/'
+    
+  # Point-in-time recovery
+  pitr:
+    enabled: true
+    wal_archive_destination: 's3://quantumvest-wal-archive/'
+    retention: '30_days'
+    
+  # Backup validation
+  validation:
+    enabled: true
+    schedule: '0 4 * * 1'  # Weekly on Monday
+    test_restore: true
+    integrity_check: true
+
+# Redis Configuration
+redis:
+  version: "7.0"
+  
+  # Memory configuration
+  memory:
+    maxmemory: '4gb'
+    maxmemory_policy: 'allkeys-lru'
+    
+  # Persistence configuration
+  persistence:
+    save: '900 1 300 10 60 10000'
+    rdbcompression: 'yes'
+    rdbchecksum: 'yes'
+    dbfilename: 'dump.rdb'
+    dir: '/var/lib/redis'
+    
+    # AOF configuration
+    appendonly: 'yes'
+    appendfilename: 'appendonly.aof'
+    appendfsync: 'everysec'
+    no_appendfsync_on_rewrite: 'no'
+    auto_aof_rewrite_percentage: 100
+    auto_aof_rewrite_min_size: '64mb'
+    
+  # Security configuration
+  security:
+    requirepass: '${REDIS_PASSWORD}'
+    rename_commands:
+      - 'FLUSHDB ""'
+      - 'FLUSHALL ""'
+      - 'KEYS ""'
+      - 'CONFIG "CONFIG_b835c0f4-5c3e-4c5a-8b8a-7c9d5e2f1a3b"'
+      
+  # SSL/TLS configuration
+  tls:
+    port: 6380
+    cert_file: '/etc/redis/tls/redis.crt'
+    key_file: '/etc/redis/tls/redis.key'
+    ca_cert_file: '/etc/redis/tls/ca.crt'
+    protocols: 'TLSv1.2 TLSv1.3'
+    ciphers: 'ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256'
+    
+  # Replication configuration
+  replication:
+    replica_of: 'redis-master 6379'
+    replica_read_only: 'yes'
+    replica_serve_stale_data: 'yes'
+    replica_priority: 100
+    
+  # Sentinel configuration for high availability
+  sentinel:
+    enabled: true
+    master_name: 'quantumvest-redis'
+    quorum: 2
+    down_after_milliseconds: 5000
+    failover_timeout: 10000
+    parallel_syncs: 1
+
+# Object Storage Configuration
+object_storage:
+  provider: 'aws_s3'
+  
+  buckets:
+    # Application data
+    app_data:
+      name: 'quantumvest-app-data'
+      region: 'us-east-1'
+      versioning: true
+      encryption: 'AES256'
+      lifecycle_policy:
+        - id: 'transition_to_ia'
+          status: 'Enabled'
+          transition:
+            days: 30
+            storage_class: 'STANDARD_IA'
+        - id: 'transition_to_glacier'
+          status: 'Enabled'
+          transition:
+            days: 90
+            storage_class: 'GLACIER'
+        - id: 'delete_old_versions'
+          status: 'Enabled'
+          expiration:
+            days: 2555  # 7 years
+            
+    # Document storage
+    documents:
+      name: 'quantumvest-documents'
+      region: 'us-east-1'
+      versioning: true
+      encryption: 'aws:kms'
+      kms_key_id: 'arn:aws:kms:us-east-1:account:key/key-id'
+      
+    # Backup storage
+    backups:
+      name: 'quantumvest-backups'
+      region: 'us-east-1'
+      versioning: true
+      encryption: 'aws:kms'
+      cross_region_replication:
+        destination_bucket: 'quantumvest-backups-replica'
+        destination_region: 'us-west-2'
+        
+    # Log archive
+    log_archive:
+      name: 'quantumvest-log-archive'
+      region: 'us-east-1'
+      versioning: false
+      encryption: 'AES256'
+      lifecycle_policy:
+        - id: 'archive_logs'
+          status: 'Enabled'
+          transition:
+            days: 90
+            storage_class: 'GLACIER'
+        - id: 'deep_archive_logs'
+          status: 'Enabled'
+          transition:
+            days: 365
+            storage_class: 'DEEP_ARCHIVE'
+
+# Data Governance
+data_governance:
+  classification:
+    levels:
+      - name: 'public'
+        description: 'Publicly available information'
+        retention: 'indefinite'
+        
+      - name: 'internal'
+        description: 'Internal business information'
+        retention: '7_years'
+        
+      - name: 'confidential'
+        description: 'Sensitive business information'
+        retention: '7_years'
+        encryption_required: true
+        
+      - name: 'restricted'
+        description: 'Highly sensitive information (PII, financial)'
+        retention: '7_years'
+        encryption_required: true
+        access_logging: true
+        
+  data_lineage:
+    enabled: true
+    tracking:
+      - 'data_source'
+      - 'transformations'
+      - 'data_destination'
+      - 'access_patterns'
+      
+  privacy_controls:
+    gdpr_compliance: true
+    right_to_erasure: true
+    data_portability: true
+    consent_management: true
+    
+  retention_policies:
+    user_data:
+      retention_period: '7_years'
+      deletion_method: 'secure_wipe'
+      
+    transaction_data:
+      retention_period: '7_years'
+      archival_method: 'cold_storage'
+      
+    audit_logs:
+      retention_period: '7_years'
+      immutable: true
+      
+    system_logs:
+      retention_period: '1_year'
+      compression: true
+
+# Data Quality Management
+data_quality:
+  validation_rules:
+    - table: 'users'
+      rules:
+        - column: 'email'
+          type: 'format'
+          pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        - column: 'created_at'
+          type: 'not_null'
+        - column: 'status'
+          type: 'enum'
+          values: ['active', 'inactive', 'suspended']
+          
+    - table: 'transactions'
+      rules:
+        - column: 'amount'
+          type: 'range'
+          min: 0.01
+          max: 1000000
+        - column: 'currency'
+          type: 'enum'
+          values: ['USD', 'EUR', 'GBP', 'JPY']
+          
+  monitoring:
+    enabled: true
+    schedule: '0 */6 * * *'  # Every 6 hours
+    alerts:
+      threshold: 5  # Alert if more than 5% of records fail validation
+      recipients:
+        - 'data-team@quantumvest.com'
+        - 'ops@quantumvest.com'
+
+# Disaster Recovery
+disaster_recovery:
+  rpo: '15_minutes'  # Recovery Point Objective
+  rto: '4_hours'     # Recovery Time Objective
+  
+  strategies:
+    database:
+      primary_region: 'us-east-1'
+      dr_region: 'us-west-2'
+      replication: 'asynchronous'
+      failover: 'automatic'
+      
+    object_storage:
+      cross_region_replication: true
+      versioning: true
+      
+  testing:
+    schedule: 'monthly'
+    automated: true
+    validation:
+      - 'data_integrity'
+      - 'application_functionality'
+      - 'performance_benchmarks'
+
+# Performance Optimization
+performance:
+  database:
+    connection_pooling:
+      enabled: true
+      max_connections: 100
+      min_connections: 10
+      
+    query_optimization:
+      slow_query_log: true
+      slow_query_threshold: '1s'
+      explain_analyze: true
+      
+    indexing:
+      auto_index_creation: false
+      index_monitoring: true
+      unused_index_detection: true
+      
+  caching:
+    layers:
+      - name: 'application_cache'
+        type: 'redis'
+        ttl: '1h'
+        
+      - name: 'query_cache'
+        type: 'redis'
+        ttl: '15m'
+        
+      - name: 'session_cache'
+        type: 'redis'
+        ttl: '24h'
+        
+  storage:
+    ssd_optimization: true
+    compression: true
+    deduplication: false  # Not recommended for financial data
+

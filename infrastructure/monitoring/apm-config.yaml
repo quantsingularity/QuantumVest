@@ -1,0 +1,374 @@
+# Application Performance Monitoring (APM) and Observability Configuration
+
+# Elastic APM Configuration
+elastic_apm:
+  server:
+    host: "0.0.0.0:8200"
+    ssl:
+      enabled: true
+      certificate: "/usr/share/apm-server/config/certs/apm-server.crt"
+      key: "/usr/share/apm-server/config/certs/apm-server.key"
+      
+  output:
+    elasticsearch:
+      hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      username: "apm_system"
+      password: "${APM_SYSTEM_PASSWORD}"
+      ssl:
+        certificate_authority: "/usr/share/apm-server/config/certs/ca.crt"
+        
+  monitoring:
+    enabled: true
+    elasticsearch:
+      hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      username: "apm_system"
+      password: "${APM_SYSTEM_PASSWORD}"
+      
+  instrumentation:
+    enabled: true
+    environment: "production"
+    
+  rum:
+    enabled: true
+    event_rate:
+      limit: 300
+      lru_size: 1000
+    allow_origins: ["https://quantumvest.com", "https://app.quantumvest.com"]
+    library_pattern: "node_modules|bower_components|~"
+    exclude_from_grouping: "^/webpack"
+    
+  sampling:
+    keep_unsampled: true
+    
+# Jaeger Distributed Tracing Configuration
+jaeger:
+  collector:
+    grpc:
+      host_port: "0.0.0.0:14250"
+    http:
+      host_port: "0.0.0.0:14268"
+      
+  storage:
+    type: elasticsearch
+    elasticsearch:
+      server_urls: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      username: "jaeger"
+      password: "${JAEGER_PASSWORD}"
+      tls:
+        enabled: true
+        ca: "/etc/jaeger/certs/ca.crt"
+      index_prefix: "jaeger"
+      
+  query:
+    port: 16686
+    base_path: "/jaeger"
+    
+  agent:
+    host_port: "0.0.0.0:6831"
+    
+  sampling:
+    strategies_file: "/etc/jaeger/sampling_strategies.json"
+    
+# OpenTelemetry Configuration
+opentelemetry:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+          
+    jaeger:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:14250"
+        thrift_http:
+          endpoint: "0.0.0.0:14268"
+          
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'otel-collector'
+            scrape_interval: 10s
+            static_configs:
+              - targets: ['0.0.0.0:8888']
+              
+  processors:
+    batch:
+      timeout: 1s
+      send_batch_size: 1024
+      
+    memory_limiter:
+      limit_mib: 512
+      
+    resource:
+      attributes:
+        - key: environment
+          value: production
+          action: upsert
+        - key: service.namespace
+          value: quantumvest
+          action: upsert
+          
+  exporters:
+    elasticsearch:
+      endpoints: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      auth:
+        username: "otel_exporter"
+        password: "${OTEL_EXPORTER_PASSWORD}"
+      tls:
+        ca_file: "/etc/otelcol/certs/ca.crt"
+        
+    jaeger:
+      endpoint: "jaeger-collector:14250"
+      tls:
+        insecure: false
+        ca_file: "/etc/otelcol/certs/ca.crt"
+        
+    prometheus:
+      endpoint: "0.0.0.0:8889"
+      
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp, jaeger]
+        processors: [memory_limiter, batch, resource]
+        exporters: [jaeger, elasticsearch]
+        
+      metrics:
+        receivers: [otlp, prometheus]
+        processors: [memory_limiter, batch, resource]
+        exporters: [prometheus, elasticsearch]
+        
+      logs:
+        receivers: [otlp]
+        processors: [memory_limiter, batch, resource]
+        exporters: [elasticsearch]
+
+# Application Instrumentation Configuration
+instrumentation:
+  java:
+    agent_version: "1.32.0"
+    configuration:
+      service_name: "quantumvest-api"
+      environment: "production"
+      server_url: "https://apm.quantumvest.com:8200"
+      secret_token: "${APM_SECRET_TOKEN}"
+      capture_body: "errors"
+      capture_headers: true
+      transaction_sample_rate: 0.1
+      central_config: true
+      
+  node_js:
+    agent_version: "3.48.0"
+    configuration:
+      serviceName: "quantumvest-frontend"
+      environment: "production"
+      serverUrl: "https://apm.quantumvest.com:8200"
+      secretToken: "${APM_SECRET_TOKEN}"
+      captureBody: "errors"
+      captureHeaders: true
+      transactionSampleRate: 0.1
+      centralConfig: true
+      
+  python:
+    agent_version: "6.15.1"
+    configuration:
+      SERVICE_NAME: "quantumvest-analytics"
+      ENVIRONMENT: "production"
+      SERVER_URL: "https://apm.quantumvest.com:8200"
+      SECRET_TOKEN: "${APM_SECRET_TOKEN}"
+      CAPTURE_BODY: "errors"
+      CAPTURE_HEADERS: "true"
+      TRANSACTION_SAMPLE_RATE: "0.1"
+      CENTRAL_CONFIG: "true"
+
+# Custom Metrics and SLIs/SLOs
+service_level_objectives:
+  api_availability:
+    sli: "sum(rate(http_requests_total{job='quantumvest-api',code!~'5..'}[5m])) / sum(rate(http_requests_total{job='quantumvest-api'}[5m]))"
+    slo: 0.999  # 99.9% availability
+    error_budget_window: "30d"
+    
+  api_latency:
+    sli: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job='quantumvest-api'}[5m]))"
+    slo: 0.5  # 500ms 95th percentile
+    error_budget_window: "30d"
+    
+  transaction_success_rate:
+    sli: "sum(rate(transactions_total{status='success'}[5m])) / sum(rate(transactions_total[5m]))"
+    slo: 0.9999  # 99.99% success rate
+    error_budget_window: "7d"
+    
+  database_availability:
+    sli: "up{job='postgres-exporter'}"
+    slo: 0.9999  # 99.99% availability
+    error_budget_window: "30d"
+
+# Error Tracking and Analysis
+error_tracking:
+  sentry:
+    dsn: "${SENTRY_DSN}"
+    environment: "production"
+    release: "${APP_VERSION}"
+    
+    integrations:
+      - name: "express"
+        enabled: true
+      - name: "postgres"
+        enabled: true
+      - name: "redis"
+        enabled: true
+        
+    performance:
+      traces_sample_rate: 0.1
+      
+    before_send:
+      - filter_sensitive_data
+      - add_user_context
+      - add_transaction_context
+      
+  error_budgets:
+    critical_errors:
+      budget: 0.001  # 0.1% error rate
+      window: "7d"
+      
+    warning_errors:
+      budget: 0.01   # 1% error rate
+      window: "30d"
+      
+# Real User Monitoring (RUM)
+rum_configuration:
+  service_name: "quantumvest-frontend"
+  service_version: "${FRONTEND_VERSION}"
+  environment: "production"
+  
+  page_load_metrics:
+    - "first_contentful_paint"
+    - "largest_contentful_paint"
+    - "first_input_delay"
+    - "cumulative_layout_shift"
+    - "time_to_interactive"
+    
+  custom_metrics:
+    - name: "login_duration"
+      type: "timing"
+      
+    - name: "transaction_completion_time"
+      type: "timing"
+      
+    - name: "form_abandonment_rate"
+      type: "counter"
+      
+  user_context:
+    - "user_id"
+    - "session_id"
+    - "user_type"
+    - "subscription_tier"
+    
+  sampling:
+    page_views: 1.0
+    errors: 1.0
+    transactions: 0.1
+
+# Synthetic Monitoring
+synthetic_monitoring:
+  uptime_checks:
+    - name: "api_health_check"
+      url: "https://api.quantumvest.com/health"
+      interval: "1m"
+      timeout: "10s"
+      expected_status: 200
+      locations: ["us-east-1", "us-west-2", "eu-west-1"]
+      
+    - name: "frontend_availability"
+      url: "https://app.quantumvest.com"
+      interval: "5m"
+      timeout: "30s"
+      expected_content: "QuantumVest"
+      locations: ["us-east-1", "us-west-2", "eu-west-1"]
+      
+  transaction_monitoring:
+    - name: "user_login_flow"
+      script: "/etc/synthetic/login_flow.js"
+      interval: "15m"
+      timeout: "2m"
+      locations: ["us-east-1", "eu-west-1"]
+      
+    - name: "investment_transaction"
+      script: "/etc/synthetic/investment_flow.js"
+      interval: "30m"
+      timeout: "5m"
+      locations: ["us-east-1", "us-west-2"]
+      
+  alerting:
+    failure_threshold: 2  # Alert after 2 consecutive failures
+    recovery_threshold: 1  # Resolve after 1 success
+    
+# Performance Baselines and Anomaly Detection
+performance_baselines:
+  api_response_time:
+    baseline_window: "7d"
+    anomaly_threshold: "2_standard_deviations"
+    minimum_requests: 1000
+    
+  database_query_time:
+    baseline_window: "7d"
+    anomaly_threshold: "3_standard_deviations"
+    minimum_queries: 500
+    
+  error_rates:
+    baseline_window: "30d"
+    anomaly_threshold: "2_standard_deviations"
+    minimum_requests: 10000
+    
+  business_metrics:
+    transaction_volume:
+      baseline_window: "30d"
+      anomaly_threshold: "2_standard_deviations"
+      seasonal_adjustment: true
+      
+    user_activity:
+      baseline_window: "7d"
+      anomaly_threshold: "2_standard_deviations"
+      day_of_week_adjustment: true
+
+# Observability Dashboard Configuration
+observability_dashboards:
+  golden_signals:
+    - name: "Latency"
+      query: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
+      
+    - name: "Traffic"
+      query: "sum(rate(http_requests_total[5m]))"
+      
+    - name: "Errors"
+      query: "sum(rate(http_requests_total{status=~'5..'}[5m]))"
+      
+    - name: "Saturation"
+      query: "avg(cpu_usage_percent)"
+      
+  business_kpis:
+    - name: "Active Users"
+      query: "quantumvest_active_users"
+      
+    - name: "Transaction Volume"
+      query: "sum(rate(quantumvest_transactions_total[1h]))"
+      
+    - name: "Revenue"
+      query: "sum(rate(quantumvest_revenue_total[1h]))"
+      
+    - name: "Conversion Rate"
+      query: "quantumvest_conversion_rate"
+      
+  security_metrics:
+    - name: "Failed Logins"
+      query: "sum(rate(quantumvest_failed_logins_total[5m]))"
+      
+    - name: "Security Events"
+      query: "sum(rate(quantumvest_security_events_total[5m]))"
+      
+    - name: "Threat Score"
+      query: "quantumvest_threat_score"
+
