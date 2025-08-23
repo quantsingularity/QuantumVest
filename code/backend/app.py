@@ -1,5 +1,5 @@
 """
-Enhanced Flask Application for QuantumVest
+Flask Application for QuantumVest
 Comprehensive investment analytics platform with authentication, portfolio management, and AI predictions
 """
 import os
@@ -12,9 +12,9 @@ from flask_caching import Cache
 from datetime import datetime, timezone
 
 # Import configurations and models
-from enhanced_config import get_config
+from config import get_config
 from models import db, User, Portfolio, Asset
-from enhanced_api_routes import api_bp
+from api_routes import api_bp
 from auth import AuthService
 
 # Configure logging
@@ -58,105 +58,14 @@ def create_app(config_name=None):
         except Exception as e:
             logger.error(f"Error creating database tables: {e}")
     
-    # Legacy endpoints for backward compatibility
-    @app.route('/api/health', methods=['GET'])
-    def legacy_health_check():
-        """Legacy health check endpoint"""
-        return jsonify({
-            'status': 'healthy',
-            'version': '2.0.0',
-            'environment': os.environ.get('FLASK_ENV', 'production'),
-            'message': 'Please use /api/v1/health for the new API'
-        })
 
-    @app.route('/api/blockchain-data/<asset>', methods=['GET'])
-    def legacy_blockchain_data(asset):
-        """Legacy blockchain data endpoint"""
-        return jsonify({
-            'success': True,
-            'message': f'Please use the new API endpoint: /api/v1/data/crypto/{asset}',
-            'data': []
-        })
 
-    @app.route('/api/predict', methods=['POST'])
-    def legacy_predict():
-        """Legacy prediction endpoint"""
-        try:
-            data = request.json
-            
-            # Extract parameters
-            asset = data.get('asset', 'BTC')
-            timeframe = data.get('timeframe', '7d')
-            
-            # Determine asset type and redirect to new API
-            if asset in ['BTC', 'ETH', 'XRP', 'LTC', 'BCH', 'ADA', 'DOT', 'LINK', 'XLM', 'DOGE']:
-                # Cryptocurrency
-                days_ahead = 7
-                if timeframe == '1d':
-                    days_ahead = 1
-                elif timeframe == '7d':
-                    days_ahead = 7
-                elif timeframe == '30d':
-                    days_ahead = 30
-                    
-                return jsonify({
-                    'success': True,
-                    'message': f'Please use the new API endpoint: /api/v1/predictions/crypto/{asset.lower()}?days_ahead={days_ahead}',
-                    'prediction': 0,
-                    'confidence': 0,
-                    'asset': asset,
-                    'timeframe': timeframe,
-                    'note': 'Authentication required for new API'
-                })
-            else:
-                # Stock
-                days_ahead = 7
-                if timeframe == '1d':
-                    days_ahead = 1
-                elif timeframe == '7d':
-                    days_ahead = 7
-                elif timeframe == '30d':
-                    days_ahead = 30
-                    
-                return jsonify({
-                    'success': True,
-                    'message': f'Please use the new API endpoint: /api/v1/predictions/stocks/{asset}?days_ahead={days_ahead}',
-                    'prediction': 0,
-                    'confidence': 0,
-                    'asset': asset,
-                    'timeframe': timeframe,
-                    'note': 'Authentication required for new API'
-                })
-        except Exception as e:
-            logger.error(f"Error in legacy predict endpoint: {e}")
-            return jsonify({
-                'success': False,
-                'error': str(e)
-            }), 500
 
-    @app.route('/api/optimize', methods=['POST'])
-    def legacy_optimize_portfolio():
-        """Legacy portfolio optimization endpoint"""
-        try:
-            data = request.json
-            assets = data.get('assets', [])
-            risk_tolerance = data.get('risk_tolerance', 0.5)
-            
-            return jsonify({
-                'success': True,
-                'message': 'Please use the new API endpoint: /api/v1/portfolios/{portfolio_id}/optimize',
-                'note': 'Authentication and portfolio creation required for new API',
-                'optimal_weights': [],
-                'expected_return': 0,
-                'volatility': 0,
-                'sharpe_ratio': 0
-            })
-        except Exception as e:
-            logger.error(f"Error in legacy optimize endpoint: {e}")
-            return jsonify({
-                'success': False,
-                'error': str(e)
-            }), 500
+
+
+
+
+
 
     # Serve static files from React build
     @app.route('/', defaults={'path': ''})
