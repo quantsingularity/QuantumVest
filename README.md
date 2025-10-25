@@ -20,7 +20,6 @@ QuantumVest is an advanced predictive investment analytics platform that leverag
 - [Technology Stack](#technology-stack)
 - [Architecture](#architecture)
 - [Installation and Setup](#installation-and-setup)
-- [Development Roadmap](#development-roadmap)
 - [Directory Structure](#directory-structure)
 - [Testing](#testing)
 - [CI/CD Pipeline](#cicd-pipeline)
