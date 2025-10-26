@@ -211,16 +211,6 @@ cd ../frontend
 npm start
 ```
 
-## Development Roadmap
-
-| Phase | Features | Status |
-|-------|----------|--------|
-| **Phase 1: Foundation** | Basic UI, Market Data Integration, Simple Predictions | Completed |
-| **Phase 2: AI Enhancement** | Advanced ML Models, Sentiment Analysis, Pattern Recognition | In Progress |
-| **Phase 3: Blockchain Integration** | On-Chain Data Analysis, Whale Tracking, Network Metrics | In Progress |
-| **Phase 4: Quantitative Tools** | Portfolio Optimization, Risk Analysis, Strategy Backtesting | Planned |
-| **Phase 5: Personalization** | User Profiles, Goal-Based Planning, Custom Alerts | Planned |
-
 ## Directory Structure
 
 ```
