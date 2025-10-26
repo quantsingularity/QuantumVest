@@ -1,6 +1,6 @@
 # QuantumVest
 
-[![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumVest/ci-cd.yml?branch=main&label=CI/CD&logo=github)](https://github.com/abrar2030/QuantumVest/actions)
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumVest/cicd.yml?branch=main&label=CI/CD&logo=github)
 [![Test Coverage](https://img.shields.io/badge/coverage-80%25-yellow)](https://github.com/abrar2030/QuantumVest/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
