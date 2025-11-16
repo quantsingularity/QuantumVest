@@ -8,6 +8,7 @@ import logging
 import requests
 from abc import ABC, abstractmethod
 from typing import Dict, List, Any, Optional, Union
+import json # Added based on the issue description's hint about json_data and requests
 import pandas as pd
 from datetime import datetime, timedelta
 

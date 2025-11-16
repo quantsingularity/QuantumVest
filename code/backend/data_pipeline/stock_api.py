@@ -14,6 +14,7 @@ sys.path.append('/opt/.manus/.sandbox-runtime')
 from data_api import ApiClient
 
 from .data_fetcher import DataFetcher, DataValidator
+import json # Added based on the issue description's hint about json_data and requests
 
 # Configure logging
 logging.basicConfig(
@@ -94,6 +95,11 @@ class StockDataFetcher(DataFetcher):
                 # Extract timestamp and price data
                 timestamps = result['timestamp']
                 quotes = result['indicators']['quote'][0]
+                
+                # Check for None values in quotes before creating DataFrame
+                if not all(quotes.values()):
+                    logger.error(f"Missing data points in response for {symbol}")
+                    return pd.DataFrame()
                 
                 # Create DataFrame
                 df = pd.DataFrame({
