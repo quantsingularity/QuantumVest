@@ -22,25 +22,25 @@ export default function PredictionChart() {
           market_cap: 850000000000,
           price_change_24h: 2.5
         };
-        
+
         const response = await axios.post('/api/predict', features);
-        
+
         if (response.data.success) {
           // Generate mock prediction data if API doesn't return array
           const mockPredictions = [];
           const baseValue = selectedAsset === 'BTC' ? 45000 : 3000;
           const days = timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
-          
+
           const today = new Date();
           for (let i = 0; i < days; i++) {
             const date = new Date();
             date.setDate(today.getDate() + i);
-            
+
             // Create some realistic looking price movements
             const randomFactor = 1 + (Math.random() * 0.04 - 0.02); // -2% to +2%
             const trendFactor = 1 + (i * 0.005); // Slight upward trend
             const value = baseValue * randomFactor * trendFactor;
-            
+
             mockPredictions.push({
               day: i + 1,
               date: date.toLocaleDateString(),
@@ -48,7 +48,7 @@ export default function PredictionChart() {
               predicted: i > 0 // First point is current, rest are predictions
             });
           }
-          
+
           setPredictionData(mockPredictions);
         } else {
           setError('Failed to fetch prediction data');
@@ -82,13 +82,13 @@ export default function PredictionChart() {
   return (
     <div className="prediction-container">
       <h1 className="section-title">Price Predictions</h1>
-      
+
       <div className="prediction-controls">
         <div className="control-group">
           <label htmlFor="asset-select">Asset:</label>
-          <select 
-            id="asset-select" 
-            value={selectedAsset} 
+          <select
+            id="asset-select"
+            value={selectedAsset}
             onChange={handleAssetChange}
             className="select-control"
           >
@@ -99,12 +99,12 @@ export default function PredictionChart() {
             <option value="MSFT">Microsoft (MSFT)</option>
           </select>
         </div>
-        
+
         <div className="control-group">
           <label htmlFor="timeframe-select">Timeframe:</label>
-          <select 
-            id="timeframe-select" 
-            value={timeframe} 
+          <select
+            id="timeframe-select"
+            value={timeframe}
             onChange={handleTimeframeChange}
             className="select-control"
           >
@@ -114,7 +114,7 @@ export default function PredictionChart() {
           </select>
         </div>
       </div>
-      
+
       <div className="chart-container">
         <div className="chart-header">
           <h3>{selectedAsset} Price Prediction - {timeframe}</h3>
@@ -129,7 +129,7 @@ export default function PredictionChart() {
             </div>
           </div>
         </div>
-        
+
         <div className="chart-visualization">
           {/* In a real implementation, we would use a chart library like Chart.js or Recharts */}
           {/* For now, we'll create a simple visualization */}
@@ -145,17 +145,17 @@ export default function PredictionChart() {
               );
             })}
           </div>
-          
+
           <div className="chart-bars">
             {predictionData.map((data, index) => {
               const max = Math.max(...predictionData.map(d => parseFloat(d.value)));
               const min = Math.min(...predictionData.map(d => parseFloat(d.value)));
               const range = max - min;
               const height = ((parseFloat(data.value) - min) / range) * 100;
-              
+
               return (
                 <div key={index} className="chart-bar-container">
-                  <div 
+                  <div
                     className={`chart-bar ${data.predicted ? 'predicted-bar' : 'current-bar'}`}
                     style={{ height: `${height}%` }}
                   >
@@ -168,14 +168,14 @@ export default function PredictionChart() {
           </div>
         </div>
       </div>
-      
+
       <div className="prediction-summary">
         <h3>Analysis Summary</h3>
         <p>
-          Based on our AI model analysis, {selectedAsset} is predicted to 
-          {predictionData.length > 0 && parseFloat(predictionData[predictionData.length - 1].value) > parseFloat(predictionData[0].value) 
-            ? ' increase in value ' 
-            : ' decrease in value '} 
+          Based on our AI model analysis, {selectedAsset} is predicted to
+          {predictionData.length > 0 && parseFloat(predictionData[predictionData.length - 1].value) > parseFloat(predictionData[0].value)
+            ? ' increase in value '
+            : ' decrease in value '}
           over the next {timeframe === '7d' ? 'week' : timeframe === '30d' ? 'month' : '3 months'}.
         </p>
         <p>

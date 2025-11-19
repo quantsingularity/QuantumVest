@@ -12,12 +12,12 @@
   --accent-color: #0ea5e9;
   --accent-light: #38bdf8;
   --accent-dark: #0284c7;
-  
+
   /* Status colors */
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --danger-color: #ef4444;
-  
+
   /* Neutral colors */
   --background-color: #f8fafc;
   --surface-color: #ffffff;
@@ -25,7 +25,7 @@
   --text-secondary: #475569;
   --text-tertiary: #94a3b8;
   --border-color: #e2e8f0;
-  
+
   /* Dark mode colors - will be applied with .dark-theme class */
   --dark-background: #0f172a;
   --dark-surface: #1e293b;
@@ -33,7 +33,7 @@
   --dark-text-secondary: #cbd5e1;
   --dark-text-tertiary: #64748b;
   --dark-border-color: #334155;
-  
+
   /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -41,14 +41,14 @@
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-xxl: 3rem;
-  
+
   /* Effects */
   --box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --box-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --box-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  
+
   /* Border radius */
   --border-radius-sm: 0.25rem;
   --border-radius: 0.5rem;
@@ -56,7 +56,7 @@
   --border-radius-lg: 1rem;
   --border-radius-xl: 1.5rem;
   --border-radius-full: 9999px;
-  
+
   /* Transitions */
   --transition-fast: all 0.2s ease;
   --transition: all 0.3s ease;
@@ -123,7 +123,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-.dark-theme h1, .dark-theme h2, .dark-theme h3, 
+.dark-theme h1, .dark-theme h2, .dark-theme h3,
 .dark-theme h4, .dark-theme h5, .dark-theme h6 {
   color: var(--dark-text-primary);
 }
@@ -463,11 +463,11 @@ a:hover {
   .content-wrapper.sidebar-open {
     margin-left: 0;
   }
-  
+
   .main-content {
     padding: var(--spacing-lg);
   }
-  
+
   .grid-3, .grid-4 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -477,15 +477,15 @@ a:hover {
   .grid, .grid-2, .grid-3, .grid-4 {
     grid-template-columns: 1fr;
   }
-  
+
   h1 {
     font-size: 2rem;
   }
-  
+
   h2 {
     font-size: 1.75rem;
   }
-  
+
   .main-content {
     padding: var(--spacing-md);
   }

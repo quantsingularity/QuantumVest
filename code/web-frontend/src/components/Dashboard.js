@@ -19,7 +19,7 @@ export default function Dashboard() {
         const response = await axios.get('/api/blockchain-data/ETH');
         if (response.data.success) {
           setMarketData(response.data.data || []);
-          
+
           // Calculate some mock statistics
           const mockStats = {
             totalAssets: 25430.78,
@@ -51,7 +51,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard-container">
       <h1 className="section-title">Investment Dashboard</h1>
-      
+
       <div className="stats-overview">
         <div className="stat-card">
           <h3>Total Assets</h3>
@@ -72,7 +72,7 @@ export default function Dashboard() {
       </div>
 
       <h2 className="section-title">Recent Market Data</h2>
-      
+
       <div className="market-data-grid">
         {marketData.slice(-5).map((entry, index) => (
           <div className="market-card" key={index}>
@@ -87,7 +87,7 @@ export default function Dashboard() {
           </div>
         ))}
       </div>
-      
+
       {marketData.length === 0 && (
         <div className="no-data-message">
           <p>No market data available. Connect to blockchain for real-time data.</p>

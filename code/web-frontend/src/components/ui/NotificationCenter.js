@@ -32,7 +32,7 @@ const NotificationCenter = () => {
         <h3>Notifications</h3>
         <button className="mark-all-read">Mark all as read</button>
       </div>
-      
+
       <div className="notification-list">
         {notifications.length > 0 ? (
           notifications.map(notification => (
@@ -51,7 +51,7 @@ const NotificationCenter = () => {
           </div>
         )}
       </div>
-      
+
       <div className="notification-footer">
         <button className="view-all">View all notifications</button>
       </div>

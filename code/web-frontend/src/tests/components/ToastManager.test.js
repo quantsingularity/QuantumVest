@@ -18,52 +18,52 @@ describe('ToastManager Component', () => {
 
   test('shows toast when showToast is called', () => {
     render(<ToastManager />);
-    
+
     act(() => {
       showToast('Test message', 'info');
     });
-    
+
     expect(screen.getByText('Test message')).toBeInTheDocument();
   });
 
   test('shows multiple toasts', () => {
     render(<ToastManager />);
-    
+
     act(() => {
       showToast('First toast', 'info');
       showToast('Second toast', 'success');
     });
-    
+
     expect(screen.getByText('First toast')).toBeInTheDocument();
     expect(screen.getByText('Second toast')).toBeInTheDocument();
   });
 
   test('removes toast when close button is clicked', () => {
     render(<ToastManager />);
-    
+
     act(() => {
       showToast('Closable toast', 'info');
     });
-    
+
     expect(screen.getByText('Closable toast')).toBeInTheDocument();
-    
+
     const closeButton = screen.getByRole('button');
     fireEvent.click(closeButton);
-    
+
     // Toast should be removed
     expect(screen.queryByText('Closable toast')).not.toBeInTheDocument();
   });
 
   test('supports different toast types', () => {
     render(<ToastManager />);
-    
+
     act(() => {
       showToast('Info toast', 'info');
       showToast('Success toast', 'success');
       showToast('Warning toast', 'warning');
       showToast('Error toast', 'error');
     });
-    
+
     expect(screen.getByText('Info toast').closest('.toast-container')).toHaveClass('info');
     expect(screen.getByText('Success toast').closest('.toast-container')).toHaveClass('success');
     expect(screen.getByText('Warning toast').closest('.toast-container')).toHaveClass('warning');

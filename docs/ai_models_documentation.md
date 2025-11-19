@@ -98,33 +98,33 @@ The model is implemented using TensorFlow/Keras:
 def create_lstm_model(input_shape, units=64, dropout_rate=0.2):
     """
     Create an LSTM model for time series prediction.
-    
+
     Args:
         input_shape: Shape of input data (sequence_length, features)
         units: Number of LSTM units
         dropout_rate: Dropout rate for regularization
-        
+
     Returns:
         Compiled LSTM model
     """
     model = Sequential()
-    
+
     # LSTM layers with dropout
-    model.add(LSTM(units=units, 
-                  return_sequences=True, 
+    model.add(LSTM(units=units,
+                  return_sequences=True,
                   input_shape=input_shape))
     model.add(Dropout(dropout_rate))
-    
-    model.add(LSTM(units=units, 
+
+    model.add(LSTM(units=units,
                   return_sequences=False))
     model.add(Dropout(dropout_rate))
-    
+
     # Dense output layer
     model.add(Dense(1))
-    
+
     # Compile model
     model.compile(optimizer='adam', loss='mean_squared_error')
-    
+
     return model
 ```
 
@@ -232,22 +232,22 @@ The model is implemented using Python with specialized libraries:
 def optimize_portfolio(returns, risk_tolerance, constraints=None):
     """
     Optimize a portfolio based on historical returns and risk tolerance.
-    
+
     Args:
         returns: DataFrame of historical returns
         risk_tolerance: Risk tolerance parameter (0-1)
         constraints: Dictionary of constraints
-        
+
     Returns:
         Dictionary with optimal weights and expected performance
     """
     # Calculate expected returns and covariance
     mu = expected_returns.mean_historical_return(returns)
     S = risk_models.sample_cov(returns)
-    
+
     # Create portfolio optimization problem
     ef = EfficientFrontier(mu, S)
-    
+
     # Add constraints if provided
     if constraints:
         if 'min_weights' in constraints:
@@ -259,7 +259,7 @@ def optimize_portfolio(returns, risk_tolerance, constraints=None):
             sector_lower = constraints['sector_lower']
             sector_upper = constraints['sector_upper']
             ef.add_sector_constraints(sector_mapper, sector_lower, sector_upper)
-    
+
     # Optimize portfolio based on risk tolerance
     if risk_tolerance < 0.3:
         weights = ef.min_volatility()
@@ -267,13 +267,13 @@ def optimize_portfolio(returns, risk_tolerance, constraints=None):
         weights = ef.max_sharpe()
     else:
         weights = ef.max_quadratic_utility(risk_aversion=risk_tolerance)
-    
+
     # Clean weights (remove very small allocations)
     cleaned_weights = ef.clean_weights()
-    
+
     # Calculate performance metrics
     performance = ef.portfolio_performance()
-    
+
     return {
         'weights': cleaned_weights,
         'expected_return': performance[0],
@@ -399,7 +399,7 @@ The model is implemented using Hugging Face's Transformers library:
 def create_sentiment_model():
     """
     Create a BERT-based sentiment analysis model for financial text.
-    
+
     Returns:
         Trained sentiment analysis model
     """
@@ -407,29 +407,29 @@ def create_sentiment_model():
     model_name = "finbert/finbert"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSequenceClassification.from_pretrained(model_name)
-    
+
     # Create sentiment analyzer
     sentiment_analyzer = pipeline(
         "sentiment-analysis",
         model=model,
         tokenizer=tokenizer
     )
-    
+
     return sentiment_analyzer
 
 def analyze_sentiment(text, sentiment_analyzer):
     """
     Analyze sentiment of financial text.
-    
+
     Args:
         text: Input text to analyze
         sentiment_analyzer: Sentiment analysis model
-        
+
     Returns:
         Dictionary with sentiment score and label
     """
     result = sentiment_analyzer(text)[0]
-    
+
     return {
         'label': result['label'],
         'score': result['score']
@@ -543,11 +543,11 @@ The model is implemented using scikit-learn and TensorFlow:
 def create_anomaly_detection_model(n_estimators=100, contamination=0.01):
     """
     Create an ensemble anomaly detection model.
-    
+
     Args:
         n_estimators: Number of estimators for Isolation Forest
         contamination: Expected proportion of anomalies
-        
+
     Returns:
         Trained anomaly detection model
     """
@@ -557,21 +557,21 @@ def create_anomaly_detection_model(n_estimators=100, contamination=0.01):
         contamination=contamination,
         random_state=42
     )
-    
+
     # One-Class SVM component
     ocsvm = OneClassSVM(
         nu=contamination,
         kernel="rbf",
         gamma="auto"
     )
-    
+
     # Local Outlier Factor component
     lof = LocalOutlierFactor(
         n_neighbors=20,
         contamination=contamination,
         novelty=True
     )
-    
+
     # Create ensemble
     ensemble = VotingClassifier(
         estimators=[
@@ -580,7 +580,7 @@ def create_anomaly_detection_model(n_estimators=100, contamination=0.01):
             ('lof', lof)
         ]
     )
-    
+
     return ensemble
 ```
 

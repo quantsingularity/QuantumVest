@@ -22,7 +22,7 @@ const NewsScreen = ({ navigation }) => {
     try {
       const response = await getCryptoNews(pageNum);
       const newArticles = response.data?.data || [];
-      
+
       if (newArticles.length === 0) {
         setIsListEnd(true); // No more articles found
       } else {
@@ -180,4 +180,3 @@ const styles = StyleSheet.create({
 });
 
 export default NewsScreen;
-

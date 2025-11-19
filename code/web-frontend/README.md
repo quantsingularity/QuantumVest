@@ -6,4 +6,4 @@ To run the comprehensive tests for the web-frontend, execute the following comma
 npm test
 ```
 
-This will run all tests using Jest and React Testing Library. 
+This will run all tests using Jest and React Testing Library.

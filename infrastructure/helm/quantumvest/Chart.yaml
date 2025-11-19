@@ -38,39 +38,38 @@ dependencies:
     version: 12.1.9
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
-    
+
   - name: redis
     version: 17.3.7
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
-    
+
   - name: nginx-ingress
     version: 4.4.0
     repository: https://kubernetes.github.io/ingress-nginx
     condition: ingress.enabled
-    
+
   - name: cert-manager
     version: 1.13.2
     repository: https://charts.jetstack.io
     condition: certManager.enabled
-    
+
   - name: prometheus
     version: 25.6.0
     repository: https://prometheus-community.github.io/helm-charts
     condition: monitoring.prometheus.enabled
-    
+
   - name: grafana
     version: 7.0.8
     repository: https://grafana.github.io/helm-charts
     condition: monitoring.grafana.enabled
-    
+
   - name: elasticsearch
     version: 8.5.1
     repository: https://helm.elastic.co
     condition: logging.elasticsearch.enabled
-    
+
   - name: vault
     version: 0.27.0
     repository: https://helm.releases.hashicorp.com
     condition: vault.enabled
-

@@ -14,17 +14,17 @@ export const NotificationProvider = ({ children }) => {
       timestamp: new Date(),
       ...notification
     };
-    
+
     setNotifications(prev => [newNotification, ...prev]);
     return newNotification.id;
   };
 
   // Mark a notification as read
   const markAsRead = (id) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, read: true } 
+    setNotifications(prev =>
+      prev.map(notification =>
+        notification.id === id
+          ? { ...notification, read: true }
           : notification
       )
     );
@@ -32,14 +32,14 @@ export const NotificationProvider = ({ children }) => {
 
   // Mark all notifications as read
   const markAllAsRead = () => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.map(notification => ({ ...notification, read: true }))
     );
   };
 
   // Remove a notification
   const removeNotification = (id) => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.filter(notification => notification.id !== id)
     );
   };

@@ -8,24 +8,24 @@ encryption_at_rest:
       algorithm: "AES-256-GCM"
       key_rotation_days: 30
       transparent_data_encryption: true
-      
+
     redis:
       enabled: true
       algorithm: "AES-256-GCM"
       key_rotation_days: 30
-      
+
   storage:
     object_storage:
       enabled: true
       algorithm: "AES-256-GCM"
       key_rotation_days: 30
       server_side_encryption: true
-      
+
     block_storage:
       enabled: true
       algorithm: "AES-256-XTS"
       key_rotation_days: 30
-      
+
     backup_storage:
       enabled: true
       algorithm: "AES-256-GCM"
@@ -39,18 +39,18 @@ encryption_in_transit:
     certificate_type: "EV_SSL"  # Extended Validation
     hsts_enabled: true
     hsts_max_age: 31536000
-    
+
   database_connections:
     ssl_mode: "require"
     ssl_cert_verification: true
     ssl_cipher_suites:
       - "ECDHE-RSA-AES256-GCM-SHA384"
       - "ECDHE-RSA-AES128-GCM-SHA256"
-      
+
   internal_services:
     mutual_tls: true
     certificate_rotation_days: 30
-    
+
   message_queues:
     encryption_enabled: true
     algorithm: "AES-256-GCM"
@@ -58,35 +58,35 @@ encryption_in_transit:
 # Key Management Service (KMS)
 kms_config:
   provider: "cloud_native"  # AWS KMS, Azure Key Vault, etc.
-  
+
   master_keys:
     - name: "quantumvest-master-key"
       purpose: "data_encryption"
       algorithm: "AES-256"
       rotation_schedule: "monthly"
       multi_region: true
-      
+
     - name: "quantumvest-signing-key"
       purpose: "digital_signatures"
       algorithm: "RSA-4096"
       rotation_schedule: "quarterly"
-      
+
   data_encryption_keys:
     automatic_rotation: true
     rotation_days: 30
     versioning: true
-    
+
   access_policies:
     - principal: "quantumvest-api"
       permissions: ["encrypt", "decrypt"]
       conditions:
         - "source_ip_range": "10.0.1.0/24"
-        
+
     - principal: "backup-service"
       permissions: ["encrypt", "decrypt"]
       conditions:
         - "time_based": "backup_window"
-        
+
   audit_logging: true
   cross_region_replication: true
 
@@ -96,24 +96,24 @@ field_encryption:
     - field: "ssn"
       algorithm: "AES-256-GCM"
       tokenization: true
-      
+
     - field: "credit_card_number"
       algorithm: "AES-256-GCM"
       tokenization: true
       format_preserving: true
-      
+
     - field: "bank_account_number"
       algorithm: "AES-256-GCM"
       tokenization: true
-      
+
     - field: "personal_email"
       algorithm: "AES-256-GCM"
       searchable_encryption: true
-      
+
     - field: "phone_number"
       algorithm: "AES-256-GCM"
       format_preserving: true
-      
+
   tokenization_service:
     enabled: true
     token_format: "format_preserving"
@@ -126,19 +126,19 @@ certificate_management:
       algorithm: "RSA-4096"
       validity_years: 20
       offline_storage: true
-      
+
     intermediate_ca:
       algorithm: "RSA-4096"
       validity_years: 10
-      
+
     leaf_certificates:
       algorithm: "RSA-2048"
       validity_days: 90
       auto_renewal: true
-      
+
   certificate_transparency: true
   ocsp_stapling: true
-  
+
   monitoring:
     expiry_alerts: true
     alert_days_before: [30, 7, 1]
@@ -148,15 +148,15 @@ certificate_management:
 hsm_config:
   enabled: true
   type: "cloud_hsm"  # or "network_attached"
-  
+
   key_storage:
     master_keys: true
     signing_keys: true
     ssl_certificates: false  # Use KMS for SSL certs
-    
+
   high_availability: true
   backup_strategy: "cross_region"
-  
+
   access_control:
     authentication_required: true
     role_based_access: true
@@ -165,45 +165,45 @@ hsm_config:
 # Data Loss Prevention (DLP)
 dlp_config:
   enabled: true
-  
+
   policies:
     - name: "credit_card_detection"
       pattern: "credit_card_regex"
       action: "block"
       notification: true
-      
+
     - name: "ssn_detection"
       pattern: "ssn_regex"
       action: "block"
       notification: true
-      
+
     - name: "financial_data"
       pattern: "financial_account_regex"
       action: "encrypt"
       notification: true
-      
+
   channels:
     - "email"
     - "file_transfer"
     - "api_responses"
     - "database_exports"
-    
+
   exceptions:
     - user_role: "compliance_officer"
       justification_required: true
-      
+
 # Secure Key Storage
 key_storage:
   encryption_keys:
     storage_type: "hsm"
     backup_frequency: "daily"
     geographic_distribution: true
-    
+
   api_keys:
     storage_type: "kms"
     rotation_frequency: "monthly"
     access_logging: true
-    
+
   certificates:
     storage_type: "kms"
     auto_renewal: true
@@ -214,16 +214,15 @@ compliance_encryption:
   pci_dss:
     cardholder_data_encryption: true
     key_management_compliance: true
-    
+
   sox:
     financial_data_encryption: true
     audit_trail_encryption: true
-    
+
   gdpr:
     personal_data_encryption: true
     right_to_erasure_support: true
-    
+
   iso27001:
     information_security_controls: true
     risk_management_integration: true
-

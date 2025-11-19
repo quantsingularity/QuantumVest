@@ -51,7 +51,7 @@ export const useForm = (initialValues = {}, validate = () => ({})) => {
       ...touched,
       [name]: true
     });
-    
+
     // Validate on blur
     const validationErrors = validate(values);
     setErrors(validationErrors);
@@ -59,18 +59,18 @@ export const useForm = (initialValues = {}, validate = () => ({})) => {
 
   const handleSubmit = (callback) => (e) => {
     e.preventDefault();
-    
+
     // Mark all fields as touched
     const allTouched = Object.keys(values).reduce(
       (acc, key) => ({ ...acc, [key]: true }),
       {}
     );
     setTouched(allTouched);
-    
+
     // Validate all fields
     const validationErrors = validate(values);
     setErrors(validationErrors);
-    
+
     // If no errors, submit
     if (Object.keys(validationErrors).length === 0) {
       setIsSubmitting(true);
@@ -136,7 +136,7 @@ export const useMediaQuery = (query) => {
 
     const listener = () => setMatches(media.matches);
     media.addEventListener('change', listener);
-    
+
     return () => media.removeEventListener('change', listener);
   }, [matches, query]);
 

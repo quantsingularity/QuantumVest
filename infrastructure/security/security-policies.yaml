@@ -58,4 +58,3 @@ compliance:
   iso27001_controls: true
   data_retention_years: 7
   right_to_be_forgotten: true
-

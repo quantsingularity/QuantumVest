@@ -240,23 +240,23 @@ Example:
 def calculate_sharpe_ratio(returns: List[float], risk_free_rate: float = 0.0) -> float:
     """
     Calculate the Sharpe ratio of an investment.
-    
+
     Args:
         returns: List of periodic returns
         risk_free_rate: Risk-free rate of return
-        
+
     Returns:
         Sharpe ratio value
     """
     if not returns:
         return 0.0
-        
+
     mean_return = sum(returns) / len(returns)
     std_dev = (sum((r - mean_return) ** 2 for r in returns) / len(returns)) ** 0.5
-    
+
     if std_dev == 0:
         return 0.0
-        
+
     return (mean_return - risk_free_rate) / std_dev
 ```
 
@@ -284,7 +284,7 @@ export const PredictionChart = ({ assetId, timeframe }) => {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   useEffect(() => {
     const loadPrediction = async () => {
       try {
@@ -298,13 +298,13 @@ export const PredictionChart = ({ assetId, timeframe }) => {
         setLoading(false);
       }
     };
-    
+
     loadPrediction();
   }, [assetId, timeframe]);
-  
+
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} />;
-  
+
   return (
     <div className="prediction-chart">
       <h2>Prediction for {prediction.asset.name}</h2>
@@ -341,65 +341,65 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
  */
 contract DataTracking {
     using SafeMath for uint256;
-    
+
     address public owner;
-    
+
     struct MarketData {
         string assetId;
         uint256 timestamp;
         uint256 price;
         uint256 volume;
     }
-    
+
     mapping(string => MarketData[]) public assetData;
-    
+
     event DataAdded(string assetId, uint256 timestamp, uint256 price, uint256 volume);
-    
+
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function");
         _;
     }
-    
+
     constructor() {
         owner = msg.sender;
     }
-    
+
     /**
      * @dev Add market data for an asset
      * @param assetId Identifier for the asset
      * @param price Current price of the asset
      * @param volume Trading volume of the asset
      */
-    function addMarketData(string memory assetId, uint256 price, uint256 volume) 
-        external 
-        onlyOwner 
+    function addMarketData(string memory assetId, uint256 price, uint256 volume)
+        external
+        onlyOwner
     {
         uint256 timestamp = block.timestamp;
-        
+
         MarketData memory data = MarketData({
             assetId: assetId,
             timestamp: timestamp,
             price: price,
             volume: volume
         });
-        
+
         assetData[assetId].push(data);
-        
+
         emit DataAdded(assetId, timestamp, price, volume);
     }
-    
+
     /**
      * @dev Get the latest market data for an asset
      * @param assetId Identifier for the asset
      * @return The latest MarketData struct for the asset
      */
-    function getLatestData(string memory assetId) 
-        external 
-        view 
-        returns (MarketData memory) 
+    function getLatestData(string memory assetId)
+        external
+        view
+        returns (MarketData memory)
     {
         require(assetData[assetId].length > 0, "No data available for this asset");
-        
+
         return assetData[assetId][assetData[assetId].length - 1];
     }
 }

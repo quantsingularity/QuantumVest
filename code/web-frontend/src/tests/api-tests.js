@@ -3,11 +3,11 @@ const testBackendConnection = async () => {
   try {
     console.log('Testing backend connection...');
     const response = await fetch('http://localhost:5000/api/health');
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     console.log('Backend health check response:', data);
     return { success: true, message: 'Backend connection successful', data };
@@ -29,7 +29,7 @@ const testPredictionEndpoint = async () => {
       market_cap: 850000000000,
       timestamp: new Date().toISOString()
     };
-    
+
     const response = await fetch('http://localhost:5000/api/predict', {
       method: 'POST',
       headers: {
@@ -37,11 +37,11 @@ const testPredictionEndpoint = async () => {
       },
       body: JSON.stringify(testData),
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     console.log('Prediction endpoint response:', data);
     return { success: true, message: 'Prediction endpoint test successful', data };
@@ -60,7 +60,7 @@ const testOptimizationEndpoint = async () => {
       volatilities: [0.2, 0.25, 0.3, 0.18, 0.22],
       risk_tolerance: 0.5
     };
-    
+
     const response = await fetch('http://localhost:5000/api/optimize', {
       method: 'POST',
       headers: {
@@ -68,11 +68,11 @@ const testOptimizationEndpoint = async () => {
       },
       body: JSON.stringify(testData),
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     console.log('Optimization endpoint response:', data);
     return { success: true, message: 'Optimization endpoint test successful', data };
@@ -84,23 +84,23 @@ const testOptimizationEndpoint = async () => {
 
 const runAllTests = async () => {
   console.log('Starting QuantumVest application tests...');
-  
+
   const results = {
     backendConnection: await testBackendConnection(),
     predictionEndpoint: await testPredictionEndpoint(),
     optimizationEndpoint: await testOptimizationEndpoint()
   };
-  
+
   console.log('\nTest Results Summary:');
   console.log('=====================');
-  
+
   for (const [testName, result] of Object.entries(results)) {
     console.log(`${testName}: ${result.success ? '✅ PASSED' : '❌ FAILED'} - ${result.message}`);
   }
-  
+
   const allPassed = Object.values(results).every(result => result.success);
   console.log(`\nOverall Test Result: ${allPassed ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}`);
-  
+
   return { results, allPassed };
 };
 

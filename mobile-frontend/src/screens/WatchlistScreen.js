@@ -26,7 +26,7 @@ const getSimplePrice = async (coinIds) => {
   } catch (error) {
     console.error("Error fetching simple price:", error);
     // Return empty object or throw error based on desired handling
-    return {}; 
+    return {};
   }
 };
 
@@ -170,7 +170,7 @@ const WatchlistScreen = ({ navigation }) => {
           <Dialog.Title>Add Coin to Watchlist</Dialog.Title>
           <Dialog.Content>
             <TextInput
-              label="CoinGecko Coin ID" 
+              label="CoinGecko Coin ID"
               value={newCoinId}
               onChangeText={setNewCoinId}
               mode="outlined"
@@ -225,4 +225,3 @@ const styles = StyleSheet.create({
 });
 
 export default WatchlistScreen;
-

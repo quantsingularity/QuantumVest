@@ -38,7 +38,7 @@ const DashboardScreen = ({ navigation }) => {
     if (!prices || prices.length === 0) {
       return { labels: [], datasets: [{ data: [] }] };
     }
-    
+
     // CoinGecko returns [timestamp, price]
     const labels = prices.map(item => new Date(item[0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
     const data = prices.map(item => item[1]);
@@ -154,34 +154,34 @@ const DashboardScreen = ({ navigation }) => {
             style={styles.listContainer}
             ListFooterComponent={
               <View style={styles.buttonContainer}>
-                 <Button 
-                  mode="contained" 
+                 <Button
+                  mode="contained"
                   icon="newspaper-variant-multiple" // Icon for News
-                  onPress={() => navigation.navigate('News')} 
+                  onPress={() => navigation.navigate('News')}
                   style={styles.button}
                 >
                   News
                 </Button>
-                <Button 
-                  mode="contained" 
+                <Button
+                  mode="contained"
                   icon="playlist-check" // Icon for Watchlist
-                  onPress={() => navigation.navigate('Watchlist')} 
+                  onPress={() => navigation.navigate('Watchlist')}
                   style={styles.button}
                 >
                   Watchlist
                 </Button>
-                <Button 
-                  mode="contained" 
-                  icon="chart-line" 
-                  onPress={() => navigation.navigate('Prediction')} 
+                <Button
+                  mode="contained"
+                  icon="chart-line"
+                  onPress={() => navigation.navigate('Prediction')}
                   style={styles.button}
                 >
                   Predictions
                 </Button>
-                <Button 
-                  mode="contained" 
-                  icon="briefcase-check" 
-                  onPress={() => navigation.navigate('Portfolio')} 
+                <Button
+                  mode="contained"
+                  icon="briefcase-check"
+                  onPress={() => navigation.navigate('Portfolio')}
                   style={styles.button}
                 >
                   Portfolio
@@ -250,4 +250,3 @@ const styles = StyleSheet.create({
 });
 
 export default DashboardScreen;
-

@@ -25,10 +25,10 @@ command_exists() {
 # Function to set up GitHub Actions workflows
 setup_github_actions() {
   echo -e "\n${BLUE}Setting up GitHub Actions workflows...${NC}"
-  
+
   # Create .github/workflows directory if it doesn't exist
   mkdir -p .github/workflows
-  
+
   # Create CI workflow file
   echo -e "${BLUE}Creating CI workflow file...${NC}"
   cat > .github/workflows/ci.yml << 'EOL'
@@ -43,7 +43,7 @@ on:
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:13
@@ -58,7 +58,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      
+
       redis:
         image: redis:6
         ports:
@@ -68,15 +68,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.8'
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -84,7 +84,7 @@ jobs:
           pip install -r code/backend/requirements.txt
         fi
         pip install pytest pytest-cov
-    
+
     - name: Run tests
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
@@ -93,99 +93,99 @@ jobs:
       run: |
         cd code/backend
         pytest --cov=. --cov-report=xml
-    
+
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
       with:
         file: ./code/backend/coverage.xml
         flags: backend
-  
+
   frontend-tests:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '16'
         cache: 'npm'
         cache-dependency-path: code/frontend/package-lock.json
-    
+
     - name: Install dependencies
       run: |
         cd code/frontend
         npm ci
-    
+
     - name: Run tests
       run: |
         cd code/frontend
         npm test -- --coverage
-    
+
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
       with:
         file: ./code/frontend/coverage/coverage-final.json
         flags: frontend
-  
+
   blockchain-tests:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '16'
         cache: 'npm'
         cache-dependency-path: code/blockchain/package-lock.json
-    
+
     - name: Install dependencies
       run: |
         cd code/blockchain
         npm ci
-    
+
     - name: Run tests
       run: |
         cd code/blockchain
         npm test
-  
+
   linting:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.8'
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '16'
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 black
         cd code/frontend
         npm ci
-    
+
     - name: Run linting
       run: |
         # Python linting
         flake8 code/backend
         black --check code/backend
-        
+
         # JavaScript/TypeScript linting
         cd code/frontend
         npm run lint
 EOL
-  
+
   # Create CD workflow file
   echo -e "${BLUE}Creating CD workflow file...${NC}"
   cat > .github/workflows/cd.yml << 'EOL'
@@ -200,19 +200,19 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-    
+
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
+
     - name: Extract metadata
       id: meta
       uses: docker/metadata-action@v4
@@ -222,7 +222,7 @@ jobs:
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
           type=ref,event=branch
-    
+
     - name: Build and push backend
       uses: docker/build-push-action@v4
       with:
@@ -230,7 +230,7 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}-backend
         labels: ${{ steps.meta.outputs.labels }}
-    
+
     - name: Build and push frontend
       uses: docker/build-push-action@v4
       with:
@@ -238,12 +238,12 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}-frontend
         labels: ${{ steps.meta.outputs.labels }}
-  
+
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    
+
     steps:
     - name: Deploy to production
       uses: appleboy/ssh-action@master
@@ -255,20 +255,20 @@ jobs:
           cd /path/to/deployment
           docker-compose pull
           docker-compose up -d
-    
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         generate_release_notes: true
 EOL
-  
+
   echo -e "${GREEN}GitHub Actions workflows created successfully.${NC}"
 }
 
 # Function to set up release management
 setup_release_management() {
   echo -e "\n${BLUE}Setting up release management...${NC}"
-  
+
   # Create release script
   echo -e "${BLUE}Creating release script...${NC}"
   cat > release.sh << 'EOL'
@@ -407,20 +407,20 @@ echo -e "${GREEN}Release $VERSION prepared successfully.${NC}"
 echo -e "${YELLOW}To push the changes and tag, run:${NC}"
 echo -e "  git push origin main && git push origin v$VERSION"
 EOL
-  
+
   # Make the release script executable
   chmod +x release.sh
-  
+
   echo -e "${GREEN}Release management script created successfully.${NC}"
 }
 
 # Function to set up version control hooks
 setup_version_control_hooks() {
   echo -e "\n${BLUE}Setting up version control hooks...${NC}"
-  
+
   # Create .git/hooks directory if it doesn't exist
   mkdir -p .git/hooks
-  
+
   # Create pre-commit hook
   echo -e "${BLUE}Creating pre-commit hook...${NC}"
   cat > .git/hooks/pre-commit << 'EOL'
@@ -474,10 +474,10 @@ fi
 
 echo -e "${GREEN}Pre-commit checks passed.${NC}"
 EOL
-  
+
   # Make the pre-commit hook executable
   chmod +x .git/hooks/pre-commit
-  
+
   # Create pre-push hook
   echo -e "${BLUE}Creating pre-push hook...${NC}"
   cat > .git/hooks/pre-push << 'EOL'
@@ -520,10 +520,10 @@ fi
 
 echo -e "${GREEN}Pre-push checks passed.${NC}"
 EOL
-  
+
   # Make the pre-push hook executable
   chmod +x .git/hooks/pre-push
-  
+
   echo -e "${GREEN}Version control hooks created successfully.${NC}"
 }
 
@@ -542,16 +542,16 @@ show_help() {
 main() {
   # Get the project directory
   PROJECT_DIR=$(pwd)
-  
+
   echo -e "${BLUE}Project directory: $PROJECT_DIR${NC}"
-  
+
   # Check if we're in the QuantumVest directory
   if [ ! -f "README.md" ] || ! grep -q "QuantumVest" "README.md"; then
     echo -e "${RED}Error: This doesn't appear to be the QuantumVest project directory.${NC}"
     echo -e "${YELLOW}Please run this script from the root of the QuantumVest project.${NC}"
     exit 1
   fi
-  
+
   # Parse command line arguments
   if [ $# -eq 0 ]; then
     # No arguments, set up all CI/CD enhancements
@@ -588,7 +588,7 @@ main() {
       shift
     done
   fi
-  
+
   echo -e "\n${GREEN}QuantumVest CI/CD enhancements completed!${NC}"
 }
 

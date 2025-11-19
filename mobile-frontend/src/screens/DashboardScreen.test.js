@@ -58,4 +58,4 @@ describe('DashboardScreen', () => {
     fireEvent.press(getByText('News'));
     expect(mockNavigation.navigate).toHaveBeenCalledWith('News');
   });
-}); 
+});

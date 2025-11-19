@@ -235,7 +235,7 @@
   .search-bar {
     display: none;
   }
-  
+
   .header-actions {
     gap: var(--spacing-xs);
   }

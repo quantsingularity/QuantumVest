@@ -175,11 +175,11 @@
   .sidebar {
     transform: translateX(-280px);
   }
-  
+
   .sidebar.mobile-open {
     transform: translateX(0);
   }
-  
+
   .sidebar-overlay {
     position: fixed;
     top: 0;
@@ -190,7 +190,7 @@
     z-index: 999;
     display: none;
   }
-  
+
   .sidebar-overlay.active {
     display: block;
   }

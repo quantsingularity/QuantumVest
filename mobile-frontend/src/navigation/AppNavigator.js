@@ -15,29 +15,29 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       {/* Use screenOptions to hide the header globally as we use Appbar in each screen */}
-      <Stack.Navigator 
+      <Stack.Navigator
         initialRouteName="Dashboard"
-        screenOptions={{ headerShown: false }} 
+        screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen 
-          name="Dashboard" 
-          component={DashboardScreen} 
+        <Stack.Screen
+          name="Dashboard"
+          component={DashboardScreen}
         />
-        <Stack.Screen 
-          name="Prediction" 
-          component={PredictionScreen} 
+        <Stack.Screen
+          name="Prediction"
+          component={PredictionScreen}
         />
-        <Stack.Screen 
-          name="Portfolio" 
-          component={PortfolioScreen} 
+        <Stack.Screen
+          name="Portfolio"
+          component={PortfolioScreen}
         />
-        <Stack.Screen 
-          name="Watchlist" 
-          component={WatchlistScreen} 
+        <Stack.Screen
+          name="Watchlist"
+          component={WatchlistScreen}
         />
-        <Stack.Screen 
+        <Stack.Screen
           name="News" // Add the News screen route
-          component={NewsScreen} 
+          component={NewsScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -45,4 +45,3 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
-

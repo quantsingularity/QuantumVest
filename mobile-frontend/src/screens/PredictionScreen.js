@@ -72,10 +72,10 @@ const PredictionScreen = ({ navigation }) => {
               style={styles.input}
               keyboardType="numeric"
             />
-            <Button 
-              mode="contained" 
-              onPress={handleGetPrediction} 
-              disabled={loading} 
+            <Button
+              mode="contained"
+              onPress={handleGetPrediction}
+              disabled={loading}
               loading={loading}
               style={styles.button}
               icon="chart-bell-curve-cumulative" // Example icon
@@ -130,4 +130,3 @@ const styles = StyleSheet.create({
 });
 
 export default PredictionScreen;
-

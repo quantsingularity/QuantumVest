@@ -8,10 +8,10 @@ prometheus:
     external_labels:
       cluster: 'quantumvest-prod'
       environment: 'production'
-      
+
   rule_files:
     - "/etc/prometheus/rules/*.yml"
-    
+
   scrape_configs:
     # Application Metrics
     - job_name: 'quantumvest-api'
@@ -19,32 +19,32 @@ prometheus:
         - targets: ['api:8080']
       metrics_path: '/metrics'
       scrape_interval: 10s
-      
+
     - job_name: 'quantumvest-frontend'
       static_configs:
         - targets: ['frontend:3000']
       metrics_path: '/metrics'
       scrape_interval: 30s
-      
+
     # Infrastructure Metrics
     - job_name: 'node-exporter'
       static_configs:
-        - targets: 
+        - targets:
           - 'node-exporter-1:9100'
           - 'node-exporter-2:9100'
           - 'node-exporter-3:9100'
       scrape_interval: 15s
-      
+
     - job_name: 'postgres-exporter'
       static_configs:
         - targets: ['postgres-exporter:9187']
       scrape_interval: 15s
-      
+
     - job_name: 'redis-exporter'
       static_configs:
         - targets: ['redis-exporter:9121']
       scrape_interval: 15s
-      
+
     # Kubernetes Metrics
     - job_name: 'kubernetes-apiservers'
       kubernetes_sd_configs:
@@ -57,7 +57,7 @@ prometheus:
         - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
           action: keep
           regex: default;kubernetes;https
-          
+
     - job_name: 'kubernetes-nodes'
       kubernetes_sd_configs:
         - role: node
@@ -68,7 +68,7 @@ prometheus:
       relabel_configs:
         - action: labelmap
           regex: __meta_kubernetes_node_label_(.+)
-          
+
     - job_name: 'kubernetes-pods'
       kubernetes_sd_configs:
         - role: pod
@@ -80,23 +80,23 @@ prometheus:
           action: replace
           target_label: __metrics_path__
           regex: (.+)
-          
+
     # Business Metrics
     - job_name: 'business-metrics'
       static_configs:
         - targets: ['business-metrics:8081']
       scrape_interval: 60s
-      
+
   alerting:
     alertmanagers:
       - static_configs:
           - targets: ['alertmanager:9093']
-            
+
   storage:
     tsdb:
       retention_time: "90d"
       retention_size: "100GB"
-      
+
   remote_write:
     - url: "https://prometheus-remote-write.example.com/api/v1/write"
       basic_auth:
@@ -110,7 +110,7 @@ grafana:
     http_port: 3000
     domain: monitoring.quantumvest.com
     root_url: https://monitoring.quantumvest.com
-    
+
   security:
     admin_user: admin
     admin_password: ${GRAFANA_ADMIN_PASSWORD}
@@ -118,7 +118,7 @@ grafana:
     disable_gravatar: true
     cookie_secure: true
     cookie_samesite: strict
-    
+
   database:
     type: postgres
     host: postgres:5432
@@ -126,10 +126,10 @@ grafana:
     user: grafana
     password: ${GRAFANA_DB_PASSWORD}
     ssl_mode: require
-    
+
   auth:
     oauth_auto_login: true
-    
+
   auth.generic_oauth:
     enabled: true
     name: OAuth
@@ -140,7 +140,7 @@ grafana:
     auth_url: https://auth.quantumvest.com/oauth/authorize
     token_url: https://auth.quantumvest.com/oauth/token
     api_url: https://auth.quantumvest.com/oauth/userinfo
-    
+
   smtp:
     enabled: true
     host: smtp.quantumvest.com:587
@@ -148,17 +148,17 @@ grafana:
     password: ${SMTP_PASSWORD}
     from_address: alerts@quantumvest.com
     from_name: QuantumVest Monitoring
-    
+
   alerting:
     enabled: true
     execute_alerts: true
-    
+
   unified_alerting:
     enabled: true
-    
+
   dashboards:
     default_home_dashboard_path: /var/lib/grafana/dashboards/overview.json
-    
+
   plugins:
     - grafana-piechart-panel
     - grafana-worldmap-panel
@@ -172,10 +172,10 @@ alertmanager:
     smtp_from: 'alerts@quantumvest.com'
     smtp_auth_username: 'alerts@quantumvest.com'
     smtp_auth_password: '${SMTP_PASSWORD}'
-    
+
   templates:
     - '/etc/alertmanager/templates/*.tmpl'
-    
+
   route:
     group_by: ['alertname', 'cluster', 'service']
     group_wait: 10s
@@ -188,17 +188,17 @@ alertmanager:
         receiver: 'critical-alerts'
         group_wait: 0s
         repeat_interval: 5m
-        
+
       - match:
           severity: warning
         receiver: 'warning-alerts'
         repeat_interval: 30m
-        
+
       - match:
           alertname: 'DeadMansSwitch'
         receiver: 'deadmansswitch'
         repeat_interval: 30s
-        
+
   receivers:
     - name: 'default'
       email_configs:
@@ -209,7 +209,7 @@ alertmanager:
             Alert: {{ .Annotations.summary }}
             Description: {{ .Annotations.description }}
             {{ end }}
-            
+
     - name: 'critical-alerts'
       email_configs:
         - to: 'ops@quantumvest.com,security@quantumvest.com'
@@ -231,16 +231,16 @@ alertmanager:
             {{ .Annotations.summary }}
             {{ .Annotations.description }}
             {{ end }}
-            
+
     - name: 'warning-alerts'
       email_configs:
         - to: 'ops@quantumvest.com'
           subject: '[WARNING] QuantumVest Alert: {{ .GroupLabels.alertname }}'
-          
+
     - name: 'deadmansswitch'
       webhook_configs:
         - url: 'https://deadmansswitch.quantumvest.com/ping'
-          
+
   inhibit_rules:
     - source_match:
         severity: 'critical'
@@ -261,7 +261,7 @@ alert_rules:
           annotations:
             summary: "Instance {{ $labels.instance }} down"
             description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
-            
+
         - alert: HighCPUUsage
           expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
           for: 5m
@@ -270,7 +270,7 @@ alert_rules:
           annotations:
             summary: "High CPU usage on {{ $labels.instance }}"
             description: "CPU usage is above 80% for more than 5 minutes."
-            
+
         - alert: HighMemoryUsage
           expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
           for: 5m
@@ -279,7 +279,7 @@ alert_rules:
           annotations:
             summary: "High memory usage on {{ $labels.instance }}"
             description: "Memory usage is above 85% for more than 5 minutes."
-            
+
         - alert: DiskSpaceLow
           expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 10
           for: 5m
@@ -288,7 +288,7 @@ alert_rules:
           annotations:
             summary: "Low disk space on {{ $labels.instance }}"
             description: "Disk space is below 10% on {{ $labels.device }}."
-            
+
     - name: application.rules
       rules:
         - alert: HighErrorRate
@@ -299,7 +299,7 @@ alert_rules:
           annotations:
             summary: "High error rate on {{ $labels.instance }}"
             description: "Error rate is above 5% for more than 5 minutes."
-            
+
         - alert: HighResponseTime
           expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
           for: 5m
@@ -308,7 +308,7 @@ alert_rules:
           annotations:
             summary: "High response time on {{ $labels.instance }}"
             description: "95th percentile response time is above 500ms for more than 5 minutes."
-            
+
         - alert: DatabaseConnectionsHigh
           expr: pg_stat_database_numbackends / pg_settings_max_connections * 100 > 80
           for: 5m
@@ -317,7 +317,7 @@ alert_rules:
           annotations:
             summary: "High database connections"
             description: "Database connections are above 80% of maximum."
-            
+
     - name: business.rules
       rules:
         - alert: TransactionVolumeAnomaly
@@ -328,7 +328,7 @@ alert_rules:
           annotations:
             summary: "Transaction volume anomaly detected"
             description: "Transaction volume is 50% different from the same time last week."
-            
+
         - alert: FailedTransactionsHigh
           expr: rate(transactions_total{status="failed"}[5m]) / rate(transactions_total[5m]) * 100 > 1
           for: 5m
@@ -345,38 +345,38 @@ custom_metrics:
       type: "counter"
       description: "Total number of transactions processed"
       labels: ["type", "status", "currency"]
-      
+
     - name: "transaction_amount"
       type: "histogram"
       description: "Transaction amounts in USD"
       buckets: [10, 100, 1000, 10000, 100000, 1000000]
-      
+
     - name: "user_sessions"
       type: "gauge"
       description: "Number of active user sessions"
-      
+
     - name: "api_requests"
       type: "counter"
       description: "Total API requests"
       labels: ["endpoint", "method", "status"]
-      
+
   security_metrics:
     - name: "failed_login_attempts"
       type: "counter"
       description: "Failed login attempts"
       labels: ["source_ip", "username"]
-      
+
     - name: "security_events"
       type: "counter"
       description: "Security events detected"
       labels: ["type", "severity"]
-      
+
   compliance_metrics:
     - name: "audit_events"
       type: "counter"
       description: "Audit events logged"
       labels: ["type", "user", "resource"]
-      
+
     - name: "policy_violations"
       type: "counter"
       description: "Policy violations detected"
@@ -391,7 +391,7 @@ dashboards:
       - "Disk Usage"
       - "Network I/O"
       - "System Load"
-      
+
   - name: "Application Performance"
     panels:
       - "Request Rate"
@@ -399,7 +399,7 @@ dashboards:
       - "Error Rate"
       - "Database Performance"
       - "Cache Hit Rate"
-      
+
   - name: "Business Metrics"
     panels:
       - "Transaction Volume"
@@ -407,7 +407,7 @@ dashboards:
       - "Active Users"
       - "Conversion Rate"
       - "Customer Satisfaction"
-      
+
   - name: "Security Dashboard"
     panels:
       - "Failed Login Attempts"
@@ -415,7 +415,7 @@ dashboards:
       - "Threat Intelligence"
       - "Vulnerability Status"
       - "Compliance Score"
-      
+
   - name: "Infrastructure Health"
     panels:
       - "Service Availability"
@@ -423,4 +423,3 @@ dashboards:
       - "Database Health"
       - "Message Queue Status"
       - "Storage Usage"
-

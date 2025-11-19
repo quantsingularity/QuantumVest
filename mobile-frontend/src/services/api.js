@@ -145,7 +145,7 @@ export const getCryptoNews = async (page = 1, items = 20, tickers = '') => {
   try {
     // Try to get token from storage
     const storedToken = await getCryptoNewsApiToken();
-    
+
     // If we have a valid token, use it for the API request
     if (storedToken && storedToken !== 'YOUR_CRYPTONEWS_API_TOKEN') {
       return axios.get(CRYPTONEWS_API_BASE_URL, {
@@ -187,22 +187,22 @@ const generateMockMarketChartData = (days, basePrice) => {
   const prices = [];
   const volumes = [];
   const marketCaps = [];
-  
+
   const now = Date.now();
   const dayInMs = 24 * 60 * 60 * 1000;
-  
+
   for (let i = 0; i < numDays; i++) {
     const timestamp = now - ((numDays - i - 1) * dayInMs);
     const randomFactor = 1 + (Math.random() * 0.1 - 0.05); // -5% to +5%
     const price = basePrice * randomFactor;
     const volume = basePrice * 1000000 * (0.5 + Math.random());
     const marketCap = price * (basePrice * 100000);
-    
+
     prices.push([timestamp, price]);
     volumes.push([timestamp, volume]);
     marketCaps.push([timestamp, marketCap]);
   }
-  
+
   return {
     prices,
     total_volumes: volumes,
@@ -215,9 +215,9 @@ const generateMockCoinData = (coinId) => {
   const isEthereum = coinId.toLowerCase().includes('eth');
   const isBitcoin = coinId.toLowerCase().includes('btc') || coinId.toLowerCase().includes('bitcoin');
   const isSolana = coinId.toLowerCase().includes('sol');
-  
+
   let basePrice, symbol, name;
-  
+
   if (isEthereum) {
     basePrice = 3000 + (Math.random() * 300);
     symbol = 'eth';
@@ -235,7 +235,7 @@ const generateMockCoinData = (coinId) => {
     symbol = coinId.substring(0, 3).toLowerCase();
     name = coinId.charAt(0).toUpperCase() + coinId.slice(1);
   }
-  
+
   return {
     id: coinId,
     symbol: symbol,
@@ -264,7 +264,7 @@ const generateMockNewsData = (items = 20, page = 1, tickers = '') => {
   const tickerList = tickers ? tickers.split(',') : ['BTC', 'ETH', 'SOL', 'DOGE', 'ADA'];
   const newsItems = [];
   const startIndex = (page - 1) * items;
-  
+
   const headlines = [
     "Bitcoin Surges Past $50,000 as Institutional Interest Grows",
     "Ethereum 2.0 Upgrade: What Investors Need to Know",
@@ -287,23 +287,23 @@ const generateMockNewsData = (items = 20, page = 1, tickers = '') => {
     "Privacy Coins Face Regulatory Scrutiny",
     "Web3 Development: Building the Decentralized Internet"
   ];
-  
+
   const sources = [
-    "CryptoNews", "BlockchainDaily", "CoinDesk", "Cointelegraph", 
+    "CryptoNews", "BlockchainDaily", "CoinDesk", "Cointelegraph",
     "The Block", "Decrypt", "Bitcoin Magazine", "CryptoSlate"
   ];
-  
+
   for (let i = 0; i < items; i++) {
     const index = startIndex + i;
     if (index >= 100) break; // Limit to 100 mock articles
-    
+
     const randomHeadlineIndex = index % headlines.length;
     const randomSourceIndex = Math.floor(Math.random() * sources.length);
-    
+
     // Generate random date within last 7 days
     const date = new Date();
     date.setDate(date.getDate() - Math.floor(Math.random() * 7));
-    
+
     // Randomly select 1-3 tickers for this article
     const articleTickers = [];
     const numTickers = Math.floor(Math.random() * 3) + 1;
@@ -313,11 +313,11 @@ const generateMockNewsData = (items = 20, page = 1, tickers = '') => {
         articleTickers.push(randomTicker);
       }
     }
-    
+
     // Generate random sentiment
     const sentiments = ["Positive", "Neutral", "Negative"];
     const sentiment = sentiments[Math.floor(Math.random() * sentiments.length)];
-    
+
     newsItems.push({
       news_id: `mock-${index}`,
       title: headlines[randomHeadlineIndex],
@@ -330,9 +330,8 @@ const generateMockNewsData = (items = 20, page = 1, tickers = '') => {
       tickers: articleTickers
     });
   }
-  
+
   return newsItems;
 };
 
 export default apiClient; // Export the backend client for existing backend calls
-

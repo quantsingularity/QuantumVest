@@ -47,11 +47,11 @@ else
         else
             source venv_quantumvest_backend_py/bin/activate
             echo "Backend Python virtual environment created and activated."
-            
+
             echo "Installing backend Python dependencies from requirements.txt..."
             pip3 install -r requirements.txt
             echo "Backend dependencies installed."
-            
+
             echo "To activate the backend virtual environment later, run: source ${BACKEND_DIR_QV}/venv_quantumvest_backend_py/bin/activate"
             echo "The README mentions Flask or FastAPI. Based on requirements.txt (flask), it is likely Flask."
             echo "To run the Flask backend, you would typically use a command like: flask run --host=0.0.0.0 --port=5000 (after setting FLASK_APP environment variable, e.g., export FLASK_APP=app.py)"

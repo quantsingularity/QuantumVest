@@ -4,7 +4,7 @@
 automation_framework:
   orchestrator: "ansible"
   version: "2.15.0"
-  
+
   # Inventory management
   inventory:
     dynamic: true
@@ -12,65 +12,65 @@ automation_framework:
       - "aws_ec2"
       - "kubernetes"
       - "consul"
-      
+
     groups:
       web_servers:
         hosts: "tag_Role_WebServer"
         vars:
           ansible_user: "ubuntu"
           ansible_ssh_private_key_file: "/etc/ansible/keys/web-servers.pem"
-          
+
       database_servers:
         hosts: "tag_Role_Database"
         vars:
           ansible_user: "postgres"
           ansible_ssh_private_key_file: "/etc/ansible/keys/db-servers.pem"
-          
+
       monitoring_servers:
         hosts: "tag_Role_Monitoring"
         vars:
           ansible_user: "ubuntu"
           ansible_ssh_private_key_file: "/etc/ansible/keys/monitoring.pem"
-          
+
   # Playbook organization
   playbooks:
     infrastructure:
       - name: "site.yml"
         description: "Main site deployment playbook"
-        
+
       - name: "security-hardening.yml"
         description: "Security hardening for all servers"
-        
+
       - name: "backup.yml"
         description: "Backup operations"
-        
+
       - name: "disaster-recovery.yml"
         description: "Disaster recovery procedures"
-        
+
     application:
       - name: "deploy-backend.yml"
         description: "Backend application deployment"
-        
+
       - name: "deploy-frontend.yml"
         description: "Frontend application deployment"
-        
+
       - name: "database-migration.yml"
         description: "Database schema migrations"
-        
+
     maintenance:
       - name: "system-updates.yml"
         description: "System package updates"
-        
+
       - name: "certificate-renewal.yml"
         description: "SSL certificate renewal"
-        
+
       - name: "log-rotation.yml"
         description: "Log file rotation and cleanup"
 
 # Health Check System
 health_checks:
   framework: "custom_python"
-  
+
   # Application health checks
   application:
     backend_api:
@@ -80,7 +80,7 @@ health_checks:
       timeout: 10
       interval: 30
       retries: 3
-      
+
     frontend:
       endpoint: "/"
       method: "GET"
@@ -88,14 +88,14 @@ health_checks:
       timeout: 15
       interval: 60
       retries: 2
-      
+
     database:
       type: "postgresql"
       query: "SELECT 1"
       timeout: 5
       interval: 30
       retries: 3
-      
+
     cache:
       type: "redis"
       command: "PING"
@@ -103,7 +103,7 @@ health_checks:
       timeout: 5
       interval: 30
       retries: 3
-      
+
   # Infrastructure health checks
   infrastructure:
     load_balancer:
@@ -113,11 +113,11 @@ health_checks:
       unhealthy_threshold: 5
       interval: 30
       timeout: 5
-      
+
     auto_scaling:
       type: "aws_asg"
       min_healthy_percentage: 80
-      
+
     storage:
       type: "ebs_volume"
       metrics:
@@ -125,7 +125,7 @@ health_checks:
         - "VolumeWriteOps"
         - "VolumeTotalReadTime"
         - "VolumeTotalWriteTime"
-        
+
   # External service health checks
   external_services:
     payment_gateway:
@@ -136,7 +136,7 @@ health_checks:
       expected_status: 401  # Expected without proper charge ID
       timeout: 10
       interval: 300
-      
+
     email_service:
       endpoint: "https://api.sendgrid.com/v3/mail/send"
       method: "POST"
@@ -146,7 +146,7 @@ health_checks:
       expected_status: 400  # Expected without proper payload
       timeout: 10
       interval: 300
-      
+
     market_data:
       endpoint: "https://api.marketdata.com/v1/status"
       method: "GET"
@@ -159,32 +159,32 @@ deployment_automation:
   # Blue-Green Deployment
   blue_green:
     enabled: true
-    
+
     stages:
       - name: "pre_deployment_validation"
         tasks:
           - "validate_configuration"
           - "check_dependencies"
           - "verify_secrets"
-          
+
       - name: "deploy_green"
         tasks:
           - "create_green_environment"
           - "deploy_application"
           - "run_smoke_tests"
-          
+
       - name: "traffic_switch"
         tasks:
           - "update_load_balancer"
           - "monitor_metrics"
           - "validate_traffic"
-          
+
       - name: "cleanup"
         tasks:
           - "terminate_blue_environment"
           - "update_dns_records"
           - "notify_stakeholders"
-          
+
     rollback:
       enabled: true
       triggers:
@@ -192,11 +192,11 @@ deployment_automation:
         - "error_rate_threshold"
         - "manual_trigger"
       max_rollback_time: "5m"
-      
+
   # Canary Deployment
   canary:
     enabled: true
-    
+
     stages:
       - name: "canary_5_percent"
         traffic_percentage: 5
@@ -204,24 +204,24 @@ deployment_automation:
         success_criteria:
           error_rate: "<1%"
           response_time: "<500ms"
-          
+
       - name: "canary_25_percent"
         traffic_percentage: 25
         duration: "20m"
         success_criteria:
           error_rate: "<0.5%"
           response_time: "<400ms"
-          
+
       - name: "canary_50_percent"
         traffic_percentage: 50
         duration: "30m"
         success_criteria:
           error_rate: "<0.1%"
           response_time: "<300ms"
-          
+
       - name: "full_deployment"
         traffic_percentage: 100
-        
+
     monitoring:
       metrics:
         - "error_rate"
@@ -229,7 +229,7 @@ deployment_automation:
         - "throughput"
         - "cpu_utilization"
         - "memory_utilization"
-        
+
     alerts:
       - name: "canary_failure"
         condition: "error_rate > 1% OR response_time > 1000ms"
@@ -239,7 +239,7 @@ deployment_automation:
 iac_management:
   terraform:
     version: "1.5.0"
-    
+
     # State management
     state:
       backend: "s3"
@@ -248,43 +248,43 @@ iac_management:
       region: "us-east-1"
       encrypt: true
       dynamodb_table: "terraform-state-lock"
-      
+
     # Workspace management
     workspaces:
       - name: "development"
         auto_apply: true
-        
+
       - name: "staging"
         auto_apply: false
-        
+
       - name: "production"
         auto_apply: false
         protection: true
-        
+
     # Validation and testing
     validation:
       - name: "terraform_fmt"
         command: "terraform fmt -check"
-        
+
       - name: "terraform_validate"
         command: "terraform validate"
-        
+
       - name: "tflint"
         command: "tflint --config=.tflint.hcl"
-        
+
       - name: "checkov"
         command: "checkov -d . --framework terraform"
-        
+
     # Plan and apply automation
     automation:
       plan_on_pr: true
       apply_on_merge: true
       destroy_protection: true
-      
+
   # Ansible automation
   ansible:
     version: "2.15.0"
-    
+
     # Configuration management
     configuration:
       host_key_checking: false
@@ -293,24 +293,24 @@ iac_management:
       fact_caching: "jsonfile"
       fact_caching_connection: "/tmp/ansible_facts_cache"
       fact_caching_timeout: 86400
-      
+
     # Vault integration
     vault:
       enabled: true
       url: "https://vault.quantumvest.com"
       auth_method: "kubernetes"
-      
+
     # Role management
     roles:
       - name: "common"
         description: "Common configuration for all servers"
-        
+
       - name: "security"
         description: "Security hardening"
-        
+
       - name: "monitoring"
         description: "Monitoring agent installation"
-        
+
       - name: "backup"
         description: "Backup configuration"
 
@@ -326,7 +326,7 @@ operational_runbooks:
         - "Implement immediate fixes"
         - "Communicate with stakeholders"
         - "Post-incident review"
-        
+
     - name: "database_performance"
       description: "Database performance degradation"
       steps:
@@ -335,7 +335,7 @@ operational_runbooks:
         - "Review connection pool status"
         - "Scale read replicas if needed"
         - "Optimize problematic queries"
-        
+
     - name: "security_incident"
       description: "Security incident response"
       steps:
@@ -345,7 +345,7 @@ operational_runbooks:
         - "Notify security team"
         - "Implement containment"
         - "Recovery and lessons learned"
-        
+
   maintenance:
     - name: "system_updates"
       description: "Regular system maintenance"
@@ -357,7 +357,7 @@ operational_runbooks:
         - "Apply updates"
         - "Verify system functionality"
         - "Update documentation"
-        
+
     - name: "certificate_renewal"
       description: "SSL certificate renewal"
       schedule: "quarterly"
@@ -367,7 +367,7 @@ operational_runbooks:
         - "Update load balancers"
         - "Verify SSL configuration"
         - "Update monitoring"
-        
+
   disaster_recovery:
     - name: "database_restore"
       description: "Database disaster recovery"
@@ -379,7 +379,7 @@ operational_runbooks:
         - "Restore from backup"
         - "Verify data integrity"
         - "Resume operations"
-        
+
     - name: "region_failover"
       description: "Failover to disaster recovery region"
       rto: "2 hours"
@@ -403,54 +403,54 @@ monitoring_automation:
           - "page_oncall_engineer"
           - "create_incident"
           - "notify_management"
-          
+
       - name: "warning_alerts"
         conditions:
           severity: "warning"
         actions:
           - "send_email"
           - "post_to_slack"
-          
+
       - name: "info_alerts"
         conditions:
           severity: "info"
         actions:
           - "log_to_system"
-          
+
   # Auto-remediation
   auto_remediation:
     enabled: true
-    
+
     rules:
       - name: "restart_unhealthy_service"
         condition: "service_health_check_failed"
         action: "restart_service"
         max_attempts: 3
-        
+
       - name: "scale_up_on_high_load"
         condition: "cpu_utilization > 80% for 5m"
         action: "increase_instance_count"
         max_instances: 20
-        
+
       - name: "clear_disk_space"
         condition: "disk_usage > 90%"
         action: "cleanup_old_logs"
-        
+
   # Capacity planning
   capacity_planning:
     enabled: true
-    
+
     metrics:
       - "cpu_utilization_trend"
       - "memory_usage_trend"
       - "disk_usage_trend"
       - "network_throughput_trend"
-      
+
     forecasting:
       algorithm: "linear_regression"
       prediction_window: "30d"
       confidence_interval: 95
-      
+
     recommendations:
       - "scale_up_threshold": 70
       - "scale_down_threshold": 30
@@ -464,24 +464,24 @@ backup_automation:
     retention: "30d"
     compression: true
     encryption: true
-    
+
     validation:
       enabled: true
       schedule: "0 6 * * 1"  # Weekly on Monday at 6 AM
       restore_test: true
-      
+
   # Application data backups
   application_data:
     schedule: "0 3 * * *"  # Daily at 3 AM
     retention: "7d"
     incremental: true
-    
+
   # Configuration backups
   configuration:
     schedule: "0 1 * * *"  # Daily at 1 AM
     retention: "90d"
     version_control: true
-    
+
   # Recovery testing
   recovery_testing:
     schedule: "monthly"
@@ -497,35 +497,34 @@ cost_optimization:
   right_sizing:
     enabled: true
     schedule: "weekly"
-    
+
     analysis:
       cpu_utilization_threshold: 20
       memory_utilization_threshold: 30
       recommendation_confidence: 80
-      
+
   # Unused resource cleanup
   cleanup:
     enabled: true
-    
+
     resources:
       - type: "ebs_volumes"
         condition: "unattached for 7d"
-        
+
       - type: "elastic_ips"
         condition: "unassociated for 1d"
-        
+
       - type: "load_balancers"
         condition: "no_targets for 3d"
-        
+
   # Reserved instance optimization
   reserved_instances:
     enabled: true
     analysis_frequency: "monthly"
     recommendation_threshold: 70  # Utilization percentage
-    
+
   # Spot instance management
   spot_instances:
     enabled: true
     workloads: ["batch_processing", "development"]
     fallback_strategy: "on_demand"
-

@@ -6,13 +6,13 @@ import { useTheme } from '../../contexts/ThemeContext';
 const Header = ({ toggleSidebar, pageTitle = 'Dashboard' }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  
+
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);
   };
 
   return (
-    <motion.header 
+    <motion.header
       className="header"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -28,7 +28,7 @@ const Header = ({ toggleSidebar, pageTitle = 'Dashboard' }) => {
         </button>
         <h1 className="page-title">{pageTitle}</h1>
       </div>
-      
+
       <div className="header-right">
         <div className="search-bar">
           <span className="search-icon">
@@ -39,7 +39,7 @@ const Header = ({ toggleSidebar, pageTitle = 'Dashboard' }) => {
           </span>
           <input type="text" className="search-input" placeholder="Search..." />
         </div>
-        
+
         <div className="header-actions">
           <button className="header-action-btn" onClick={toggleTheme}>
             {theme === 'light' ? (
@@ -60,7 +60,7 @@ const Header = ({ toggleSidebar, pageTitle = 'Dashboard' }) => {
               </svg>
             )}
           </button>
-          
+
           <button className="header-action-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
@@ -68,17 +68,17 @@ const Header = ({ toggleSidebar, pageTitle = 'Dashboard' }) => {
             </svg>
             <span className="notification-badge"></span>
           </button>
-          
+
           <div className="user-dropdown">
             <div className="user-dropdown-toggle" onClick={toggleUserMenu}>
               <div className="user-avatar">JD</div>
             </div>
-            
-            <motion.div 
+
+            <motion.div
               className={`user-dropdown-menu ${userMenuOpen ? '' : 'hidden'}`}
               initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ 
-                opacity: userMenuOpen ? 1 : 0, 
+              animate={{
+                opacity: userMenuOpen ? 1 : 0,
                 scale: userMenuOpen ? 1 : 0.95,
                 pointerEvents: userMenuOpen ? 'auto' : 'none'
               }}

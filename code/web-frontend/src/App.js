@@ -25,17 +25,17 @@ function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentPage, setCurrentPage] = useState('Dashboard');
   const [isHomepage, setIsHomepage] = useState(location.pathname === '/');
-  
+
   useEffect(() => {
     // Update isHomepage state whenever location changes
     setIsHomepage(location.pathname === '/');
     updatePageTitle(location.pathname);
   }, [location]);
-  
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  
+
   // Update page title based on current route
   const updatePageTitle = (pathname) => {
     switch(pathname) {
@@ -61,7 +61,7 @@ function AppContent() {
         setCurrentPage('Dashboard');
     }
   };
-  
+
   // Page transition variants
   const pageVariants = {
     initial: {
@@ -77,13 +77,13 @@ function AppContent() {
       y: -20
     }
   };
-  
+
   const pageTransition = {
     type: 'tween',
     ease: 'anticipate',
     duration: 0.4
   };
-  
+
   return (
     <div className="app-container">
       <ErrorBoundary>

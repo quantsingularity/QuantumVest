@@ -30,14 +30,14 @@ export const formatPercentage = (value, decimals = 2, locale = 'en-US') => {
 
 // Format date values
 export const formatDate = (date, options = {}, locale = 'en-US') => {
-  const defaultOptions = { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
+  const defaultOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
   };
-  
+
   return new Date(date).toLocaleDateString(
-    locale, 
+    locale,
     { ...defaultOptions, ...options }
   );
 };

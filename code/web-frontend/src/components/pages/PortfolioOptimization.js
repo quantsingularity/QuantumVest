@@ -24,7 +24,7 @@ export default function PortfolioOptimization() {
   const handleAssetAllocationChange = (index, newValue) => {
     const updatedAssets = [...assets];
     updatedAssets[index].allocation = parseInt(newValue, 10);
-    
+
     // Recalculate to ensure total is 100%
     const total = updatedAssets.reduce((sum, asset) => sum + asset.allocation, 0);
     if (total !== 100) {
@@ -33,7 +33,7 @@ export default function PortfolioOptimization() {
       const otherAssets = updatedAssets.filter((_, i) => i !== index);
       const perAssetAdjustment = Math.floor(diff / otherAssets.length);
       let remainder = diff - (perAssetAdjustment * otherAssets.length);
-      
+
       otherAssets.forEach((asset, i) => {
         const assetIndex = updatedAssets.findIndex(a => a.symbol === asset.symbol);
         let adjustment = perAssetAdjustment;
@@ -43,7 +43,7 @@ export default function PortfolioOptimization() {
         updatedAssets[assetIndex].allocation = Math.max(0, asset.allocation + adjustment);
       });
     }
-    
+
     setAssets(updatedAssets);
   };
 
@@ -51,24 +51,24 @@ export default function PortfolioOptimization() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await axios.post('/api/portfolio/optimize', {
         assets: assets.map(a => a.symbol),
         weights: assets.map(a => a.allocation / 100),
         riskLevel: risk
       });
-      
+
       if (response.data.success) {
         // Transform the response into a more usable format
         const optimizedAssets = [...assets];
         const optimalWeights = response.data.optimal_weights;
-        
+
         optimalWeights.forEach((weight, index) => {
           if (index < optimizedAssets.length) {
             optimizedAssets[index].allocation = Math.round(weight * 100);
           }
         });
-        
+
         setResult({
           assets: optimizedAssets,
           expectedReturn: response.data.expected_return,
@@ -89,13 +89,13 @@ export default function PortfolioOptimization() {
   const mockOptimize = () => {
     setLoading(true);
     setError(null);
-    
+
     // Simulate API call
     setTimeout(() => {
       try {
         // Create optimized allocation based on risk level
         const optimizedAssets = [...assets];
-        
+
         if (risk <= 3) {
           // Low risk - more conservative allocation
           optimizedAssets[0].allocation = 15; // BTC
@@ -124,7 +124,7 @@ export default function PortfolioOptimization() {
           optimizedAssets[5].allocation = 8;  // AMZN
           optimizedAssets[6].allocation = 2;  // CASH
         }
-        
+
         setResult({
           assets: optimizedAssets,
           expectedReturn: (7 + risk * 0.8).toFixed(2),
@@ -142,11 +142,11 @@ export default function PortfolioOptimization() {
   return (
     <div className="portfolio-container">
       <h1 className="section-title">Portfolio Optimization</h1>
-      
+
       <div className="portfolio-content">
         <div className="current-allocation">
           <h2>Current Allocation</h2>
-          
+
           <div className="asset-list">
             {assets.map((asset, index) => (
               <div className="asset-item" key={index}>
@@ -166,7 +166,7 @@ export default function PortfolioOptimization() {
               </div>
             ))}
           </div>
-          
+
           <div className="allocation-chart">
             <div className="chart-rings">
               {assets.map((asset, index) => {
@@ -174,7 +174,7 @@ export default function PortfolioOptimization() {
                 const total = assets.reduce((sum, a, i) => i <= index ? sum + a.allocation : sum, 0);
                 const start = total - asset.allocation;
                 return (
-                  <div 
+                  <div
                     key={index}
                     className="chart-segment"
                     style={{
@@ -188,7 +188,7 @@ export default function PortfolioOptimization() {
             </div>
           </div>
         </div>
-        
+
         <div className="optimization-controls">
           <h2>Risk Tolerance</h2>
           <div className="risk-slider-container">
@@ -204,22 +204,22 @@ export default function PortfolioOptimization() {
             <span className="risk-label">Aggressive</span>
             <div className="risk-value">Level: {risk}</div>
           </div>
-          
-          <button 
-            className="optimize-button" 
+
+          <button
+            className="optimize-button"
             onClick={mockOptimize}
             disabled={loading}
           >
             {loading ? 'Optimizing...' : 'Optimize Portfolio'}
           </button>
-          
+
           {error && <div className="error-message">{error}</div>}
         </div>
-        
+
         {result && (
           <div className="optimization-result">
             <h2>Optimized Portfolio</h2>
-            
+
             <div className="result-metrics">
               <div className="metric-card">
                 <h3>Expected Return</h3>
@@ -234,7 +234,7 @@ export default function PortfolioOptimization() {
                 <p className="metric-value">{result.sharpeRatio}</p>
               </div>
             </div>
-            
+
             <div className="optimized-allocation">
               <h3>Recommended Allocation</h3>
               <div className="allocation-chart optimized-chart">
@@ -244,7 +244,7 @@ export default function PortfolioOptimization() {
                     const total = result.assets.reduce((sum, a, i) => i <= index ? sum + a.allocation : sum, 0);
                     const start = total - asset.allocation;
                     return (
-                      <div 
+                      <div
                         key={index}
                         className="chart-segment"
                         style={{
@@ -257,7 +257,7 @@ export default function PortfolioOptimization() {
                   <div className="chart-center"></div>
                 </div>
               </div>
-              
+
               <div className="asset-list optimized-list">
                 {result.assets.map((asset, index) => (
                   <div className="asset-item optimized-item" key={index}>

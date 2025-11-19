@@ -20,8 +20,12 @@ warnings.filterwarnings("ignore")
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from advanced_ai_models import (AdvancedTimeSeriesPredictor, ModelFactory,
-                                PortfolioOptimizer, RiskAssessmentModel)
+from advanced_ai_models import (
+    AdvancedTimeSeriesPredictor,
+    ModelFactory,
+    PortfolioOptimizer,
+    RiskAssessmentModel,
+)
 
 # Set up logging
 logging.basicConfig(
@@ -343,8 +347,11 @@ class ModelTrainer:
                     test_actual = test_data["close"].values[-len(test_predictions) :]
 
                     # Calculate test metrics
-                    from sklearn.metrics import (mean_absolute_error,
-                                                 mean_squared_error, r2_score)
+                    from sklearn.metrics import (
+                        mean_absolute_error,
+                        mean_squared_error,
+                        r2_score,
+                    )
 
                     test_metrics = {
                         "mse": mean_squared_error(test_actual, test_predictions),
@@ -576,9 +583,11 @@ class ModelValidator:
 
                     if len(predictions) > 10:
                         # Calculate metrics
-                        from sklearn.metrics import (mean_absolute_error,
-                                                     mean_squared_error,
-                                                     r2_score)
+                        from sklearn.metrics import (
+                            mean_absolute_error,
+                            mean_squared_error,
+                            r2_score,
+                        )
 
                         mse = mean_squared_error(actuals, predictions)
                         mae = mean_absolute_error(actuals, predictions)

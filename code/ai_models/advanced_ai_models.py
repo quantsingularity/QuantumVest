@@ -18,8 +18,7 @@ import xgboost as xgb
 from catboost import CatBoostRegressor
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import (GridSearchCV, TimeSeriesSplit,
-                                     train_test_split)
+from sklearn.model_selection import GridSearchCV, TimeSeriesSplit, train_test_split
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from tensorflow import keras
 from tensorflow.keras import callbacks, layers, models, optimizers

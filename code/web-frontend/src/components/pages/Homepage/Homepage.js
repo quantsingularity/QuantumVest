@@ -30,7 +30,7 @@ const Homepage = () => {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <motion.h1 
+          <motion.h1
             className="hero-title"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ const Homepage = () => {
           >
             Next-Gen Investment Analytics Powered by AI & Blockchain
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="hero-subtitle"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -46,7 +46,7 @@ const Homepage = () => {
           >
             Make data-driven investment decisions with predictive analytics and portfolio optimization
           </motion.p>
-          <motion.div 
+          <motion.div
             className="hero-cta"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -77,7 +77,7 @@ const Homepage = () => {
 
       {/* Features Section */}
       <section className="features-section">
-        <motion.h2 
+        <motion.h2
           className="section-title"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ const Homepage = () => {
         >
           Powerful Features
         </motion.h2>
-        <motion.div 
+        <motion.div
           className="features-grid"
           variants={staggerContainer}
           initial="initial"
@@ -153,7 +153,7 @@ const Homepage = () => {
       {/* Stats Section */}
       <section className="stats-section">
         <div className="stats-container">
-          <motion.div 
+          <motion.div
             className="stat-item"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -164,7 +164,7 @@ const Homepage = () => {
             <p className="stat-label">Active Users</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="stat-item"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -175,7 +175,7 @@ const Homepage = () => {
             <p className="stat-label">Prediction Accuracy</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="stat-item"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -190,7 +190,7 @@ const Homepage = () => {
 
       {/* How It Works Section */}
       <section className="how-it-works-section">
-        <motion.h2 
+        <motion.h2
           className="section-title"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -200,7 +200,7 @@ const Homepage = () => {
           How It Works
         </motion.h2>
         <div className="steps-container">
-          <motion.div 
+          <motion.div
             className="step-item"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -216,7 +216,7 @@ const Homepage = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="step-item"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -232,7 +232,7 @@ const Homepage = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="step-item"
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -248,7 +248,7 @@ const Homepage = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="step-item"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -268,7 +268,7 @@ const Homepage = () => {
 
       {/* Testimonials Section */}
       <section className="testimonials-section">
-        <motion.h2 
+        <motion.h2
           className="section-title"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -278,7 +278,7 @@ const Homepage = () => {
           What Our Users Say
         </motion.h2>
         <div className="testimonials-container">
-          <motion.div 
+          <motion.div
             className="testimonial-card"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -302,7 +302,7 @@ const Homepage = () => {
       {/* CTA Section */}
       <section className="cta-section">
         <div className="cta-container">
-          <motion.h2 
+          <motion.h2
             className="cta-title"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -311,7 +311,7 @@ const Homepage = () => {
           >
             Start Optimizing Your Investments Today
           </motion.h2>
-          <motion.p 
+          <motion.p
             className="cta-description"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

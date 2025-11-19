@@ -19,7 +19,7 @@ describe('ErrorBoundary Component', () => {
   beforeAll(() => {
     console.error = jest.fn();
   });
-  
+
   afterAll(() => {
     console.error = originalConsoleError;
   });
@@ -30,7 +30,7 @@ describe('ErrorBoundary Component', () => {
         <WorkingComponent />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText('Working component')).toBeInTheDocument();
   });
 
@@ -40,7 +40,7 @@ describe('ErrorBoundary Component', () => {
         <ErrorComponent />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(screen.getByText("We're sorry, but there was an error loading this component.")).toBeInTheDocument();
     expect(screen.getByText('Try Again')).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('ErrorBoundary Component', () => {
         <ErrorComponent />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText('Error Details')).toBeInTheDocument();
     expect(screen.getByText('Error: Test error')).toBeInTheDocument();
   });

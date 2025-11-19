@@ -4,7 +4,7 @@ import '../../styles/ErrorBoundary.css';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       hasError: false,
       error: null,
       errorInfo: null
@@ -33,7 +33,7 @@ class ErrorBoundary extends React.Component {
             <div className="error-icon">⚠️</div>
             <h2>Something went wrong</h2>
             <p>We're sorry, but there was an error loading this component.</p>
-            <button 
+            <button
               className="retry-button"
               onClick={() => {
                 this.setState({ hasError: false });

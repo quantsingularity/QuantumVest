@@ -9,22 +9,22 @@ compliance_frameworks:
         description: "CEO/CFO Certification"
         automated_check: false
         frequency: "quarterly"
-        
+
       - id: "SOX-404"
         description: "Internal Control Assessment"
         automated_check: true
         frequency: "continuous"
-        
+
       - id: "SOX-409"
         description: "Real-time Disclosure"
         automated_check: true
         frequency: "real_time"
-        
+
     reporting:
       format: "detailed_report"
       frequency: "quarterly"
       recipients: ["cfo", "external_auditor", "audit_committee"]
-      
+
   pci_dss:
     enabled: true
     level: 1
@@ -33,26 +33,26 @@ compliance_frameworks:
         description: "Install and maintain firewall configuration"
         automated_check: true
         frequency: "daily"
-        
+
       - id: "PCI-2"
         description: "Do not use vendor-supplied defaults"
         automated_check: true
         frequency: "weekly"
-        
+
       - id: "PCI-3"
         description: "Protect stored cardholder data"
         automated_check: true
         frequency: "continuous"
-        
+
       - id: "PCI-4"
         description: "Encrypt transmission of cardholder data"
         automated_check: true
         frequency: "continuous"
-        
+
     assessment_frequency: "annual"
     penetration_testing: "annual"
     vulnerability_scanning: "quarterly"
-    
+
   gdpr_compliance:
     enabled: true
     controls:
@@ -60,29 +60,29 @@ compliance_frameworks:
         description: "Data protection by design and by default"
         automated_check: true
         frequency: "continuous"
-        
+
       - id: "GDPR-32"
         description: "Security of processing"
         automated_check: true
         frequency: "daily"
-        
+
       - id: "GDPR-33"
         description: "Notification of personal data breach"
         automated_check: true
         frequency: "real_time"
-        
+
       - id: "GDPR-35"
         description: "Data protection impact assessment"
         automated_check: false
         frequency: "project_based"
-        
+
     data_subject_rights:
       right_to_access: true
       right_to_rectification: true
       right_to_erasure: true
       right_to_portability: true
       right_to_object: true
-      
+
   iso27001:
     enabled: true
     controls:
@@ -90,17 +90,17 @@ compliance_frameworks:
         description: "Information security policies"
         automated_check: false
         frequency: "annual"
-        
+
       - id: "A.9.1.1"
         description: "Access control policy"
         automated_check: true
         frequency: "daily"
-        
+
       - id: "A.12.6.1"
         description: "Management of technical vulnerabilities"
         automated_check: true
         frequency: "continuous"
-        
+
       - id: "A.16.1.1"
         description: "Incident management responsibilities"
         automated_check: true
@@ -113,49 +113,49 @@ automated_checks:
       description: "Verify all data stores are encrypted"
       frequency: "hourly"
       remediation: "auto_encrypt"
-      
+
     - name: "network_segmentation_check"
       description: "Verify proper network isolation"
       frequency: "daily"
       remediation: "alert_only"
-      
+
     - name: "access_control_check"
       description: "Verify least privilege access"
       frequency: "daily"
       remediation: "revoke_excess_permissions"
-      
+
     - name: "patch_compliance_check"
       description: "Verify systems are up to date"
       frequency: "daily"
       remediation: "schedule_patching"
-      
+
   application_compliance:
     - name: "secure_coding_check"
       description: "Static code analysis for security issues"
       frequency: "on_commit"
       remediation: "block_deployment"
-      
+
     - name: "dependency_vulnerability_check"
       description: "Check for vulnerable dependencies"
       frequency: "daily"
       remediation: "auto_update_minor"
-      
+
     - name: "api_security_check"
       description: "Verify API security controls"
       frequency: "weekly"
       remediation: "alert_only"
-      
+
   data_compliance:
     - name: "data_classification_check"
       description: "Verify data is properly classified"
       frequency: "weekly"
       remediation: "auto_classify"
-      
+
     - name: "data_retention_check"
       description: "Verify data retention policies"
       frequency: "daily"
       remediation: "auto_purge"
-      
+
     - name: "data_encryption_check"
       description: "Verify sensitive data encryption"
       frequency: "continuous"
@@ -169,32 +169,32 @@ audit_trails:
     - "system_configuration_changes"
     - "file_access"
     - "network_connections"
-    
+
   application_events:
     - "user_login_logout"
     - "data_access"
     - "transaction_processing"
     - "report_generation"
     - "configuration_changes"
-    
+
   database_events:
     - "data_modifications"
     - "schema_changes"
     - "user_management"
     - "backup_restore"
     - "query_execution"
-    
+
   storage:
     retention_period: "7_years"
     encryption: true
     immutable: true
     geographic_replication: true
-    
+
   monitoring:
     real_time_analysis: true
     anomaly_detection: true
     automated_alerting: true
-    
+
 # Regulatory Reporting
 regulatory_reporting:
   sox_reporting:
@@ -202,57 +202,57 @@ regulatory_reporting:
       automated_data_collection: true
       management_review_required: true
       external_auditor_review: true
-      
+
     annual_assessment:
       control_testing: true
       deficiency_tracking: true
       remediation_planning: true
-      
+
   pci_reporting:
     quarterly_scan_reports:
       automated_generation: true
       vulnerability_remediation_tracking: true
-      
+
     annual_assessment_report:
       self_assessment_questionnaire: true
       penetration_test_results: true
-      
+
   gdpr_reporting:
     breach_notification:
       automated_detection: true
       72_hour_notification: true
       data_subject_notification: true
-      
+
     annual_privacy_report:
       data_processing_activities: true
       privacy_impact_assessments: true
       data_subject_requests: true
-      
+
 # Risk Management
 risk_management:
   risk_assessment:
     frequency: "quarterly"
     methodology: "nist_framework"
     scope: "enterprise_wide"
-    
+
   risk_categories:
     - "cybersecurity"
     - "operational"
     - "financial"
     - "regulatory"
     - "reputational"
-    
+
   risk_scoring:
     probability_scale: "1_to_5"
     impact_scale: "1_to_5"
     risk_appetite: "medium"
-    
+
   mitigation_strategies:
     - "accept"
     - "mitigate"
     - "transfer"
     - "avoid"
-    
+
   monitoring:
     key_risk_indicators: true
     automated_alerts: true
@@ -265,31 +265,31 @@ policy_management:
     review_frequency: "annual"
     approval_process: "multi_level"
     distribution: "automated"
-    
+
   policy_categories:
     - "information_security"
     - "data_privacy"
     - "acceptable_use"
     - "incident_response"
     - "business_continuity"
-    
+
   compliance_tracking:
     policy_acknowledgment: true
     training_completion: true
     exception_management: true
-    
+
 # Third-Party Risk Management
 third_party_risk:
   vendor_assessment:
     security_questionnaire: true
     financial_stability_check: true
     compliance_certification_review: true
-    
+
   ongoing_monitoring:
     security_ratings: true
     news_monitoring: true
     compliance_status_updates: true
-    
+
   contract_requirements:
     security_standards: true
     audit_rights: true
@@ -304,20 +304,19 @@ compliance_dashboard:
     - "audit_findings_count"
     - "remediation_status"
     - "policy_compliance_rate"
-    
+
   visualizations:
     - "compliance_heatmap"
     - "trend_analysis"
     - "risk_register"
     - "audit_timeline"
-    
+
   reporting:
     real_time_updates: true
     scheduled_reports: true
     alert_notifications: true
-    
+
   access_control:
     role_based_access: true
     audit_trail: true
     data_export_controls: true
-

@@ -9,7 +9,7 @@ roles:
     mfa_required: true
     session_timeout: 15  # minutes
     ip_restrictions: true
-    
+
   security_officer:
     description: "Security monitoring and incident response"
     permissions:
@@ -19,7 +19,7 @@ roles:
       - "monitoring:*"
     mfa_required: true
     session_timeout: 30
-    
+
   compliance_officer:
     description: "Compliance monitoring and reporting"
     permissions:
@@ -29,7 +29,7 @@ roles:
       - "policies:read"
     mfa_required: true
     session_timeout: 60
-    
+
   developer:
     description: "Development and deployment access"
     permissions:
@@ -39,7 +39,7 @@ roles:
       - "monitoring:read"
     mfa_required: true
     session_timeout: 120
-    
+
   analyst:
     description: "Data analysis and reporting"
     permissions:
@@ -48,7 +48,7 @@ roles:
       - "analytics:*"
     mfa_required: true
     session_timeout: 240
-    
+
   readonly:
     description: "Read-only access for auditors"
     permissions:
@@ -67,7 +67,7 @@ service_accounts:
       - "storage:read"
       - "storage:write"
     key_rotation_days: 30
-    
+
   monitoring-service:
     description: "Monitoring and alerting service"
     permissions:
@@ -75,7 +75,7 @@ service_accounts:
       - "logs:read"
       - "alerts:create"
     key_rotation_days: 30
-    
+
   backup-service:
     description: "Backup and disaster recovery service"
     permissions:
@@ -93,14 +93,14 @@ access_policies:
       - time_based: "business_hours"
     approval_required: true
     approvers_count: 2
-    
+
   sensitive_data_access:
     conditions:
       - background_check: true
       - training_completed: "data_privacy"
       - manager_approval: true
     audit_level: "detailed"
-    
+
   emergency_access:
     conditions:
       - incident_declared: true
@@ -120,7 +120,7 @@ mfa_config:
     - "hardware_token"
     - "sms"  # backup only
   backup_codes: 10
-  
+
 # Password Requirements by Role
 password_requirements:
   admin:
@@ -131,4 +131,3 @@ password_requirements:
     min_length: 12
     complexity_score: 3
     history_count: 12
-

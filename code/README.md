@@ -265,7 +265,7 @@ All API endpoints require authentication via JWT tokens.
 # Register a new user
 curl -X POST http://localhost:5000/api/v1/auth/register \
   -H "Content-Type: application/json" \
-  -d 
+  -d
 ```
 
 ### Portfolio Management
@@ -275,7 +275,7 @@ curl -X POST http://localhost:5000/api/v1/auth/register \
 curl -X POST http://localhost:5000/api/v1/portfolios \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d 
+  -d
 
 # Get portfolio details
 curl -X GET http://localhost:5000/api/v1/portfolios/{portfolio_id} \
@@ -285,7 +285,7 @@ curl -X GET http://localhost:5000/api/v1/portfolios/{portfolio_id} \
 curl -X POST http://localhost:5000/api/v1/portfolios/{portfolio_id}/transactions \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d 
+  -d
 ```
 
 ### AI Predictions
@@ -299,7 +299,7 @@ curl -X GET http://localhost:5000/api/v1/predictions/stocks/AAPL?days_ahead=7 \
 curl -X POST http://localhost:5000/api/v1/portfolios/{portfolio_id}/optimize \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
-  -d 
+  -d
 ```
 
 ### Risk Analysis

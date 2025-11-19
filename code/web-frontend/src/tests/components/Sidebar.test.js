@@ -10,10 +10,10 @@ describe('Sidebar Component', () => {
         <Sidebar />
       </BrowserRouter>
     );
-    
+
     // Check for logo
     expect(screen.getByText('QuantumVest')).toBeInTheDocument();
-    
+
     // Check for navigation links
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Predictions')).toBeInTheDocument();
@@ -28,13 +28,13 @@ describe('Sidebar Component', () => {
         <Sidebar />
       </BrowserRouter>
     );
-    
+
     const dashboardLink = screen.getByText('Dashboard').closest('a');
     const predictionsLink = screen.getByText('Predictions').closest('a');
     const portfolioLink = screen.getByText('Portfolio').closest('a');
     const analyticsLink = screen.getByText('Analytics').closest('a');
     const settingsLink = screen.getByText('Settings').closest('a');
-    
+
     expect(dashboardLink).toHaveAttribute('href', '/');
     expect(predictionsLink).toHaveAttribute('href', '/predictions');
     expect(portfolioLink).toHaveAttribute('href', '/optimize');
@@ -50,16 +50,16 @@ describe('Sidebar Component', () => {
       },
       writable: true
     });
-    
+
     render(
       <BrowserRouter>
         <Sidebar />
       </BrowserRouter>
     );
-    
+
     const predictionsLink = screen.getByText('Predictions').closest('a');
     expect(predictionsLink).toHaveClass('active');
-    
+
     // Other links should not have active class
     const dashboardLink = screen.getByText('Dashboard').closest('a');
     expect(dashboardLink).not.toHaveClass('active');
@@ -71,10 +71,10 @@ describe('Sidebar Component', () => {
         <Sidebar />
       </BrowserRouter>
     );
-    
+
     const userSection = document.querySelector('.user-info');
     expect(userSection).toBeInTheDocument();
-    
+
     // Check for user avatar and details
     expect(document.querySelector('.user-avatar')).toBeInTheDocument();
     expect(screen.getByText(/John Doe/)).toBeInTheDocument();

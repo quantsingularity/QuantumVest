@@ -145,7 +145,7 @@ const Analytics = () => {
         transition={{ duration: 0.5 }}
       >
         <h2 className="section-title">Analytics Dashboard</h2>
-        
+
         {/* Stats Cards */}
         <div className="grid grid-4 mb-4">
           {stats.map((stat, index) => (
@@ -166,7 +166,7 @@ const Analytics = () => {
             </motion.div>
           ))}
         </div>
-        
+
         {/* Performance Chart */}
         <motion.div
           className="card mb-4"
@@ -179,7 +179,7 @@ const Analytics = () => {
             <Line data={lineChartData} options={lineOptions} />
           </div>
         </motion.div>
-        
+
         {/* Asset Allocation and Geographic Distribution */}
         <div className="grid grid-2 mb-4">
           <motion.div
@@ -193,7 +193,7 @@ const Analytics = () => {
               <Bar data={barChartData} options={barOptions} />
             </div>
           </motion.div>
-          
+
           <motion.div
             className="card"
             initial={{ opacity: 0, x: 20 }}
@@ -206,7 +206,7 @@ const Analytics = () => {
             </div>
           </motion.div>
         </div>
-        
+
         {/* Risk Analysis */}
         <motion.div
           className="card"

@@ -183,11 +183,11 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .chart-visualization {
     height: 250px;
   }
-  
+
   .x-axis-label {
     transform: rotate(-60deg);
     font-size: 0.6rem;

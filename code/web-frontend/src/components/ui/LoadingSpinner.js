@@ -3,7 +3,7 @@ import '../styles/LoadingSpinner.css';
 
 const LoadingSpinner = ({ size = 'medium', color = 'primary', text = 'Loading...' }) => {
   const [dots, setDots] = useState('.');
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setDots(prev => {
@@ -11,10 +11,10 @@ const LoadingSpinner = ({ size = 'medium', color = 'primary', text = 'Loading...
         return prev + '.';
       });
     }, 500);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return (
     <div className={`loading-spinner-container ${size}`}>
       <div className={`spinner ${color}`}></div>

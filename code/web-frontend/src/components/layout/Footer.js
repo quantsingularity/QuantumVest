@@ -4,7 +4,7 @@ import '../../styles/Footer.css';
 
 const Footer = () => {
   return (
-    <motion.footer 
+    <motion.footer
       className="footer"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -17,14 +17,14 @@ const Footer = () => {
         </div>
         <p className="footer-copyright">© {new Date().getFullYear()} QuantumVest. All rights reserved.</p>
       </div>
-      
+
       <div className="footer-right">
         <div className="footer-links">
           <a href="#" className="footer-link">Privacy Policy</a>
           <a href="#" className="footer-link">Terms of Service</a>
           <a href="#" className="footer-link">Contact Us</a>
         </div>
-        
+
         <div className="footer-social">
           <a href="#" className="social-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

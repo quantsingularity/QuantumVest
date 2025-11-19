@@ -38,7 +38,7 @@ describe('ThemeToggle Component', () => {
         <ThemeToggle />
       </ThemeProvider>
     );
-    
+
     const toggleButton = screen.getByRole('button');
     expect(toggleButton).toBeInTheDocument();
   });
@@ -49,33 +49,33 @@ describe('ThemeToggle Component', () => {
         <ThemeToggle />
       </ThemeProvider>
     );
-    
+
     const toggleButton = screen.getByRole('button');
-    
+
     // Initial state should be light mode
     expect(toggleButton).toHaveClass('light-mode');
-    
+
     // Click to toggle to dark mode
     fireEvent.click(toggleButton);
-    
+
     // Should now be in dark mode
     expect(toggleButton).toHaveClass('dark-mode');
-    
+
     // Verify localStorage was updated
     expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
-    
+
     // Verify document attribute was set
     expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-theme', 'dark');
-    
+
     // Click again to toggle back to light mode
     fireEvent.click(toggleButton);
-    
+
     // Should now be back in light mode
     expect(toggleButton).toHaveClass('light-mode');
-    
+
     // Verify localStorage was updated again
     expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'light');
-    
+
     // Verify document attribute was set again
     expect(document.documentElement.setAttribute).toHaveBeenCalledWith('data-theme', 'light');
   });

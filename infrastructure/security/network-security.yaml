@@ -9,41 +9,41 @@ firewall_rules:
       port: 443
       source: "0.0.0.0/0"
       action: "allow"
-      
+
     - name: "allow-http-redirect"
       protocol: "tcp"
       port: 80
       source: "0.0.0.0/0"
       action: "allow"
-      
+
     # SSH Access (restricted)
     - name: "allow-ssh-admin"
       protocol: "tcp"
       port: 22
       source: "10.0.0.0/8"  # Internal networks only
       action: "allow"
-      
+
     # Database Access (internal only)
     - name: "allow-database"
       protocol: "tcp"
       port: 5432
       source: "10.0.1.0/24"  # App subnet only
       action: "allow"
-      
+
     # Redis Cache (internal only)
     - name: "allow-redis"
       protocol: "tcp"
       port: 6379
       source: "10.0.1.0/24"  # App subnet only
       action: "allow"
-      
+
     # Monitoring
     - name: "allow-prometheus"
       protocol: "tcp"
       port: 9090
       source: "10.0.2.0/24"  # Monitoring subnet only
       action: "allow"
-      
+
     # Default deny
     - name: "deny-all"
       protocol: "all"
@@ -51,7 +51,7 @@ firewall_rules:
       source: "0.0.0.0/0"
       action: "deny"
       priority: 1000
-      
+
   egress:
     # HTTPS outbound (for API calls, updates)
     - name: "allow-https-out"
@@ -59,21 +59,21 @@ firewall_rules:
       port: 443
       destination: "0.0.0.0/0"
       action: "allow"
-      
+
     # DNS
     - name: "allow-dns"
       protocol: "udp"
       port: 53
       destination: "0.0.0.0/0"
       action: "allow"
-      
+
     # NTP
     - name: "allow-ntp"
       protocol: "udp"
       port: 123
       destination: "0.0.0.0/0"
       action: "allow"
-      
+
     # Block all other outbound
     - name: "deny-all-out"
       protocol: "all"
@@ -88,22 +88,22 @@ network_segments:
     cidr: "10.0.0.0/24"
     description: "DMZ for load balancers and reverse proxies"
     security_level: "high"
-    
+
   application:
     cidr: "10.0.1.0/24"
     description: "Application servers"
     security_level: "high"
-    
+
   database:
     cidr: "10.0.2.0/24"
     description: "Database servers"
     security_level: "critical"
-    
+
   monitoring:
     cidr: "10.0.3.0/24"
     description: "Monitoring and logging infrastructure"
     security_level: "medium"
-    
+
   management:
     cidr: "10.0.4.0/24"
     description: "Management and bastion hosts"
@@ -117,23 +117,23 @@ waf_config:
       type: "sql_injection"
       action: "block"
       sensitivity: "high"
-      
+
     - name: "xss_protection"
       type: "cross_site_scripting"
       action: "block"
       sensitivity: "high"
-      
+
     - name: "rate_limiting"
       type: "rate_limit"
       requests_per_minute: 100
       burst_limit: 200
       action: "throttle"
-      
+
     - name: "geo_blocking"
       type: "geo_ip"
       blocked_countries: []  # Configure based on business needs
       action: "block"
-      
+
     - name: "bot_protection"
       type: "bot_detection"
       action: "challenge"
@@ -172,7 +172,7 @@ network_monitoring:
   intrusion_detection: true
   anomaly_detection: true
   retention_days: 90
-  
+
 # SSL/TLS Configuration
 ssl_config:
   min_version: "1.2"
@@ -185,4 +185,3 @@ ssl_config:
   hsts_enabled: true
   hsts_max_age: 31536000  # 1 year
   certificate_transparency: true
-

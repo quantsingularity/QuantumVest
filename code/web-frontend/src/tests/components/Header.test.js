@@ -22,10 +22,10 @@ describe('Header Component', () => {
         </ThemeProvider>
       </BrowserRouter>
     );
-    
+
     // Check for logo
     expect(screen.getByText('QuantumVest')).toBeInTheDocument();
-    
+
     // Check for search bar
     const searchInput = screen.getByPlaceholderText('Search...');
     expect(searchInput).toBeInTheDocument();
@@ -41,10 +41,10 @@ describe('Header Component', () => {
         </ThemeProvider>
       </BrowserRouter>
     );
-    
+
     const menuButton = document.querySelector('.menu-toggle');
     fireEvent.click(menuButton);
-    
+
     expect(mockToggleSidebar).toHaveBeenCalledTimes(1);
   });
 
@@ -58,20 +58,20 @@ describe('Header Component', () => {
         </ThemeProvider>
       </BrowserRouter>
     );
-    
+
     // Initially notification center should not be visible
     expect(screen.queryByText('Notifications')).not.toBeInTheDocument();
-    
+
     // Click notification bell
     const notificationBell = document.querySelector('.notification-bell');
     fireEvent.click(notificationBell);
-    
+
     // Notification center should now be visible
     expect(screen.getByText('Notifications')).toBeInTheDocument();
-    
+
     // Click again to hide
     fireEvent.click(notificationBell);
-    
+
     // Notification center should be hidden again
     expect(screen.queryByText('Notifications')).not.toBeInTheDocument();
   });
@@ -86,7 +86,7 @@ describe('Header Component', () => {
         </ThemeProvider>
       </BrowserRouter>
     );
-    
+
     const loginButton = screen.getByText('Login');
     expect(loginButton).toBeInTheDocument();
     expect(loginButton.tagName).toBe('BUTTON');
@@ -103,7 +103,7 @@ describe('Header Component', () => {
         </ThemeProvider>
       </BrowserRouter>
     );
-    
+
     // Check for theme toggle button
     const themeToggle = document.querySelector('.theme-toggle');
     expect(themeToggle).toBeInTheDocument();

@@ -7,7 +7,7 @@ contract DataTracking {
         uint256 price;
         uint256 volume;
     }
-    
+
     mapping(string => MarketData[]) public assetData; // Ticker => Data
     address public owner;
 

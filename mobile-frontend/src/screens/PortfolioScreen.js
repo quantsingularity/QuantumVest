@@ -80,10 +80,10 @@ const PortfolioScreen = ({ navigation }) => {
               keyboardType="numeric"
               placeholder="e.g., 0.5"
             />
-            <Button 
-              mode="contained" 
-              onPress={handleOptimizePortfolio} 
-              disabled={loading} 
+            <Button
+              mode="contained"
+              onPress={handleOptimizePortfolio}
+              disabled={loading}
               loading={loading}
               style={styles.button}
               icon="calculator-variant" // Example icon
@@ -149,4 +149,3 @@ const styles = StyleSheet.create({
 });
 
 export default PortfolioScreen;
-

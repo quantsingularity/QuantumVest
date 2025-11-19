@@ -3,7 +3,7 @@
 # Block Storage Configuration
 block_storage:
   provider: 'aws_ebs'
-  
+
   # Storage classes
   storage_classes:
     high_performance:
@@ -15,7 +15,7 @@ block_storage:
       use_cases:
         - 'database_primary'
         - 'high_frequency_access'
-        
+
     standard_performance:
       type: 'gp3'
       iops: 3000
@@ -25,7 +25,7 @@ block_storage:
       use_cases:
         - 'application_data'
         - 'log_storage'
-        
+
     archive_storage:
       type: 'sc1'
       throughput: 250  # MB/s
@@ -34,7 +34,7 @@ block_storage:
       use_cases:
         - 'long_term_archive'
         - 'compliance_data'
-        
+
   # Volume configurations
   volumes:
     database_primary:
@@ -43,28 +43,28 @@ block_storage:
       snapshot_schedule: 'daily'
       retention: '30_days'
       multi_attach: false
-      
+
     database_replica:
       size: '500GB'
       type: 'standard_performance'
       snapshot_schedule: 'daily'
       retention: '7_days'
       multi_attach: false
-      
+
     application_logs:
       size: '100GB'
       type: 'standard_performance'
       snapshot_schedule: 'weekly'
       retention: '4_weeks'
       multi_attach: false
-      
+
     backup_storage:
       size: '1TB'
       type: 'archive_storage'
       snapshot_schedule: 'monthly'
       retention: '12_months'
       multi_attach: false
-      
+
   # Snapshot management
   snapshots:
     automated: true
@@ -82,7 +82,7 @@ block_storage:
 # File Storage Configuration
 file_storage:
   provider: 'aws_efs'
-  
+
   # File systems
   file_systems:
     shared_application_data:
@@ -96,7 +96,7 @@ file_storage:
       lifecycle_policy:
         - transition_to_ia: '30_days'
         - transition_to_archive: '90_days'
-        
+
     document_storage:
       performance_mode: 'generalPurpose'
       throughput_mode: 'bursting'
@@ -105,7 +105,7 @@ file_storage:
       kms_key_id: 'arn:aws:kms:us-east-1:account:key/efs-key'
       backup: true
       versioning: true
-      
+
     temp_processing:
       performance_mode: 'maxIO'
       throughput_mode: 'provisioned'
@@ -114,7 +114,7 @@ file_storage:
       encryption_in_transit: true
       lifecycle_policy:
         - delete_after: '7_days'
-        
+
   # Access points
   access_points:
     - name: 'application_data_ap'
@@ -127,7 +127,7 @@ file_storage:
         owner_uid: 10001
         owner_gid: 10001
         permissions: '755'
-        
+
     - name: 'document_storage_ap'
       file_system: 'document_storage'
       path: '/documents'
@@ -156,7 +156,7 @@ object_storage_detailed:
           condition:
             Bool:
               'aws:SecureTransport': 'false'
-              
+
         - sid: 'AllowApplicationAccess'
           effect: 'Allow'
           principal:
@@ -166,7 +166,7 @@ object_storage_detailed:
             - 's3:PutObject'
             - 's3:DeleteObject'
           resource: 'arn:aws:s3:::quantumvest-app-data/*'
-          
+
   # CORS configuration
   cors_configuration:
     - allowed_headers: ['*']
@@ -174,7 +174,7 @@ object_storage_detailed:
       allowed_origins: ['https://quantumvest.com', 'https://app.quantumvest.com']
       expose_headers: ['ETag', 'x-amz-meta-*']
       max_age_seconds: 3000
-      
+
   # Notification configuration
   notifications:
     - id: 'ObjectCreatedNotification'
@@ -182,7 +182,7 @@ object_storage_detailed:
       destination:
         type: 'sqs'
         arn: 'arn:aws:sqs:us-east-1:account:object-created-queue'
-        
+
     - id: 'ObjectRemovedNotification'
       events: ['s3:ObjectRemoved:*']
       destination:
@@ -192,7 +192,7 @@ object_storage_detailed:
 # Content Delivery Network (CDN)
 cdn:
   provider: 'aws_cloudfront'
-  
+
   distributions:
     static_assets:
       origins:
@@ -200,7 +200,7 @@ cdn:
           origin_id: 'S3-quantumvest-static-assets'
           s3_origin_config:
             origin_access_identity: 'origin-access-identity/cloudfront/ABCDEFG1234567'
-            
+
       default_cache_behavior:
         target_origin_id: 'S3-quantumvest-static-assets'
         viewer_protocol_policy: 'redirect-to-https'
@@ -208,17 +208,17 @@ cdn:
         cached_methods: ['GET', 'HEAD']
         compress: true
         cache_policy_id: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad'  # Managed-CachingOptimized
-        
+
       price_class: 'PriceClass_100'  # US, Canada, Europe
-      
+
       geo_restriction:
         restriction_type: 'none'
-        
+
       viewer_certificate:
         acm_certificate_arn: 'arn:aws:acm:us-east-1:account:certificate/cert-id'
         ssl_support_method: 'sni-only'
         minimum_protocol_version: 'TLSv1.2_2021'
-        
+
     api_distribution:
       origins:
         - domain_name: 'api.quantumvest.com'
@@ -228,7 +228,7 @@ cdn:
             https_port: 443
             origin_protocol_policy: 'https-only'
             origin_ssl_protocols: ['TLSv1.2']
-            
+
       default_cache_behavior:
         target_origin_id: 'API-quantumvest'
         viewer_protocol_policy: 'https-only'
@@ -246,7 +246,7 @@ data_archival:
       storage_class: 'GLACIER'
       deep_archive_after: '3_years'
       encryption: 'aws:kms'
-      
+
     audit_logs:
       retention_period: '7_years'
       archive_after: '90_days'
@@ -254,20 +254,20 @@ data_archival:
       deep_archive_after: '1_year'
       encryption: 'aws:kms'
       immutable: true
-      
+
     user_data:
       retention_period: '7_years'
       archive_after: '2_years'
       storage_class: 'GLACIER'
       deep_archive_after: '5_years'
       encryption: 'aws:kms'
-      
+
     system_logs:
       retention_period: '1_year'
       archive_after: '30_days'
       storage_class: 'STANDARD_IA'
       delete_after: '1_year'
-      
+
   automation:
     enabled: true
     monitoring: true
@@ -280,19 +280,19 @@ storage_monitoring:
     - name: 'storage_utilization'
       threshold: 80  # percent
       alert_channels: ['email', 'slack']
-      
+
     - name: 'iops_utilization'
       threshold: 80  # percent
       alert_channels: ['email', 'slack']
-      
+
     - name: 'throughput_utilization'
       threshold: 80  # percent
       alert_channels: ['email', 'slack']
-      
+
     - name: 'storage_cost'
       threshold: 1000  # USD per month
       alert_channels: ['email']
-      
+
   dashboards:
     - name: 'Storage Overview'
       panels:
@@ -300,7 +300,7 @@ storage_monitoring:
         - 'Storage Cost Trends'
         - 'IOPS Utilization'
         - 'Throughput Metrics'
-        
+
     - name: 'Backup Status'
       panels:
         - 'Backup Success Rate'
@@ -316,15 +316,15 @@ storage_security:
       algorithm: 'AES-256'
       key_management: 'aws_kms'
       key_rotation: 'annual'
-      
+
     in_transit:
       enabled: true
       protocol: 'TLS_1_3'
       certificate_validation: true
-      
+
   access_control:
     principle: 'least_privilege'
-    
+
     roles:
       - name: 'StorageAdmin'
         permissions:
@@ -332,26 +332,26 @@ storage_security:
         conditions:
           - 'mfa_required'
           - 'ip_restriction'
-          
+
       - name: 'ApplicationAccess'
         permissions:
           - 'storage:read'
           - 'storage:write'
         conditions:
           - 'service_account_only'
-          
+
       - name: 'ReadOnlyAccess'
         permissions:
           - 'storage:read'
         conditions:
           - 'audit_logged'
-          
+
   data_loss_prevention:
     enabled: true
     scanning: true
     quarantine: true
     notification: true
-    
+
   compliance:
     sox_compliance: true
     pci_dss_compliance: true
@@ -366,35 +366,35 @@ performance_optimization:
         type: 'redis'
         size: '16GB'
         ttl: '1h'
-        
+
       - name: 'cdn_cache'
         type: 'cloudfront'
         ttl: '24h'
-        
+
     strategies:
       - 'read_through'
       - 'write_behind'
       - 'cache_aside'
-      
+
   compression:
     enabled: true
     algorithms: ['gzip', 'brotli']
     level: 6
-    
+
   deduplication:
     enabled: false  # Not recommended for financial data
-    
+
   tiering:
     automated: true
     policies:
       - name: 'hot_to_warm'
         condition: 'age > 30_days'
         action: 'move_to_standard_ia'
-        
+
       - name: 'warm_to_cold'
         condition: 'age > 90_days'
         action: 'move_to_glacier'
-        
+
       - name: 'cold_to_deep_archive'
         condition: 'age > 365_days'
         action: 'move_to_deep_archive'
@@ -409,17 +409,17 @@ storage_disaster_recovery:
         - 'us-west-2'
         - 'eu-west-1'
       replication_time: '15_minutes'
-      
+
     cross_account:
       enabled: true
       destination_account: 'backup-account-id'
-      
+
   backup_validation:
     enabled: true
     schedule: 'weekly'
     integrity_checks: true
     restore_testing: true
-    
+
   recovery_procedures:
     rpo: '15_minutes'
     rto: '4_hours'
@@ -432,25 +432,24 @@ cost_optimization:
     - name: 'lifecycle_management'
       description: 'Automatically transition data to cheaper storage classes'
       savings_potential: '40%'
-      
+
     - name: 'unused_volume_detection'
       description: 'Identify and remove unused storage volumes'
       savings_potential: '15%'
-      
+
     - name: 'right_sizing'
       description: 'Optimize storage size based on usage patterns'
       savings_potential: '25%'
-      
+
   monitoring:
     cost_alerts:
       - threshold: '$1000/month'
         action: 'email_notification'
-        
+
       - threshold: '$5000/month'
         action: 'immediate_review'
-        
+
     usage_analytics:
       enabled: true
       reporting: 'weekly'
       recommendations: true
-

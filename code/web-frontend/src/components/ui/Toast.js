@@ -9,7 +9,7 @@ const Toast = ({ message, type = 'info', onClose, autoClose = true, duration = 3
         onClose();
       }, duration);
     }
-    
+
     return () => {
       if (timer) clearTimeout(timer);
     };

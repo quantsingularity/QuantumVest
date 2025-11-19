@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
-  
+
   const isActive = (path) => {
     return location.pathname === path ? 'active' : '';
   };
@@ -15,7 +15,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       {isOpen && (
         <div className="sidebar-overlay" onClick={toggleSidebar}></div>
       )}
-      <motion.aside 
+      <motion.aside
         className={`sidebar ${!isOpen ? 'sidebar-collapsed' : ''}`}
         initial={{ x: -280 }}
         animate={{ x: isOpen ? 0 : -280 }}
@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <h2>QuantumVest</h2>
           </div>
         </div>
-        
+
         <nav className="sidebar-nav">
           <ul>
             <motion.li
@@ -86,7 +86,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             </motion.li>
           </ul>
         </nav>
-        
+
         <div className="sidebar-footer">
           <div className="user-info">
             <div className="user-avatar">JD</div>

@@ -9,19 +9,19 @@ const ToastManager = () => {
   useEffect(() => {
     const showToast = (event) => {
       const { message, type, duration } = event.detail;
-      
+
       const newToast = {
         id: Date.now(),
         message,
         type: type || 'info',
         duration: duration || 3000
       };
-      
+
       setToasts(prevToasts => [...prevToasts, newToast]);
     };
-    
+
     window.addEventListener('show-toast', showToast);
-    
+
     return () => {
       window.removeEventListener('show-toast', showToast);
     };

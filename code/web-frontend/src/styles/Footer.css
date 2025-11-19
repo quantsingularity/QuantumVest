@@ -125,16 +125,16 @@
     gap: var(--spacing-md);
     text-align: center;
   }
-  
+
   .footer-left, .footer-right {
     flex-direction: column;
     gap: var(--spacing-sm);
   }
-  
+
   .footer-copyright {
     margin: var(--spacing-sm) 0 0;
   }
-  
+
   .footer-links {
     flex-wrap: wrap;
     justify-content: center;
