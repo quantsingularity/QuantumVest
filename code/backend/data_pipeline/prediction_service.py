@@ -5,16 +5,11 @@ Generates predictions using trained models
 
 import logging
 import os
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Union
-
-import joblib
-import numpy as np
-import pandas as pd
+from datetime import datetime
+from typing import Any, Dict, List
 
 from .crypto_api import CryptoDataFetcher
 from .data_storage import DataStorage
-from .feature_engineering import FeatureEngineering
 from .lstm_model import LSTMModel
 from .stock_api import StockDataFetcher
 

@@ -3,49 +3,29 @@ Comprehensive Test Suite for QuantumVest Enhanced Backend
 Financial industry-grade testing with security, performance, and integration tests
 """
 
-import json
 import os
-import shutil
 import sys
-import tempfile
 import unittest
-from datetime import datetime, timedelta, timezone
-from unittest.mock import MagicMock, Mock, patch
+from datetime import datetime, timedelta
+from unittest.mock import Mock
 
 import numpy as np
 import pandas as pd
-import pytest
 
 # Add the backend directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import modules to test
 try:
-    from enhanced_models import (
-        Asset,
-        AssetType,
-        Portfolio,
-        PortfolioHolding,
-        RiskLevel,
-        Transaction,
-        TransactionType,
-        User,
-        UserRole,
-        db,
-    )
-    from enhanced_security import (
-        AuditService,
-        AuthenticationService,
-        AuthorizationService,
-        EncryptionService,
-        ThreatDetectionService,
-    )
-    from financial_services import (
-        ComplianceService,
-        PerformanceAnalyticsService,
-        PortfolioOptimizationService,
-        RiskManagementService,
-    )
+    from enhanced_models import (Asset, AssetType, Portfolio, RiskLevel,
+                                 Transaction, TransactionType, User, UserRole,
+                                 db)
+    from enhanced_security import (AuthenticationService, AuthorizationService,
+                                   EncryptionService)
+    from financial_services import (ComplianceService,
+                                    PerformanceAnalyticsService,
+                                    PortfolioOptimizationService,
+                                    RiskManagementService)
 except ImportError as e:
     print(f"Warning: Could not import some modules: {e}")
 
@@ -71,7 +51,6 @@ class TestDatabaseModels(unittest.TestCase):
     def create_test_app(self):
         """Create test Flask application"""
         from flask import Flask
-        from flask_sqlalchemy import SQLAlchemy
 
         app = Flask(__name__)
         app.config["TESTING"] = True
@@ -630,7 +609,7 @@ def run_performance_tests():
 
     # Simulate processing large dataset
     large_array = np.random.random(1000000)
-    result = np.mean(large_array)
+    np.mean(large_array)
 
     end_time = time.time()
     processing_time = end_time - start_time

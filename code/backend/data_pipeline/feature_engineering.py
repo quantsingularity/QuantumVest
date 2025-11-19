@@ -4,8 +4,6 @@ Creates features from raw time-series data for model training
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd

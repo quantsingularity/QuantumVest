@@ -4,14 +4,12 @@ JWT-based authentication with role-based access control
 """
 
 import re
-import uuid
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 import jwt
 from flask import current_app, jsonify, request
 from models import User, db
-from werkzeug.security import check_password_hash, generate_password_hash
 
 
 class AuthService:
@@ -220,7 +218,7 @@ def token_required(f):
             if not current_user or not current_user.is_active:
                 return jsonify({"error": "User not found or inactive"}), 401
 
-        except Exception as e:
+        except Exception:
             return jsonify({"error": "Token verification failed"}), 401
 
         return f(current_user, *args, **kwargs)

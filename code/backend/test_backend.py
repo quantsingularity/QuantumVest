@@ -4,13 +4,11 @@ Comprehensive tests for all backend components
 """
 
 import json
-from datetime import datetime, timezone
 
 import pytest
 from app import create_app
 from auth import AuthService
-from flask import Flask
-from models import Asset, Portfolio, PortfolioHolding, User, db
+from models import Asset, Portfolio, User, db
 from portfolio_service import PortfolioService
 
 

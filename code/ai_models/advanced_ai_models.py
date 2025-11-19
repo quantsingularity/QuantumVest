@@ -4,10 +4,8 @@ State-of-the-art machine learning models for financial forecasting, risk assessm
 """
 
 import logging
-import pickle
 import warnings
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Tuple
 
 import joblib
 import lightgbm as lgb
@@ -16,12 +14,12 @@ import pandas as pd
 import tensorflow as tf
 import xgboost as xgb
 from catboost import CatBoostRegressor
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import GridSearchCV, TimeSeriesSplit, train_test_split
-from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import RobustScaler, StandardScaler
 from tensorflow import keras
-from tensorflow.keras import callbacks, layers, models, optimizers
+from tensorflow.keras import callbacks, layers, optimizers
 
 warnings.filterwarnings("ignore")
 
@@ -654,7 +652,7 @@ class PortfolioOptimizer:
             # Objective functions
             portfolio_return = self.expected_returns.values @ weights
             portfolio_variance = cp.quad_form(weights, self.covariance_matrix.values)
-            portfolio_volatility = cp.sqrt(portfolio_variance)
+            cp.sqrt(portfolio_variance)
 
             if objective == "max_sharpe":
                 # Maximize Sharpe ratio (approximate)

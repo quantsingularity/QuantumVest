@@ -4,12 +4,10 @@ Fetches cryptocurrency data from public APIs
 """
 
 import logging
-import os
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 import pandas as pd
-import requests
 
 from .data_fetcher import DataFetcher, DataValidator
 

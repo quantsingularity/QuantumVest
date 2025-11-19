@@ -6,26 +6,12 @@ Comprehensive financial industry services including risk management, compliance,
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import numpy as np
-import pandas as pd
-from enhanced_models import (
-    Alert,
-    Asset,
-    ComplianceCheck,
-    ComplianceStatus,
-    Portfolio,
-    PortfolioHolding,
-    PortfolioPerformance,
-    PriceHistory,
-    RiskLevel,
-    RiskMetrics,
-    Transaction,
-    TransactionType,
-    db,
-)
-from scipy import stats
+from enhanced_models import (Alert, Asset, ComplianceCheck, ComplianceStatus,
+                             Portfolio, PortfolioHolding, PortfolioPerformance,
+                             PriceHistory, RiskLevel, db)
 from scipy.optimize import minimize
 
 logger = logging.getLogger(__name__)

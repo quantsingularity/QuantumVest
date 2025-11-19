@@ -5,19 +5,15 @@ Comprehensive investment analytics platform with authentication, portfolio manag
 
 import logging
 import os
-from datetime import datetime, timezone
 
 from api_routes import api_bp
-from auth import AuthService
-
 # Import configurations and models
 from config import get_config
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, send_from_directory
 from flask_caching import Cache
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-from models import Asset, Portfolio, User, db
+from models import Asset, db
 
 # Configure logging
 logging.basicConfig(
@@ -39,8 +35,8 @@ def create_app(config_name=None):
 
     # Initialize extensions
     db.init_app(app)
-    migrate = Migrate(app, db)
-    cache = Cache(app)
+    Migrate(app, db)
+    Cache(app)
 
     # Configure CORS
     CORS(app, origins=app.config.get("CORS_ORIGINS", ["*"]))

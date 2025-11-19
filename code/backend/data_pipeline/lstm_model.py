@@ -6,18 +6,16 @@ Defines and trains LSTM models for time-series prediction
 import logging
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Tuple
 
 import joblib
 import numpy as np
 import pandas as pd
-
 # Deep learning imports
-import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.layers import LSTM, BatchNormalization, Dense, Dropout
-from tensorflow.keras.models import Sequential, load_model, save_model
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.optimizers import Adam
 
 # Configure logging

@@ -4,9 +4,7 @@ Comprehensive REST API with authentication, portfolio management, and advanced f
 """
 
 import logging
-import os
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Union
 
 from auth import AuthService, premium_required, rate_limit, token_required
 from data_pipeline.crypto_api import CryptoDataFetcher
@@ -14,7 +12,7 @@ from data_pipeline.data_storage import DataStorage
 from data_pipeline.prediction_service import PredictionService
 from data_pipeline.stock_api import StockDataFetcher
 from flask import Blueprint, jsonify, request
-from models import Alert, Asset, Portfolio, User, Watchlist, WatchlistItem, db
+from models import Asset, Watchlist, db
 from portfolio_service import PortfolioService
 
 # Configure logging

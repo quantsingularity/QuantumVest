@@ -4,8 +4,6 @@ Financial industry-grade security features including encryption, audit logging, 
 """
 
 import base64
-import hashlib
-import hmac
 import ipaddress
 import logging
 import re

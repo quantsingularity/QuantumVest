@@ -6,26 +6,17 @@ Comprehensive portfolio tracking, analysis, and optimization
 import logging
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional
 
 import cvxpy as cp  # Added based on the issue description's hint about cvxpy/cvxopt
 import numpy as np
 import pandas as pd
-from models import (
-    Asset,
-    Portfolio,
-    PortfolioHolding,
-    PortfolioPerformance,
-    PriceData,
-    Transaction,
-    User,
-    db,
-)
-from sqlalchemy import and_, func, or_
+from models import (Asset, Portfolio, PortfolioHolding, PortfolioPerformance,
+                    PriceData, Transaction, db)
+from sqlalchemy import and_
 
-from .quant_analysis import (  # Assuming this is the strategy/quant module
-    QuantitativeModels,
-)
+from .quant_analysis import \
+    QuantitativeModels  # Assuming this is the strategy/quant module
 
 logger = logging.getLogger(__name__)
 

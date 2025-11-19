@@ -3,14 +3,10 @@ Blockchain Integration Service for QuantumVest
 Web3 integration for on-chain data analysis and DeFi features
 """
 
-import json
 import logging
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
-import requests
-from eth_account import Account
-from models import Asset, PriceData, db
 from web3 import Web3
 
 logger = logging.getLogger(__name__)

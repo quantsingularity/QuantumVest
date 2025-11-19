@@ -8,8 +8,7 @@ import logging
 import os
 import time
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Union
+from typing import Optional
 
 import pandas as pd
 import requests
@@ -55,7 +54,6 @@ class DataFetcher(ABC):
         Returns:
             DataFrame with the fetched data
         """
-        pass
 
     def _get_cache_path(self, symbol: str, interval: str) -> str:
         """Get the path for caching data"""

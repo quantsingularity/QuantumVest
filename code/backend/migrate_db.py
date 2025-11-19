@@ -3,12 +3,11 @@ Database Migration Script for QuantumVest
 Initialize and migrate database schema
 """
 
-import os
 import sys
 
 from enhanced_config import get_config
 from flask import Flask
-from flask_migrate import Migrate, init, migrate, upgrade
+from flask_migrate import init, migrate, upgrade
 from models import db
 
 
@@ -58,7 +57,7 @@ def create_sample_data():
     app = create_app()
 
     with app.app_context():
-        from models import Asset, Portfolio, User
+        from models import Asset, User
 
         try:
             # Create sample user

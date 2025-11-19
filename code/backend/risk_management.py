@@ -5,11 +5,10 @@ Advanced risk assessment and management tools for portfolios
 
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import numpy as np
-import pandas as pd
-from models import Asset, Portfolio, PortfolioHolding, PriceData, db
+from models import PortfolioHolding, PriceData
 from scipy import stats
 
 logger = logging.getLogger(__name__)

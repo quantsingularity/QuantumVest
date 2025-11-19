@@ -4,14 +4,13 @@ Real-time price updates and portfolio notifications
 """
 
 import asyncio
-import json
 import logging
 from datetime import datetime, timezone
-from typing import Dict, List, Set
+from typing import Dict, Set
 
 from auth import AuthService
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from models import Alert, Asset, Portfolio, PriceData, User, db
+from models import Portfolio, User
 
 logger = logging.getLogger(__name__)
 
