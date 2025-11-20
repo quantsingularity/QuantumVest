@@ -9,9 +9,18 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from enhanced_models import (Alert, Asset, ComplianceCheck, ComplianceStatus,
-                             Portfolio, PortfolioHolding, PortfolioPerformance,
-                             PriceHistory, RiskLevel, db)
+from enhanced_models import (
+    Alert,
+    Asset,
+    ComplianceCheck,
+    ComplianceStatus,
+    Portfolio,
+    PortfolioHolding,
+    PortfolioPerformance,
+    PriceHistory,
+    RiskLevel,
+    db,
+)
 from scipy.optimize import minimize
 
 logger = logging.getLogger(__name__)

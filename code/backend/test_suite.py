@@ -17,15 +17,28 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import modules to test
 try:
-    from enhanced_models import (Asset, AssetType, Portfolio, RiskLevel,
-                                 Transaction, TransactionType, User, UserRole,
-                                 db)
-    from enhanced_security import (AuthenticationService, AuthorizationService,
-                                   EncryptionService)
-    from financial_services import (ComplianceService,
-                                    PerformanceAnalyticsService,
-                                    PortfolioOptimizationService,
-                                    RiskManagementService)
+    from enhanced_models import (
+        Asset,
+        AssetType,
+        Portfolio,
+        RiskLevel,
+        Transaction,
+        TransactionType,
+        User,
+        UserRole,
+        db,
+    )
+    from enhanced_security import (
+        AuthenticationService,
+        AuthorizationService,
+        EncryptionService,
+    )
+    from financial_services import (
+        ComplianceService,
+        PerformanceAnalyticsService,
+        PortfolioOptimizationService,
+        RiskManagementService,
+    )
 except ImportError as e:
     print(f"Warning: Could not import some modules: {e}")
 

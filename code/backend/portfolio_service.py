@@ -11,12 +11,20 @@ from typing import Dict, Optional
 import cvxpy as cp  # Added based on the issue description's hint about cvxpy/cvxopt
 import numpy as np
 import pandas as pd
-from models import (Asset, Portfolio, PortfolioHolding, PortfolioPerformance,
-                    PriceData, Transaction, db)
+from models import (
+    Asset,
+    Portfolio,
+    PortfolioHolding,
+    PortfolioPerformance,
+    PriceData,
+    Transaction,
+    db,
+)
 from sqlalchemy import and_
 
-from .quant_analysis import \
-    QuantitativeModels  # Assuming this is the strategy/quant module
+from .quant_analysis import (
+    QuantitativeModels,
+)  # Assuming this is the strategy/quant module
 
 logger = logging.getLogger(__name__)
 

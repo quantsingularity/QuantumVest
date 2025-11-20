@@ -16,6 +16,7 @@ from data_pipeline.crypto_api import CryptoDataFetcher
 from data_pipeline.data_storage import DataStorage
 from data_pipeline.lstm_model import LSTMModel
 from data_pipeline.prediction_service import PredictionService
+
 # Import modules
 from data_pipeline.stock_api import StockDataFetcher
 
