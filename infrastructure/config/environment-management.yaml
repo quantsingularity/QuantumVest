@@ -109,7 +109,7 @@ environments:
     security:
       ssl_enforcement: true
       mfa_required: true
-      ip_whitelist: []  # Open to public with proper authentication
+      ip_whitelist: [] # Open to public with proper authentication
 
 # Configuration Schema Validation
 configuration_schema:
@@ -175,8 +175,8 @@ configuration_schema:
 
       session_timeout:
         type: integer
-        minimum: 300  # 5 minutes
-        maximum: 86400  # 24 hours
+        minimum: 300 # 5 minutes
+        maximum: 86400 # 24 hours
 
 # Secrets Management Configuration
 secrets_management:

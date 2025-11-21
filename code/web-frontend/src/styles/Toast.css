@@ -12,12 +12,14 @@
   align-items: center;
   padding: 1rem;
   z-index: 1100;
-  animation: slideInUp 0.3s ease, fadeOut 0.3s ease forwards 2.7s;
+  animation:
+    slideInUp 0.3s ease,
+    fadeOut 0.3s ease forwards 2.7s;
   overflow: hidden;
 }
 
 .toast-container::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;

@@ -7,7 +7,7 @@ roles:
     permissions:
       - "*:*"
     mfa_required: true
-    session_timeout: 15  # minutes
+    session_timeout: 15 # minutes
     ip_restrictions: true
 
   security_officer:
@@ -118,7 +118,7 @@ mfa_config:
   methods:
     - "totp"
     - "hardware_token"
-    - "sms"  # backup only
+    - "sms" # backup only
   backup_codes: 10
 
 # Password Requirements by Role

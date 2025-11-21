@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import Toast from './Toast';
-import '../../styles/ToastManager.css';
+import React, { useState, useEffect } from "react";
+import Toast from "./Toast";
+import "../../styles/ToastManager.css";
 
 const ToastManager = () => {
   const [toasts, setToasts] = useState([]);
@@ -13,27 +13,27 @@ const ToastManager = () => {
       const newToast = {
         id: Date.now(),
         message,
-        type: type || 'info',
-        duration: duration || 3000
+        type: type || "info",
+        duration: duration || 3000,
       };
 
-      setToasts(prevToasts => [...prevToasts, newToast]);
+      setToasts((prevToasts) => [...prevToasts, newToast]);
     };
 
-    window.addEventListener('show-toast', showToast);
+    window.addEventListener("show-toast", showToast);
 
     return () => {
-      window.removeEventListener('show-toast', showToast);
+      window.removeEventListener("show-toast", showToast);
     };
   }, []);
 
   const removeToast = (id) => {
-    setToasts(prevToasts => prevToasts.filter(toast => toast.id !== id));
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   };
 
   return (
     <div className="toast-manager">
-      {toasts.map(toast => (
+      {toasts.map((toast) => (
         <Toast
           key={toast.id}
           message={toast.message}
@@ -47,10 +47,12 @@ const ToastManager = () => {
 };
 
 // Helper function to show toasts from anywhere in the app
-export const showToast = (message, type = 'info', duration = 3000) => {
-  window.dispatchEvent(new CustomEvent('show-toast', {
-    detail: { message, type, duration }
-  }));
+export const showToast = (message, type = "info", duration = 3000) => {
+  window.dispatchEvent(
+    new CustomEvent("show-toast", {
+      detail: { message, type, duration },
+    }),
+  );
 };
 
 export default ToastManager;

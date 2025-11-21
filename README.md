@@ -15,6 +15,7 @@ QuantumVest is an advanced predictive investment analytics platform that leverag
 > **Note**: QuantumVest is currently under active development. Features and functionalities are being added and improved continuously to enhance user experience.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [Technology Stack](#technology-stack)
@@ -33,76 +34,86 @@ QuantumVest democratizes access to sophisticated investment analytics by providi
 ## Key Features
 
 ### AI-Powered Market Predictions
-* **Trend Forecasting**: Advanced time series models for predicting market movements
-* **Sentiment Analysis**: NLP processing of news and social media for market sentiment
-* **Pattern Recognition**: Identification of chart patterns and trading signals
-* **Anomaly Detection**: Early warning system for unusual market behavior
-* **Correlation Analysis**: Cross-asset correlation insights for diversification
+
+- **Trend Forecasting**: Advanced time series models for predicting market movements
+- **Sentiment Analysis**: NLP processing of news and social media for market sentiment
+- **Pattern Recognition**: Identification of chart patterns and trading signals
+- **Anomaly Detection**: Early warning system for unusual market behavior
+- **Correlation Analysis**: Cross-asset correlation insights for diversification
 
 ### Blockchain-Enhanced Analytics
-* **On-Chain Data Analysis**: Insights from blockchain transaction patterns
-* **Whale Movement Tracking**: Monitoring of large holder activities
-* **Smart Money Flow**: Analysis of institutional investor behavior
-* **Network Health Metrics**: Blockchain fundamentals assessment
-* **DeFi Protocol Analytics**: Yield, TVL, and risk metrics for DeFi investments
+
+- **On-Chain Data Analysis**: Insights from blockchain transaction patterns
+- **Whale Movement Tracking**: Monitoring of large holder activities
+- **Smart Money Flow**: Analysis of institutional investor behavior
+- **Network Health Metrics**: Blockchain fundamentals assessment
+- **DeFi Protocol Analytics**: Yield, TVL, and risk metrics for DeFi investments
 
 ### Quantitative Investment Strategies
-* **Portfolio Optimization**: Modern Portfolio Theory implementation
-* **Risk-Adjusted Returns**: Sharpe, Sortino, and Calmar ratio calculations
-* **Monte Carlo Simulations**: Probability-based outcome projections
-* **Factor Analysis**: Multi-factor models for investment selection
-* **Algorithmic Strategy Backtesting**: Historical performance validation
+
+- **Portfolio Optimization**: Modern Portfolio Theory implementation
+- **Risk-Adjusted Returns**: Sharpe, Sortino, and Calmar ratio calculations
+- **Monte Carlo Simulations**: Probability-based outcome projections
+- **Factor Analysis**: Multi-factor models for investment selection
+- **Algorithmic Strategy Backtesting**: Historical performance validation
 
 ### Personalized Investment Experience
-* **Risk Profiling**: Customized risk tolerance assessment
-* **Goal-Based Planning**: Investment recommendations aligned with financial goals
-* **Performance Dashboard**: Real-time portfolio tracking and analysis
-* **Scenario Testing**: "What-if" analysis for different market conditions
-* **Automated Alerts**: Notifications for significant market events or opportunities
+
+- **Risk Profiling**: Customized risk tolerance assessment
+- **Goal-Based Planning**: Investment recommendations aligned with financial goals
+- **Performance Dashboard**: Real-time portfolio tracking and analysis
+- **Scenario Testing**: "What-if" analysis for different market conditions
+- **Automated Alerts**: Notifications for significant market events or opportunities
 
 ## Technology Stack
 
 ### Frontend
-* **Framework**: React.js with TypeScript
-* **State Management**: Redux Toolkit
-* **Styling**: Tailwind CSS, Styled Components
-* **Data Visualization**: D3.js, Recharts, TradingView
-* **Web3 Integration**: ethers.js, web3.js
+
+- **Framework**: React.js with TypeScript
+- **State Management**: Redux Toolkit
+- **Styling**: Tailwind CSS, Styled Components
+- **Data Visualization**: D3.js, Recharts, TradingView
+- **Web3 Integration**: ethers.js, web3.js
 
 ### Backend
-* **API Framework**: FastAPI, Flask
-* **Data Processing**: Pandas, NumPy, SciPy
-* **Task Queue**: Celery, Redis
-* **Authentication**: JWT, OAuth2
-* **API Documentation**: Swagger, ReDoc
+
+- **API Framework**: FastAPI, Flask
+- **Data Processing**: Pandas, NumPy, SciPy
+- **Task Queue**: Celery, Redis
+- **Authentication**: JWT, OAuth2
+- **API Documentation**: Swagger, ReDoc
 
 ### AI/ML
-* **Frameworks**: TensorFlow, PyTorch, scikit-learn
-* **Time Series Models**: ARIMA, LSTM, Prophet
-* **NLP**: BERT, Transformers, spaCy
-* **Feature Engineering**: Feature-tools, tsfresh
-* **Model Serving**: MLflow, TensorFlow Serving
+
+- **Frameworks**: TensorFlow, PyTorch, scikit-learn
+- **Time Series Models**: ARIMA, LSTM, Prophet
+- **NLP**: BERT, Transformers, spaCy
+- **Feature Engineering**: Feature-tools, tsfresh
+- **Model Serving**: MLflow, TensorFlow Serving
 
 ### Blockchain
-* **Networks**: Ethereum, Binance Smart Chain
-* **Data Indexing**: The Graph, Dune Analytics
-* **Smart Contracts**: Solidity (for data collection)
-* **Web3 Libraries**: web3.py, ethers.js
-* **Oracles**: Chainlink (for market data)
+
+- **Networks**: Ethereum, Binance Smart Chain
+- **Data Indexing**: The Graph, Dune Analytics
+- **Smart Contracts**: Solidity (for data collection)
+- **Web3 Libraries**: web3.py, ethers.js
+- **Oracles**: Chainlink (for market data)
 
 ### Data Storage
-* **Relational DB**: PostgreSQL
-* **Time Series DB**: InfluxDB, TimescaleDB
-* **Caching**: Redis
-* **Object Storage**: AWS S3, MinIO
-* **Data Warehouse**: Snowflake, BigQuery
+
+- **Relational DB**: PostgreSQL
+- **Time Series DB**: InfluxDB, TimescaleDB
+- **Caching**: Redis
+- **Object Storage**: AWS S3, MinIO
+- **Data Warehouse**: Snowflake, BigQuery
 
 ### DevOps
-* **Containerization**: Docker
-* **Orchestration**: Kubernetes
-* **CI/CD**: GitHub Actions
-* **Monitoring**: Prometheus, Grafana
-* **Infrastructure as Code**: Terraform
+
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Prometheus, Grafana
+- **Infrastructure as Code**: Terraform
 
 ## Architecture
 
@@ -146,11 +157,12 @@ QuantumVest/
 ## Installation and Setup
 
 ### Prerequisites
-* Node.js (v14+)
-* Python (v3.8+)
-* Docker and Docker Compose
-* PostgreSQL
-* Redis
+
+- Node.js (v14+)
+- Python (v3.8+)
+- Docker and Docker Compose
+- PostgreSQL
+- Redis
 
 ### Quick Start with Setup Script
 
@@ -169,18 +181,21 @@ cd QuantumVest
 ### Manual Setup
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/abrar2030/QuantumVest.git
 cd QuantumVest
 ```
 
 2. Install frontend dependencies:
+
 ```bash
 cd code/frontend
 npm install
 ```
 
 3. Install backend dependencies:
+
 ```bash
 cd ../backend
 python -m venv venv
@@ -189,15 +204,17 @@ pip install -r requirements.txt
 ```
 
 4. Install blockchain dependencies:
+
 ```bash
 cd ../blockchain
 npm install
 ```
 
 5. Set up environment variables:
-   * Create `.env` files in both frontend and backend directories based on the provided `.env.example` files
+   - Create `.env` files in both frontend and backend directories based on the provided `.env.example` files
 
 6. Start the services:
+
 ```bash
 # Start database and Redis
 docker-compose up -d
@@ -233,33 +250,36 @@ The project maintains comprehensive test coverage across all components to ensur
 
 ### Test Coverage
 
-| Component | Coverage | Status |
-|-----------|----------|--------|
-| Frontend Components | 78% | ✅ |
-| Backend Services | 85% | ✅ |
-| AI Models | 82% | ✅ |
-| Blockchain Integration | 75% | ✅ |
-| Quantitative Engine | 83% | ✅ |
-| Data Processing | 79% | ✅ |
-| Overall | 80% | ✅ |
+| Component              | Coverage | Status |
+| ---------------------- | -------- | ------ |
+| Frontend Components    | 78%      | ✅     |
+| Backend Services       | 85%      | ✅     |
+| AI Models              | 82%      | ✅     |
+| Blockchain Integration | 75%      | ✅     |
+| Quantitative Engine    | 83%      | ✅     |
+| Data Processing        | 79%      | ✅     |
+| Overall                | 80%      | ✅     |
 
 ### Unit Tests
-* Frontend component tests with Jest and React Testing Library
-* Backend API and service tests with pytest
-* AI model validation tests
-* Blockchain integration tests
+
+- Frontend component tests with Jest and React Testing Library
+- Backend API and service tests with pytest
+- AI model validation tests
+- Blockchain integration tests
 
 ### Integration Tests
-* End-to-end API tests
-* Data pipeline tests
-* Cross-service workflow tests
-* User journey tests
+
+- End-to-end API tests
+- Data pipeline tests
+- Cross-service workflow tests
+- User journey tests
 
 ### Performance Tests
-* Load testing for API endpoints
-* Model inference performance tests
-* Database query optimization tests
-* Real-time data processing tests
+
+- Load testing for API endpoints
+- Model inference performance tests
+- Database query optimization tests
+- Real-time data processing tests
 
 ### Running Tests
 
@@ -284,11 +304,11 @@ python -m unittest discover
 
 QuantumVest uses GitHub Actions for continuous integration and deployment:
 
-* Automated testing on each pull request
-* Code quality checks with ESLint, Prettier, and Pylint
-* Security scanning for vulnerabilities
-* Docker image building and publishing
-* Automated deployment to staging and production environments
+- Automated testing on each pull request
+- Code quality checks with ESLint, Prettier, and Pylint
+- Security scanning for vulnerabilities
+- Docker image building and publishing
+- Automated deployment to staging and production environments
 
 ## Contributing
 

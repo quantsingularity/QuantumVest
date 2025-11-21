@@ -157,9 +157,9 @@ analytics:
 postgresql:
   enabled: true
   auth:
-    postgresPassword: ""  # Set via secret
+    postgresPassword: "" # Set via secret
     username: quantumvest
-    password: ""  # Set via secret
+    password: "" # Set via secret
     database: quantumvest
 
   architecture: replication
@@ -206,7 +206,7 @@ redis:
   architecture: replication
   auth:
     enabled: true
-    password: ""  # Set via secret
+    password: "" # Set via secret
 
   master:
     persistence:
@@ -329,7 +329,7 @@ monitoring:
 
   grafana:
     enabled: true
-    adminPassword: ""  # Set via secret
+    adminPassword: "" # Set via secret
 
   alerts:
     enabled: true
@@ -464,12 +464,12 @@ tolerations: []
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - quantumvest
-        topologyKey: kubernetes.io/hostname
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - quantumvest
+          topologyKey: kubernetes.io/hostname

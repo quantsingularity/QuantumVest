@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 const Settings = () => {
   // State for various settings
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
-    sms: false
+    sms: false,
   });
 
-  const [theme, setTheme] = useState('system');
-  const [language, setLanguage] = useState('english');
-  const [currency, setCurrency] = useState('usd');
+  const [theme, setTheme] = useState("system");
+  const [language, setLanguage] = useState("english");
+  const [currency, setCurrency] = useState("usd");
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
   // Personal information state
   const [personalInfo, setPersonalInfo] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567'
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phone: "+1 (555) 123-4567",
   });
 
   // Password change state
   const [passwordForm, setPasswordForm] = useState({
-    current: '',
-    new: '',
-    confirm: ''
+    current: "",
+    new: "",
+    confirm: "",
   });
 
   // Handle notification toggle
   const handleNotificationToggle = (type) => {
     setNotifications({
       ...notifications,
-      [type]: !notifications[type]
+      [type]: !notifications[type],
     });
   };
 
@@ -41,7 +41,7 @@ const Settings = () => {
     const { name, value } = e.target;
     setPersonalInfo({
       ...personalInfo,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -50,7 +50,7 @@ const Settings = () => {
     const { name, value } = e.target;
     setPasswordForm({
       ...passwordForm,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -64,11 +64,11 @@ const Settings = () => {
     alert(`${formType} settings updated successfully!`);
 
     // Reset password form if it's the password form
-    if (formType === 'Password') {
+    if (formType === "Password") {
       setPasswordForm({
-        current: '',
-        new: '',
-        confirm: ''
+        current: "",
+        new: "",
+        confirm: "",
       });
     }
   };
@@ -92,7 +92,7 @@ const Settings = () => {
           >
             <h3 className="card-title">Account Settings</h3>
 
-            <form onSubmit={(e) => handleSubmit(e, 'Account')}>
+            <form onSubmit={(e) => handleSubmit(e, "Account")}>
               <div className="form-group">
                 <label className="form-label">Full Name</label>
                 <input
@@ -126,7 +126,9 @@ const Settings = () => {
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary">Save Changes</button>
+              <button type="submit" className="btn btn-primary">
+                Save Changes
+              </button>
             </form>
           </motion.div>
 
@@ -139,7 +141,7 @@ const Settings = () => {
           >
             <h3 className="card-title">Security</h3>
 
-            <form onSubmit={(e) => handleSubmit(e, 'Password')}>
+            <form onSubmit={(e) => handleSubmit(e, "Password")}>
               <div className="form-group">
                 <label className="form-label">Current Password</label>
                 <input
@@ -173,15 +175,19 @@ const Settings = () => {
                 />
               </div>
 
-              <button type="submit" className="btn btn-primary">Update Password</button>
+              <button type="submit" className="btn btn-primary">
+                Update Password
+              </button>
             </form>
 
-            <hr className="my-4" style={{ margin: '2rem 0' }} />
+            <hr className="my-4" style={{ margin: "2rem 0" }} />
 
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h4 className="mb-1">Two-Factor Authentication</h4>
-                <p className="text-secondary mb-0">Add an extra layer of security to your account</p>
+                <p className="text-secondary mb-0">
+                  Add an extra layer of security to your account
+                </p>
               </div>
               <div className="form-check form-switch">
                 <input
@@ -190,14 +196,16 @@ const Settings = () => {
                   checked={twoFactorEnabled}
                   onChange={() => setTwoFactorEnabled(!twoFactorEnabled)}
                   style={{
-                    width: '48px',
-                    height: '24px',
-                    cursor: 'pointer',
-                    appearance: 'none',
-                    backgroundColor: twoFactorEnabled ? 'var(--success-color)' : 'var(--light-gray)',
-                    borderRadius: '12px',
-                    position: 'relative',
-                    transition: 'var(--transition)'
+                    width: "48px",
+                    height: "24px",
+                    cursor: "pointer",
+                    appearance: "none",
+                    backgroundColor: twoFactorEnabled
+                      ? "var(--success-color)"
+                      : "var(--light-gray)",
+                    borderRadius: "12px",
+                    position: "relative",
+                    transition: "var(--transition)",
                   }}
                 />
               </div>
@@ -256,7 +264,12 @@ const Settings = () => {
               </select>
             </div>
 
-            <button className="btn btn-primary" onClick={(e) => handleSubmit(e, 'Preferences')}>Save Preferences</button>
+            <button
+              className="btn btn-primary"
+              onClick={(e) => handleSubmit(e, "Preferences")}
+            >
+              Save Preferences
+            </button>
           </motion.div>
 
           {/* Notifications */}
@@ -271,23 +284,27 @@ const Settings = () => {
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h4 className="mb-1">Email Notifications</h4>
-                <p className="text-secondary mb-0">Receive updates and alerts via email</p>
+                <p className="text-secondary mb-0">
+                  Receive updates and alerts via email
+                </p>
               </div>
               <div className="form-check form-switch">
                 <input
                   className="form-check-input"
                   type="checkbox"
                   checked={notifications.email}
-                  onChange={() => handleNotificationToggle('email')}
+                  onChange={() => handleNotificationToggle("email")}
                   style={{
-                    width: '48px',
-                    height: '24px',
-                    cursor: 'pointer',
-                    appearance: 'none',
-                    backgroundColor: notifications.email ? 'var(--success-color)' : 'var(--light-gray)',
-                    borderRadius: '12px',
-                    position: 'relative',
-                    transition: 'var(--transition)'
+                    width: "48px",
+                    height: "24px",
+                    cursor: "pointer",
+                    appearance: "none",
+                    backgroundColor: notifications.email
+                      ? "var(--success-color)"
+                      : "var(--light-gray)",
+                    borderRadius: "12px",
+                    position: "relative",
+                    transition: "var(--transition)",
                   }}
                 />
               </div>
@@ -296,23 +313,27 @@ const Settings = () => {
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h4 className="mb-1">Push Notifications</h4>
-                <p className="text-secondary mb-0">Receive notifications in your browser</p>
+                <p className="text-secondary mb-0">
+                  Receive notifications in your browser
+                </p>
               </div>
               <div className="form-check form-switch">
                 <input
                   className="form-check-input"
                   type="checkbox"
                   checked={notifications.push}
-                  onChange={() => handleNotificationToggle('push')}
+                  onChange={() => handleNotificationToggle("push")}
                   style={{
-                    width: '48px',
-                    height: '24px',
-                    cursor: 'pointer',
-                    appearance: 'none',
-                    backgroundColor: notifications.push ? 'var(--success-color)' : 'var(--light-gray)',
-                    borderRadius: '12px',
-                    position: 'relative',
-                    transition: 'var(--transition)'
+                    width: "48px",
+                    height: "24px",
+                    cursor: "pointer",
+                    appearance: "none",
+                    backgroundColor: notifications.push
+                      ? "var(--success-color)"
+                      : "var(--light-gray)",
+                    borderRadius: "12px",
+                    position: "relative",
+                    transition: "var(--transition)",
                   }}
                 />
               </div>
@@ -321,29 +342,38 @@ const Settings = () => {
             <div className="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h4 className="mb-1">SMS Notifications</h4>
-                <p className="text-secondary mb-0">Receive important alerts via SMS</p>
+                <p className="text-secondary mb-0">
+                  Receive important alerts via SMS
+                </p>
               </div>
               <div className="form-check form-switch">
                 <input
                   className="form-check-input"
                   type="checkbox"
                   checked={notifications.sms}
-                  onChange={() => handleNotificationToggle('sms')}
+                  onChange={() => handleNotificationToggle("sms")}
                   style={{
-                    width: '48px',
-                    height: '24px',
-                    cursor: 'pointer',
-                    appearance: 'none',
-                    backgroundColor: notifications.sms ? 'var(--success-color)' : 'var(--light-gray)',
-                    borderRadius: '12px',
-                    position: 'relative',
-                    transition: 'var(--transition)'
+                    width: "48px",
+                    height: "24px",
+                    cursor: "pointer",
+                    appearance: "none",
+                    backgroundColor: notifications.sms
+                      ? "var(--success-color)"
+                      : "var(--light-gray)",
+                    borderRadius: "12px",
+                    position: "relative",
+                    transition: "var(--transition)",
                   }}
                 />
               </div>
             </div>
 
-            <button className="btn btn-primary" onClick={(e) => handleSubmit(e, 'Notifications')}>Save Notification Settings</button>
+            <button
+              className="btn btn-primary"
+              onClick={(e) => handleSubmit(e, "Notifications")}
+            >
+              Save Notification Settings
+            </button>
           </motion.div>
         </div>
 
@@ -353,14 +383,16 @@ const Settings = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          style={{ borderColor: 'var(--danger-color)' }}
+          style={{ borderColor: "var(--danger-color)" }}
         >
           <h3 className="card-title text-danger">Danger Zone</h3>
 
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h4 className="mb-1">Delete Account</h4>
-              <p className="text-secondary mb-0">Permanently delete your account and all associated data</p>
+              <p className="text-secondary mb-0">
+                Permanently delete your account and all associated data
+              </p>
             </div>
             <button className="btn btn-danger">Delete Account</button>
           </div>

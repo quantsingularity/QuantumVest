@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../styles/ErrorBoundary.css';
+import React from "react";
+import "../../styles/ErrorBoundary.css";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -7,7 +7,7 @@ class ErrorBoundary extends React.Component {
     this.state = {
       hasError: false,
       error: null,
-      errorInfo: null
+      errorInfo: null,
     };
   }
 
@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component {
     // You can also log the error to an error reporting service
     this.setState({
       error: error,
-      errorInfo: errorInfo
+      errorInfo: errorInfo,
     });
     console.error("Error caught by ErrorBoundary:", error, errorInfo);
   }

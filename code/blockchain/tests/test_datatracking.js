@@ -9,7 +9,7 @@ contract("DataTracking", (accounts) => {
   });
 
   it("should store market data", async () => {
-    await instance.addDataPoint("ETH", 2500, 1000000, {from: admin});
+    await instance.addDataPoint("ETH", 2500, 1000000, { from: admin });
     const data = await instance.getHistoricalData("ETH");
     assert.equal(data.length, 1, "Data storage failed");
   });

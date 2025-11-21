@@ -132,12 +132,12 @@ def create_lstm_model(input_shape, units=64, dropout_rate=0.2):
 
 The Time Series Prediction Model is evaluated using the following metrics:
 
-| Metric | 1-Day Forecast | 1-Week Forecast | 1-Month Forecast |
-|--------|---------------|----------------|-----------------|
-| RMSE | 0.015 | 0.032 | 0.067 |
-| MAE | 0.011 | 0.025 | 0.054 |
-| Directional Accuracy | 76.3% | 72.1% | 68.5% |
-| Sharpe Ratio | 1.85 | 1.62 | 1.43 |
+| Metric               | 1-Day Forecast | 1-Week Forecast | 1-Month Forecast |
+| -------------------- | -------------- | --------------- | ---------------- |
+| RMSE                 | 0.015          | 0.032           | 0.067            |
+| MAE                  | 0.011          | 0.025           | 0.054            |
+| Directional Accuracy | 76.3%          | 72.1%           | 68.5%            |
+| Sharpe Ratio         | 1.85           | 1.62            | 1.43             |
 
 ### Usage Example
 
@@ -286,12 +286,12 @@ def optimize_portfolio(returns, risk_tolerance, constraints=None):
 
 The Portfolio Optimization Model is evaluated using the following metrics:
 
-| Metric | Conservative | Moderate | Aggressive |
-|--------|--------------|----------|------------|
-| Out-of-sample Sharpe Ratio | 1.42 | 1.65 | 1.78 |
-| Maximum Drawdown | 12.3% | 18.7% | 25.4% |
-| Turnover | 15.2% | 22.8% | 31.5% |
-| Information Ratio | 0.87 | 1.12 | 1.35 |
+| Metric                     | Conservative | Moderate | Aggressive |
+| -------------------------- | ------------ | -------- | ---------- |
+| Out-of-sample Sharpe Ratio | 1.42         | 1.65     | 1.78       |
+| Maximum Drawdown           | 12.3%        | 18.7%    | 25.4%      |
+| Turnover                   | 15.2%        | 22.8%    | 31.5%      |
+| Information Ratio          | 0.87         | 1.12     | 1.35       |
 
 ### Usage Example
 
@@ -440,13 +440,13 @@ def analyze_sentiment(text, sentiment_analyzer):
 
 The Sentiment Analysis Model is evaluated using the following metrics:
 
-| Metric | Value |
-|--------|-------|
-| Accuracy | 85.3% |
-| F1 Score | 0.837 |
-| Precision | 0.842 |
-| Recall | 0.831 |
-| Correlation with Market Moves | 0.62 |
+| Metric                        | Value |
+| ----------------------------- | ----- |
+| Accuracy                      | 85.3% |
+| F1 Score                      | 0.837 |
+| Precision                     | 0.842 |
+| Recall                        | 0.831 |
+| Correlation with Market Moves | 0.62  |
 
 ### Usage Example
 
@@ -588,12 +588,12 @@ def create_anomaly_detection_model(n_estimators=100, contamination=0.01):
 
 The Anomaly Detection Model is evaluated using the following metrics:
 
-| Metric | Value |
-|--------|-------|
-| Precision | 0.83 |
-| Recall | 0.79 |
-| F1 Score | 0.81 |
-| AUC-ROC | 0.92 |
+| Metric                 | Value     |
+| ---------------------- | --------- |
+| Precision              | 0.83      |
+| Recall                 | 0.79      |
+| F1 Score               | 0.81      |
+| AUC-ROC                | 0.92      |
 | Average Detection Time | 2.3 hours |
 
 ### Usage Example

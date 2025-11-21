@@ -35,7 +35,7 @@ audit:
   log_all_access: true
   log_failed_attempts: true
   log_privilege_escalation: true
-  retention_days: 2555  # 7 years for financial compliance
+  retention_days: 2555 # 7 years for financial compliance
   real_time_alerts: true
 
 # Network Security
@@ -44,7 +44,7 @@ network_security:
     - "HTTPS"
     - "SSH"
     - "SFTP"
-  blocked_countries: []  # Configure based on business requirements
+  blocked_countries: [] # Configure based on business requirements
   rate_limiting:
     requests_per_minute: 100
     burst_limit: 200

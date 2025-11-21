@@ -5,7 +5,11 @@
   top: 0;
   bottom: 0;
   width: 280px;
-  background: linear-gradient(180deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--primary-dark) 0%,
+    var(--secondary-dark) 100%
+  );
   color: white;
   z-index: 1000;
   display: flex;
@@ -89,7 +93,7 @@
 }
 
 .nav-link.active::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -110,23 +114,23 @@
 }
 
 .dashboard-icon::before {
-  content: '📊';
+  content: "📊";
 }
 
 .predictions-icon::before {
-  content: '📈';
+  content: "📈";
 }
 
 .portfolio-icon::before {
-  content: '💼';
+  content: "💼";
 }
 
 .analytics-icon::before {
-  content: '📉';
+  content: "📉";
 }
 
 .settings-icon::before {
-  content: '⚙️';
+  content: "⚙️";
 }
 
 .sidebar-footer {

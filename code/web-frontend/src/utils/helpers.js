@@ -1,45 +1,47 @@
-import React from 'react';
+import React from "react";
 
 // Utility function to create a context hook with error handling
 export const createContextHook = (context, hookName) => {
   return () => {
     const ctx = React.useContext(context);
     if (ctx === undefined) {
-      throw new Error(`use${hookName} must be used within a ${hookName}Provider`);
+      throw new Error(
+        `use${hookName} must be used within a ${hookName}Provider`,
+      );
     }
     return ctx;
   };
 };
 
 // Format currency values
-export const formatCurrency = (value, currency = 'USD', locale = 'en-US') => {
+export const formatCurrency = (value, currency = "USD", locale = "en-US") => {
   return new Intl.NumberFormat(locale, {
-    style: 'currency',
+    style: "currency",
     currency: currency,
   }).format(value);
 };
 
 // Format percentage values
-export const formatPercentage = (value, decimals = 2, locale = 'en-US') => {
+export const formatPercentage = (value, decimals = 2, locale = "en-US") => {
   return new Intl.NumberFormat(locale, {
-    style: 'percent',
+    style: "percent",
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   }).format(value / 100);
 };
 
 // Format date values
-export const formatDate = (date, options = {}, locale = 'en-US') => {
+export const formatDate = (date, options = {}, locale = "en-US") => {
   const defaultOptions = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   };
 
-  return new Date(date).toLocaleDateString(
-    locale,
-    { ...defaultOptions, ...options }
-  );
+  return new Date(date).toLocaleDateString(locale, {
+    ...defaultOptions,
+    ...options,
+  });
 };
 
 // Truncate text with ellipsis
@@ -94,5 +96,5 @@ export const storage = {
       console.error(`Error removing item ${key} from localStorage:`, error);
       return false;
     }
-  }
+  },
 };

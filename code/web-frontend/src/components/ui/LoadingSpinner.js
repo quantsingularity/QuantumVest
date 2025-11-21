@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/LoadingSpinner.css';
+import React, { useState, useEffect } from "react";
+import "../styles/LoadingSpinner.css";
 
-const LoadingSpinner = ({ size = 'medium', color = 'primary', text = 'Loading...' }) => {
-  const [dots, setDots] = useState('.');
+const LoadingSpinner = ({
+  size = "medium",
+  color = "primary",
+  text = "Loading...",
+}) => {
+  const [dots, setDots] = useState(".");
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDots(prev => {
-        if (prev.length >= 3) return '.';
-        return prev + '.';
+      setDots((prev) => {
+        if (prev.length >= 3) return ".";
+        return prev + ".";
       });
     }, 500);
 
@@ -18,7 +22,12 @@ const LoadingSpinner = ({ size = 'medium', color = 'primary', text = 'Loading...
   return (
     <div className={`loading-spinner-container ${size}`}>
       <div className={`spinner ${color}`}></div>
-      {text && <p className="loading-text">{text}{dots}</p>}
+      {text && (
+        <p className="loading-text">
+          {text}
+          {dots}
+        </p>
+      )}
     </div>
   );
 };

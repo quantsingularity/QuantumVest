@@ -1,7 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, FlatList, Alert, Linking } from 'react-native';
-import { Appbar, Card, Text, ActivityIndicator, List, Divider, useTheme, Chip, Button } from 'react-native-paper';
-import { getCryptoNews } from '../services/api';
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, FlatList, Alert, Linking } from "react-native";
+import {
+  Appbar,
+  Card,
+  Text,
+  ActivityIndicator,
+  List,
+  Divider,
+  useTheme,
+  Chip,
+  Button,
+} from "react-native-paper";
+import { getCryptoNews } from "../services/api";
 
 const NewsScreen = ({ navigation }) => {
   const [newsArticles, setNewsArticles] = useState([]);
@@ -12,43 +22,55 @@ const NewsScreen = ({ navigation }) => {
   const [isListEnd, setIsListEnd] = useState(false); // To prevent loading more when end is reached
   const theme = useTheme();
 
-  const fetchNews = useCallback(async (pageNum = 1, refreshing = false) => {
-    if (loadingMore || (pageNum > 1 && isListEnd)) return; // Prevent multiple simultaneous loads or loading past end
+  const fetchNews = useCallback(
+    async (pageNum = 1, refreshing = false) => {
+      if (loadingMore || (pageNum > 1 && isListEnd)) return; // Prevent multiple simultaneous loads or loading past end
 
-    if (pageNum > 1) setLoadingMore(true);
-    else if (refreshing) setRefreshing(true);
-    else setLoading(true);
+      if (pageNum > 1) setLoadingMore(true);
+      else if (refreshing) setRefreshing(true);
+      else setLoading(true);
 
-    try {
-      const response = await getCryptoNews(pageNum);
-      const newArticles = response.data?.data || [];
+      try {
+        const response = await getCryptoNews(pageNum);
+        const newArticles = response.data?.data || [];
 
-      if (newArticles.length === 0) {
-        setIsListEnd(true); // No more articles found
-      } else {
-        setIsListEnd(false);
-        if (pageNum === 1) {
-          setNewsArticles(newArticles);
+        if (newArticles.length === 0) {
+          setIsListEnd(true); // No more articles found
         } else {
-          setNewsArticles(prevArticles => [...prevArticles, ...newArticles]);
+          setIsListEnd(false);
+          if (pageNum === 1) {
+            setNewsArticles(newArticles);
+          } else {
+            setNewsArticles((prevArticles) => [
+              ...prevArticles,
+              ...newArticles,
+            ]);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching crypto news:", error);
+        // Check if the error is due to the placeholder token
+        if (error.config?.params?.token === "YOUR_CRYPTONEWS_API_TOKEN") {
+          Alert.alert(
+            "API Token Missing",
+            "Please set your CryptoNews API token in src/services/api.js to fetch news.",
+          );
+          setNewsArticles([]); // Clear articles if token is missing
+          setIsListEnd(true); // Prevent further loading attempts
+        } else {
+          Alert.alert(
+            "Error",
+            "Failed to fetch news articles. Please check your connection or API configuration.",
+          );
         }
       }
-    } catch (error) {
-      console.error("Error fetching crypto news:", error);
-      // Check if the error is due to the placeholder token
-      if (error.config?.params?.token === 'YOUR_CRYPTONEWS_API_TOKEN') {
-        Alert.alert('API Token Missing', 'Please set your CryptoNews API token in src/services/api.js to fetch news.');
-        setNewsArticles([]); // Clear articles if token is missing
-        setIsListEnd(true); // Prevent further loading attempts
-      } else {
-        Alert.alert('Error', 'Failed to fetch news articles. Please check your connection or API configuration.');
-      }
-    }
 
-    if (pageNum > 1) setLoadingMore(false);
-    else if (refreshing) setRefreshing(false);
-    else setLoading(false);
-  }, [loadingMore, isListEnd]);
+      if (pageNum > 1) setLoadingMore(false);
+      else if (refreshing) setRefreshing(false);
+      else setLoading(false);
+    },
+    [loadingMore, isListEnd],
+  );
 
   useEffect(() => {
     fetchNews(1); // Initial load
@@ -69,27 +91,48 @@ const NewsScreen = ({ navigation }) => {
   };
 
   const openArticle = (url) => {
-    Linking.canOpenURL(url).then(supported => {
+    Linking.canOpenURL(url).then((supported) => {
       if (supported) {
         Linking.openURL(url);
       } else {
-        Alert.alert('Error', `Cannot open URL: ${url}`);
+        Alert.alert("Error", `Cannot open URL: ${url}`);
       }
     });
   };
 
   const renderNewsItem = ({ item }) => (
-    <Card style={styles.card} onPress={() => openArticle(item.news_url)} elevation={1}>
+    <Card
+      style={styles.card}
+      onPress={() => openArticle(item.news_url)}
+      elevation={1}
+    >
       {item.image_url && <Card.Cover source={{ uri: item.image_url }} />}
       <Card.Content>
-        <Text variant="titleMedium" style={styles.titleText}>{item.title}</Text>
-        <Text variant="bodySmall" style={styles.sourceText}>{item.source_name} - {new Date(item.date).toLocaleString()}</Text>
-        <Text variant="bodyMedium" style={styles.contentText} numberOfLines={3}>{item.text}</Text>
+        <Text variant="titleMedium" style={styles.titleText}>
+          {item.title}
+        </Text>
+        <Text variant="bodySmall" style={styles.sourceText}>
+          {item.source_name} - {new Date(item.date).toLocaleString()}
+        </Text>
+        <Text variant="bodyMedium" style={styles.contentText} numberOfLines={3}>
+          {item.text}
+        </Text>
         <View style={styles.chipContainer}>
-          {item.tickers.map(ticker => (
-            <Chip key={ticker} style={styles.chip} mode="outlined">{ticker}</Chip>
+          {item.tickers.map((ticker) => (
+            <Chip key={ticker} style={styles.chip} mode="outlined">
+              {ticker}
+            </Chip>
           ))}
-          <Chip style={styles.chip} icon={item.sentiment === 'Positive' ? 'thumb-up' : item.sentiment === 'Negative' ? 'thumb-down' : 'neutral'} >
+          <Chip
+            style={styles.chip}
+            icon={
+              item.sentiment === "Positive"
+                ? "thumb-up"
+                : item.sentiment === "Negative"
+                  ? "thumb-down"
+                  : "neutral"
+            }
+          >
             {item.sentiment}
           </Chip>
         </View>
@@ -99,19 +142,37 @@ const NewsScreen = ({ navigation }) => {
 
   const renderFooter = () => {
     if (!loadingMore) return null;
-    return <ActivityIndicator animating={true} size="small" style={{ marginVertical: 20 }} />;
+    return (
+      <ActivityIndicator
+        animating={true}
+        size="small"
+        style={{ marginVertical: 20 }}
+      />
+    );
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <Appbar.Header>
-        {navigation.canGoBack() && <Appbar.BackAction onPress={() => navigation.goBack()} />}
+        {navigation.canGoBack() && (
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+        )}
         <Appbar.Content title="Crypto News" />
-        <Appbar.Action icon="refresh" onPress={handleRefresh} disabled={loading || refreshing} />
+        <Appbar.Action
+          icon="refresh"
+          onPress={handleRefresh}
+          disabled={loading || refreshing}
+        />
       </Appbar.Header>
 
       {loading && page === 1 ? (
-        <ActivityIndicator animating={true} size="large" style={styles.loader} />
+        <ActivityIndicator
+          animating={true}
+          size="large"
+          style={styles.loader}
+        />
       ) : (
         <FlatList
           data={newsArticles}
@@ -119,13 +180,19 @@ const NewsScreen = ({ navigation }) => {
           keyExtractor={(item, index) => item.news_url + index} // Use URL + index as key
           style={styles.list}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={<Text style={styles.emptyText}>No news articles found. Check API token or try refreshing.</Text>}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>
+              No news articles found. Check API token or try refreshing.
+            </Text>
+          }
           refreshing={refreshing}
           onRefresh={handleRefresh}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5} // Load more when halfway through the last item
           ListFooterComponent={renderFooter}
-          ItemSeparatorComponent={() => <Divider style={{ marginVertical: 8 }} />}
+          ItemSeparatorComponent={() => (
+            <Divider style={{ marginVertical: 8 }} />
+          )}
         />
       )}
     </View>
@@ -138,8 +205,8 @@ const styles = StyleSheet.create({
   },
   loader: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   list: {
     flex: 1,
@@ -152,10 +219,10 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginBottom: 5,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   sourceText: {
-    color: 'grey',
+    color: "grey",
     marginBottom: 10,
     fontSize: 12,
   },
@@ -163,8 +230,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   chipContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginTop: 5,
   },
   chip: {
@@ -172,10 +239,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 50,
     fontSize: 16,
-    color: 'grey',
+    color: "grey",
   },
 });
 

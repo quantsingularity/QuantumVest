@@ -57,11 +57,11 @@ Retrieve AI-generated predictions for a specific asset.
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| asset_type | string | Yes | Type of asset (stocks, crypto) |
-| asset_id | string | Yes | Identifier for the asset (ticker symbol or crypto ID) |
-| timeframe | string | No | Prediction timeframe (1d, 1w, 1m, 3m). Default: 1w |
+| Parameter  | Type   | Required | Description                                           |
+| ---------- | ------ | -------- | ----------------------------------------------------- |
+| asset_type | string | Yes      | Type of asset (stocks, crypto)                        |
+| asset_id   | string | Yes      | Identifier for the asset (ticker symbol or crypto ID) |
+| timeframe  | string | No       | Prediction timeframe (1d, 1w, 1m, 3m). Default: 1w    |
 
 **Response:**
 
@@ -102,11 +102,11 @@ Retrieve a list of recent predictions.
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| asset_type | string | No | Filter by asset type (stocks, crypto) |
-| limit | integer | No | Number of predictions to return (default: 10, max: 100) |
-| page | integer | No | Page number for pagination (default: 1) |
+| Parameter  | Type    | Required | Description                                             |
+| ---------- | ------- | -------- | ------------------------------------------------------- |
+| asset_type | string  | No       | Filter by asset type (stocks, crypto)                   |
+| limit      | integer | No       | Number of predictions to return (default: 10, max: 100) |
+| page       | integer | No       | Page number for pagination (default: 1)                 |
 
 **Response:**
 
@@ -164,7 +164,7 @@ Retrieve the user's current portfolio.
 ```json
 {
   "portfolio": {
-    "total_value": 25000.00,
+    "total_value": 25000.0,
     "assets": [
       {
         "id": "AAPL",
@@ -172,7 +172,7 @@ Retrieve the user's current portfolio.
         "type": "stocks",
         "quantity": 10,
         "current_price": 185.92,
-        "value": 1859.20,
+        "value": 1859.2,
         "allocation_percentage": 7.44
       },
       {
@@ -180,9 +180,9 @@ Retrieve the user's current portfolio.
         "name": "Bitcoin",
         "type": "crypto",
         "quantity": 0.25,
-        "current_price": 65000.00,
-        "value": 16250.00,
-        "allocation_percentage": 65.00
+        "current_price": 65000.0,
+        "value": 16250.0,
+        "allocation_percentage": 65.0
       }
     ],
     "performance": {
@@ -229,7 +229,7 @@ Update the user's portfolio.
   "status": "success",
   "message": "Portfolio updated successfully",
   "portfolio": {
-    "total_value": 28538.80,
+    "total_value": 28538.8,
     "assets": [
       {
         "id": "AAPL",
@@ -237,7 +237,7 @@ Update the user's portfolio.
         "type": "stocks",
         "quantity": 15,
         "current_price": 185.92,
-        "value": 2788.80,
+        "value": 2788.8,
         "allocation_percentage": 9.77
       },
       {
@@ -245,8 +245,8 @@ Update the user's portfolio.
         "name": "Bitcoin",
         "type": "crypto",
         "quantity": 0.3,
-        "current_price": 65000.00,
-        "value": 19500.00,
+        "current_price": 65000.0,
+        "value": 19500.0,
         "allocation_percentage": 68.33
       }
     ]
@@ -286,16 +286,16 @@ Generate a portfolio optimization plan.
   "recommended_allocation": {
     "stocks": {
       "AAPL": 0.15,
-      "MSFT": 0.10,
-      "GOOGL": 0.10,
+      "MSFT": 0.1,
+      "GOOGL": 0.1,
       "AMZN": 0.05
     },
     "crypto": {
       "BTC": 0.15,
-      "ETH": 0.10
+      "ETH": 0.1
     },
     "bonds": {
-      "GOVT": 0.20,
+      "GOVT": 0.2,
       "VCIT": 0.15
     }
   },
@@ -333,12 +333,12 @@ Retrieve current and historical price data for an asset.
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| asset_type | string | Yes | Type of asset (stocks, crypto) |
-| asset_id | string | Yes | Identifier for the asset (ticker symbol or crypto ID) |
-| period | string | No | Historical data period (1d, 1w, 1m, 3m, 1y). Default: 1m |
-| interval | string | No | Data interval (1m, 5m, 15m, 30m, 1h, 1d). Default: 1d |
+| Parameter  | Type   | Required | Description                                              |
+| ---------- | ------ | -------- | -------------------------------------------------------- |
+| asset_type | string | Yes      | Type of asset (stocks, crypto)                           |
+| asset_id   | string | Yes      | Identifier for the asset (ticker symbol or crypto ID)    |
+| period     | string | No       | Historical data period (1d, 1w, 1m, 3m, 1y). Default: 1m |
+| interval   | string | No       | Data interval (1m, 5m, 15m, 30m, 1h, 1d). Default: 1d    |
 
 **Response:**
 
@@ -358,16 +358,16 @@ Retrieve current and historical price data for an asset.
     {
       "timestamp": "2025-04-24T16:00:00Z",
       "open": 183.47,
-      "high": 186.20,
+      "high": 186.2,
       "low": 182.95,
       "close": 185.92,
       "volume": 32456789
     },
     {
       "timestamp": "2025-04-23T16:00:00Z",
-      "open": 184.10,
+      "open": 184.1,
       "high": 185.35,
-      "low": 182.80,
+      "low": 182.8,
       "close": 183.47,
       "volume": 28765432
     }
@@ -391,10 +391,10 @@ Retrieve market sentiment analysis for an asset.
 
 **Parameters:**
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| asset_type | string | Yes | Type of asset (stocks, crypto) |
-| asset_id | string | Yes | Identifier for the asset (ticker symbol or crypto ID) |
+| Parameter  | Type   | Required | Description                                           |
+| ---------- | ------ | -------- | ----------------------------------------------------- |
+| asset_type | string | Yes      | Type of asset (stocks, crypto)                        |
+| asset_id   | string | Yes      | Identifier for the asset (ticker symbol or crypto ID) |
 
 **Response:**
 
@@ -412,7 +412,7 @@ Retrieve market sentiment analysis for an asset.
       "news_sentiment": 0.68,
       "social_media_sentiment": 0.75,
       "technical_indicators": 0.65,
-      "analyst_ratings": 0.80
+      "analyst_ratings": 0.8
     }
   },
   "sources": {
@@ -518,14 +518,14 @@ All API errors follow a standard format:
 
 ### Common Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| authentication_error | 401 | Invalid or missing API key |
-| permission_denied | 403 | Insufficient permissions for the requested operation |
-| not_found | 404 | The requested resource was not found |
-| rate_limit_exceeded | 429 | You have exceeded your rate limit |
-| invalid_request | 400 | The request was invalid or improperly formatted |
-| internal_error | 500 | An internal server error occurred |
+| Code                 | HTTP Status | Description                                          |
+| -------------------- | ----------- | ---------------------------------------------------- |
+| authentication_error | 401         | Invalid or missing API key                           |
+| permission_denied    | 403         | Insufficient permissions for the requested operation |
+| not_found            | 404         | The requested resource was not found                 |
+| rate_limit_exceeded  | 429         | You have exceeded your rate limit                    |
+| invalid_request      | 400         | The request was invalid or improperly formatted      |
+| internal_error       | 500         | An internal server error occurred                    |
 
 ## Webhooks
 
@@ -541,12 +541,12 @@ QuantumVest supports webhooks for real-time notifications about various events.
 
 ### Webhook Events
 
-| Event | Description |
-|-------|-------------|
-| prediction.created | A new prediction has been generated |
-| portfolio.updated | The user's portfolio has been updated |
+| Event                  | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| prediction.created     | A new prediction has been generated              |
+| portfolio.updated      | The user's portfolio has been updated            |
 | optimization.completed | A portfolio optimization plan has been generated |
-| market.alert | A market alert has been triggered |
+| market.alert           | A market alert has been triggered                |
 
 ### Webhook Payload
 
@@ -581,14 +581,17 @@ We provide official client libraries for the following programming languages:
 ## Changelog
 
 ### v1.2.0 (2025-03-15)
+
 - Added market sentiment analysis endpoint
 - Improved prediction accuracy
 - Added support for additional cryptocurrencies
 
 ### v1.1.0 (2025-01-20)
+
 - Added portfolio optimization endpoints
 - Enhanced historical data retrieval
 - Improved rate limiting with more granular controls
 
 ### v1.0.0 (2024-11-10)
+
 - Initial API release

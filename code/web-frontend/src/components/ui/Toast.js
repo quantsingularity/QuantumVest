@@ -1,7 +1,13 @@
-import React from 'react';
-import '../../styles/Toast.css';
+import React from "react";
+import "../../styles/Toast.css";
 
-const Toast = ({ message, type = 'info', onClose, autoClose = true, duration = 3000 }) => {
+const Toast = ({
+  message,
+  type = "info",
+  onClose,
+  autoClose = true,
+  duration = 3000,
+}) => {
   React.useEffect(() => {
     let timer;
     if (autoClose) {
@@ -21,7 +27,9 @@ const Toast = ({ message, type = 'info', onClose, autoClose = true, duration = 3
         <div className="toast-icon"></div>
         <div className="toast-message">{message}</div>
       </div>
-      <button className="toast-close" onClick={onClose}>×</button>
+      <button className="toast-close" onClick={onClose}>
+        ×
+      </button>
     </div>
   );
 };

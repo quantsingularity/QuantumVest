@@ -84,17 +84,21 @@
   padding: 1.5rem;
 }
 
-.price, .volume {
+.price,
+.volume {
   margin-bottom: 0.5rem;
   display: flex;
   justify-content: space-between;
 }
 
-.price span, .volume span {
+.price span,
+.volume span {
   font-weight: 600;
 }
 
-.loading-container, .error-container, .no-data-message {
+.loading-container,
+.error-container,
+.no-data-message {
   text-align: center;
   padding: 2rem;
   background-color: white;

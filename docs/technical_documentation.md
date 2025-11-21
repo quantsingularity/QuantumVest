@@ -68,6 +68,7 @@ frontend/
 ```
 
 Key technologies:
+
 - React.js for UI components
 - Context API for state management
 - CSS modules for styling
@@ -93,6 +94,7 @@ backend/
 ```
 
 Key technologies:
+
 - Flask for API endpoints
 - SQLAlchemy for database ORM
 - JWT for authentication
@@ -114,6 +116,7 @@ ai_models/
 ```
 
 Key technologies:
+
 - TensorFlow/Keras for deep learning models
 - Scikit-learn for traditional ML algorithms
 - Pandas for data manipulation
@@ -139,6 +142,7 @@ blockchain/
 ```
 
 Key technologies:
+
 - Solidity for smart contracts
 - Truffle for development and testing
 - Web3.js for blockchain interaction
@@ -187,59 +191,59 @@ Key technologies:
 
 ### Users Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | UUID | Primary key |
-| email | VARCHAR | User email address |
-| password_hash | VARCHAR | Hashed password |
-| name | VARCHAR | User's full name |
-| created_at | TIMESTAMP | Account creation timestamp |
-| subscription_tier | VARCHAR | User's subscription level |
+| Column            | Type      | Description                |
+| ----------------- | --------- | -------------------------- |
+| id                | UUID      | Primary key                |
+| email             | VARCHAR   | User email address         |
+| password_hash     | VARCHAR   | Hashed password            |
+| name              | VARCHAR   | User's full name           |
+| created_at        | TIMESTAMP | Account creation timestamp |
+| subscription_tier | VARCHAR   | User's subscription level  |
 
 ### Assets Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | VARCHAR | Primary key (ticker symbol or crypto ID) |
-| name | VARCHAR | Asset name |
-| type | VARCHAR | Asset type (stock, crypto) |
-| description | TEXT | Asset description |
-| metadata | JSONB | Additional asset metadata |
+| Column      | Type    | Description                              |
+| ----------- | ------- | ---------------------------------------- |
+| id          | VARCHAR | Primary key (ticker symbol or crypto ID) |
+| name        | VARCHAR | Asset name                               |
+| type        | VARCHAR | Asset type (stock, crypto)               |
+| description | TEXT    | Asset description                        |
+| metadata    | JSONB   | Additional asset metadata                |
 
 ### Predictions Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | UUID | Primary key |
-| asset_id | VARCHAR | Foreign key to Assets table |
-| timestamp | TIMESTAMP | Prediction generation timestamp |
-| timeframe | VARCHAR | Prediction timeframe (1d, 1w, 1m, 3m) |
-| predicted_price | DECIMAL | Predicted price value |
-| confidence_lower | DECIMAL | Lower bound of confidence interval |
-| confidence_upper | DECIMAL | Upper bound of confidence interval |
-| direction | VARCHAR | Price direction (up, down) |
-| confidence_score | DECIMAL | Confidence score (0-1) |
+| Column           | Type      | Description                           |
+| ---------------- | --------- | ------------------------------------- |
+| id               | UUID      | Primary key                           |
+| asset_id         | VARCHAR   | Foreign key to Assets table           |
+| timestamp        | TIMESTAMP | Prediction generation timestamp       |
+| timeframe        | VARCHAR   | Prediction timeframe (1d, 1w, 1m, 3m) |
+| predicted_price  | DECIMAL   | Predicted price value                 |
+| confidence_lower | DECIMAL   | Lower bound of confidence interval    |
+| confidence_upper | DECIMAL   | Upper bound of confidence interval    |
+| direction        | VARCHAR   | Price direction (up, down)            |
+| confidence_score | DECIMAL   | Confidence score (0-1)                |
 
 ### Portfolios Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | UUID | Primary key |
-| user_id | UUID | Foreign key to Users table |
-| name | VARCHAR | Portfolio name |
+| Column     | Type      | Description                  |
+| ---------- | --------- | ---------------------------- |
+| id         | UUID      | Primary key                  |
+| user_id    | UUID      | Foreign key to Users table   |
+| name       | VARCHAR   | Portfolio name               |
 | created_at | TIMESTAMP | Portfolio creation timestamp |
-| updated_at | TIMESTAMP | Last update timestamp |
+| updated_at | TIMESTAMP | Last update timestamp        |
 
 ### PortfolioAssets Table
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | UUID | Primary key |
-| portfolio_id | UUID | Foreign key to Portfolios table |
-| asset_id | VARCHAR | Foreign key to Assets table |
-| quantity | DECIMAL | Asset quantity |
-| purchase_price | DECIMAL | Average purchase price |
-| purchase_date | TIMESTAMP | Purchase date |
+| Column         | Type      | Description                     |
+| -------------- | --------- | ------------------------------- |
+| id             | UUID      | Primary key                     |
+| portfolio_id   | UUID      | Foreign key to Portfolios table |
+| asset_id       | VARCHAR   | Foreign key to Assets table     |
+| quantity       | DECIMAL   | Asset quantity                  |
+| purchase_price | DECIMAL   | Average purchase price          |
+| purchase_date  | TIMESTAMP | Purchase date                   |
 
 ## API Endpoints
 
@@ -248,6 +252,7 @@ See the [API Documentation](./api_documentation.md) for detailed information abo
 ## Technology Stack
 
 ### Frontend
+
 - **Framework**: React.js
 - **State Management**: Context API
 - **Styling**: CSS Modules, SASS
@@ -255,6 +260,7 @@ See the [API Documentation](./api_documentation.md) for detailed information abo
 - **Testing**: Jest, React Testing Library
 
 ### Backend
+
 - **Framework**: Flask
 - **ORM**: SQLAlchemy
 - **Authentication**: JWT
@@ -262,22 +268,26 @@ See the [API Documentation](./api_documentation.md) for detailed information abo
 - **Documentation**: Swagger/OpenAPI
 
 ### AI/ML
+
 - **Libraries**: TensorFlow, Scikit-learn, Pandas, NumPy
 - **Model Serving**: Flask API
 - **Model Storage**: Pickle files, TensorFlow SavedModel
 
 ### Blockchain
+
 - **Smart Contracts**: Solidity
 - **Development Framework**: Truffle
 - **Client Library**: Web3.js
 - **Networks**: Ethereum, Binance Smart Chain
 
 ### Data Storage
+
 - **Relational Database**: PostgreSQL
 - **Time-series Database**: InfluxDB
 - **Cache**: Redis
 
 ### Infrastructure
+
 - **Containerization**: Docker
 - **Orchestration**: Kubernetes
 - **CI/CD**: GitHub Actions

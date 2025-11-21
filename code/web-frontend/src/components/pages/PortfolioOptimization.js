@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import '../../styles/PortfolioOptimization.css';
+import React, { useState } from "react";
+import axios from "axios";
+import "../../styles/PortfolioOptimization.css";
 
 export default function PortfolioOptimization() {
   const [risk, setRisk] = useState(5);
@@ -8,13 +8,13 @@ export default function PortfolioOptimization() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [assets, setAssets] = useState([
-    { symbol: 'BTC', name: 'Bitcoin', allocation: 25, color: '#f7931a' },
-    { symbol: 'ETH', name: 'Ethereum', allocation: 20, color: '#627eea' },
-    { symbol: 'AAPL', name: 'Apple', allocation: 15, color: '#999999' },
-    { symbol: 'MSFT', name: 'Microsoft', allocation: 15, color: '#00a1f1' },
-    { symbol: 'GOOGL', name: 'Google', allocation: 10, color: '#4285f4' },
-    { symbol: 'AMZN', name: 'Amazon', allocation: 10, color: '#ff9900' },
-    { symbol: 'CASH', name: 'Cash', allocation: 5, color: '#85bb65' }
+    { symbol: "BTC", name: "Bitcoin", allocation: 25, color: "#f7931a" },
+    { symbol: "ETH", name: "Ethereum", allocation: 20, color: "#627eea" },
+    { symbol: "AAPL", name: "Apple", allocation: 15, color: "#999999" },
+    { symbol: "MSFT", name: "Microsoft", allocation: 15, color: "#00a1f1" },
+    { symbol: "GOOGL", name: "Google", allocation: 10, color: "#4285f4" },
+    { symbol: "AMZN", name: "Amazon", allocation: 10, color: "#ff9900" },
+    { symbol: "CASH", name: "Cash", allocation: 5, color: "#85bb65" },
   ]);
 
   const handleRiskChange = (e) => {
@@ -26,21 +26,29 @@ export default function PortfolioOptimization() {
     updatedAssets[index].allocation = parseInt(newValue, 10);
 
     // Recalculate to ensure total is 100%
-    const total = updatedAssets.reduce((sum, asset) => sum + asset.allocation, 0);
+    const total = updatedAssets.reduce(
+      (sum, asset) => sum + asset.allocation,
+      0,
+    );
     if (total !== 100) {
       const diff = 100 - total;
       // Distribute the difference among other assets
       const otherAssets = updatedAssets.filter((_, i) => i !== index);
       const perAssetAdjustment = Math.floor(diff / otherAssets.length);
-      let remainder = diff - (perAssetAdjustment * otherAssets.length);
+      let remainder = diff - perAssetAdjustment * otherAssets.length;
 
       otherAssets.forEach((asset, i) => {
-        const assetIndex = updatedAssets.findIndex(a => a.symbol === asset.symbol);
+        const assetIndex = updatedAssets.findIndex(
+          (a) => a.symbol === asset.symbol,
+        );
         let adjustment = perAssetAdjustment;
         if (i === 0 && remainder !== 0) {
           adjustment += remainder;
         }
-        updatedAssets[assetIndex].allocation = Math.max(0, asset.allocation + adjustment);
+        updatedAssets[assetIndex].allocation = Math.max(
+          0,
+          asset.allocation + adjustment,
+        );
       });
     }
 
@@ -52,10 +60,10 @@ export default function PortfolioOptimization() {
       setLoading(true);
       setError(null);
 
-      const response = await axios.post('/api/portfolio/optimize', {
-        assets: assets.map(a => a.symbol),
-        weights: assets.map(a => a.allocation / 100),
-        riskLevel: risk
+      const response = await axios.post("/api/portfolio/optimize", {
+        assets: assets.map((a) => a.symbol),
+        weights: assets.map((a) => a.allocation / 100),
+        riskLevel: risk,
       });
 
       if (response.data.success) {
@@ -73,13 +81,13 @@ export default function PortfolioOptimization() {
           assets: optimizedAssets,
           expectedReturn: response.data.expected_return,
           volatility: response.data.volatility,
-          sharpeRatio: response.data.sharpe_ratio
+          sharpeRatio: response.data.sharpe_ratio,
         });
       } else {
-        setError('Optimization failed: ' + response.data.error);
+        setError("Optimization failed: " + response.data.error);
       }
     } catch (err) {
-      setError('Error during optimization: ' + err.message);
+      setError("Error during optimization: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -113,26 +121,26 @@ export default function PortfolioOptimization() {
           optimizedAssets[3].allocation = 15; // MSFT
           optimizedAssets[4].allocation = 10; // GOOGL
           optimizedAssets[5].allocation = 10; // AMZN
-          optimizedAssets[6].allocation = 5;  // CASH
+          optimizedAssets[6].allocation = 5; // CASH
         } else {
           // High risk - more aggressive allocation
           optimizedAssets[0].allocation = 35; // BTC
           optimizedAssets[1].allocation = 30; // ETH
           optimizedAssets[2].allocation = 10; // AAPL
           optimizedAssets[3].allocation = 10; // MSFT
-          optimizedAssets[4].allocation = 5;  // GOOGL
-          optimizedAssets[5].allocation = 8;  // AMZN
-          optimizedAssets[6].allocation = 2;  // CASH
+          optimizedAssets[4].allocation = 5; // GOOGL
+          optimizedAssets[5].allocation = 8; // AMZN
+          optimizedAssets[6].allocation = 2; // CASH
         }
 
         setResult({
           assets: optimizedAssets,
           expectedReturn: (7 + risk * 0.8).toFixed(2),
           volatility: (5 + risk * 0.7).toFixed(2),
-          sharpeRatio: (1.2 + risk * 0.1).toFixed(2)
+          sharpeRatio: (1.2 + risk * 0.1).toFixed(2),
         });
       } catch (err) {
-        setError('Error during optimization simulation');
+        setError("Error during optimization simulation");
       } finally {
         setLoading(false);
       }
@@ -151,7 +159,12 @@ export default function PortfolioOptimization() {
             {assets.map((asset, index) => (
               <div className="asset-item" key={index}>
                 <div className="asset-header">
-                  <div className="asset-symbol" style={{ backgroundColor: asset.color }}>{asset.symbol}</div>
+                  <div
+                    className="asset-symbol"
+                    style={{ backgroundColor: asset.color }}
+                  >
+                    {asset.symbol}
+                  </div>
                   <div className="asset-name">{asset.name}</div>
                   <div className="asset-allocation">{asset.allocation}%</div>
                 </div>
@@ -160,7 +173,9 @@ export default function PortfolioOptimization() {
                   min="0"
                   max="100"
                   value={asset.allocation}
-                  onChange={(e) => handleAssetAllocationChange(index, e.target.value)}
+                  onChange={(e) =>
+                    handleAssetAllocationChange(index, e.target.value)
+                  }
                   className="allocation-slider"
                 />
               </div>
@@ -171,7 +186,10 @@ export default function PortfolioOptimization() {
             <div className="chart-rings">
               {assets.map((asset, index) => {
                 // Calculate the segment size and position
-                const total = assets.reduce((sum, a, i) => i <= index ? sum + a.allocation : sum, 0);
+                const total = assets.reduce(
+                  (sum, a, i) => (i <= index ? sum + a.allocation : sum),
+                  0,
+                );
                 const start = total - asset.allocation;
                 return (
                   <div
@@ -179,7 +197,7 @@ export default function PortfolioOptimization() {
                     className="chart-segment"
                     style={{
                       backgroundColor: asset.color,
-                      clipPath: `conic-gradient(from 0deg, transparent ${start}%, ${asset.color} ${start}%, ${asset.color} ${total}%, transparent ${total}%)`
+                      clipPath: `conic-gradient(from 0deg, transparent ${start}%, ${asset.color} ${start}%, ${asset.color} ${total}%, transparent ${total}%)`,
                     }}
                   />
                 );
@@ -210,7 +228,7 @@ export default function PortfolioOptimization() {
             onClick={mockOptimize}
             disabled={loading}
           >
-            {loading ? 'Optimizing...' : 'Optimize Portfolio'}
+            {loading ? "Optimizing..." : "Optimize Portfolio"}
           </button>
 
           {error && <div className="error-message">{error}</div>}
@@ -241,7 +259,10 @@ export default function PortfolioOptimization() {
                 <div className="chart-rings">
                   {result.assets.map((asset, index) => {
                     // Calculate the segment size and position
-                    const total = result.assets.reduce((sum, a, i) => i <= index ? sum + a.allocation : sum, 0);
+                    const total = result.assets.reduce(
+                      (sum, a, i) => (i <= index ? sum + a.allocation : sum),
+                      0,
+                    );
                     const start = total - asset.allocation;
                     return (
                       <div
@@ -249,7 +270,7 @@ export default function PortfolioOptimization() {
                         className="chart-segment"
                         style={{
                           backgroundColor: asset.color,
-                          clipPath: `conic-gradient(from 0deg, transparent ${start}%, ${asset.color} ${start}%, ${asset.color} ${total}%, transparent ${total}%)`
+                          clipPath: `conic-gradient(from 0deg, transparent ${start}%, ${asset.color} ${start}%, ${asset.color} ${total}%, transparent ${total}%)`,
                         }}
                       />
                     );
@@ -262,9 +283,16 @@ export default function PortfolioOptimization() {
                 {result.assets.map((asset, index) => (
                   <div className="asset-item optimized-item" key={index}>
                     <div className="asset-header">
-                      <div className="asset-symbol" style={{ backgroundColor: asset.color }}>{asset.symbol}</div>
+                      <div
+                        className="asset-symbol"
+                        style={{ backgroundColor: asset.color }}
+                      >
+                        {asset.symbol}
+                      </div>
                       <div className="asset-name">{asset.name}</div>
-                      <div className="asset-allocation">{asset.allocation}%</div>
+                      <div className="asset-allocation">
+                        {asset.allocation}%
+                      </div>
                     </div>
                   </div>
                 ))}

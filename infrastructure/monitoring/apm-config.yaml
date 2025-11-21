@@ -11,7 +11,12 @@ elastic_apm:
 
   output:
     elasticsearch:
-      hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      hosts:
+        [
+          "https://es-master-1:9200",
+          "https://es-master-2:9200",
+          "https://es-master-3:9200",
+        ]
       username: "apm_system"
       password: "${APM_SYSTEM_PASSWORD}"
       ssl:
@@ -20,7 +25,12 @@ elastic_apm:
   monitoring:
     enabled: true
     elasticsearch:
-      hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      hosts:
+        [
+          "https://es-master-1:9200",
+          "https://es-master-2:9200",
+          "https://es-master-3:9200",
+        ]
       username: "apm_system"
       password: "${APM_SYSTEM_PASSWORD}"
 
@@ -51,7 +61,12 @@ jaeger:
   storage:
     type: elasticsearch
     elasticsearch:
-      server_urls: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      server_urls:
+        [
+          "https://es-master-1:9200",
+          "https://es-master-2:9200",
+          "https://es-master-3:9200",
+        ]
       username: "jaeger"
       password: "${JAEGER_PASSWORD}"
       tls:
@@ -89,10 +104,10 @@ opentelemetry:
     prometheus:
       config:
         scrape_configs:
-          - job_name: 'otel-collector'
+          - job_name: "otel-collector"
             scrape_interval: 10s
             static_configs:
-              - targets: ['0.0.0.0:8888']
+              - targets: ["0.0.0.0:8888"]
 
   processors:
     batch:
@@ -113,7 +128,12 @@ opentelemetry:
 
   exporters:
     elasticsearch:
-      endpoints: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      endpoints:
+        [
+          "https://es-master-1:9200",
+          "https://es-master-2:9200",
+          "https://es-master-3:9200",
+        ]
       auth:
         username: "otel_exporter"
         password: "${OTEL_EXPORTER_PASSWORD}"
@@ -188,22 +208,22 @@ instrumentation:
 service_level_objectives:
   api_availability:
     sli: "sum(rate(http_requests_total{job='quantumvest-api',code!~'5..'}[5m])) / sum(rate(http_requests_total{job='quantumvest-api'}[5m]))"
-    slo: 0.999  # 99.9% availability
+    slo: 0.999 # 99.9% availability
     error_budget_window: "30d"
 
   api_latency:
     sli: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job='quantumvest-api'}[5m]))"
-    slo: 0.5  # 500ms 95th percentile
+    slo: 0.5 # 500ms 95th percentile
     error_budget_window: "30d"
 
   transaction_success_rate:
     sli: "sum(rate(transactions_total{status='success'}[5m])) / sum(rate(transactions_total[5m]))"
-    slo: 0.9999  # 99.99% success rate
+    slo: 0.9999 # 99.99% success rate
     error_budget_window: "7d"
 
   database_availability:
     sli: "up{job='postgres-exporter'}"
-    slo: 0.9999  # 99.99% availability
+    slo: 0.9999 # 99.99% availability
     error_budget_window: "30d"
 
 # Error Tracking and Analysis
@@ -231,11 +251,11 @@ error_tracking:
 
   error_budgets:
     critical_errors:
-      budget: 0.001  # 0.1% error rate
+      budget: 0.001 # 0.1% error rate
       window: "7d"
 
     warning_errors:
-      budget: 0.01   # 1% error rate
+      budget: 0.01 # 1% error rate
       window: "30d"
 
 # Real User Monitoring (RUM)
@@ -303,8 +323,8 @@ synthetic_monitoring:
       locations: ["us-east-1", "us-west-2"]
 
   alerting:
-    failure_threshold: 2  # Alert after 2 consecutive failures
-    recovery_threshold: 1  # Resolve after 1 success
+    failure_threshold: 2 # Alert after 2 consecutive failures
+    recovery_threshold: 1 # Resolve after 1 success
 
 # Performance Baselines and Anomaly Detection
 performance_baselines:

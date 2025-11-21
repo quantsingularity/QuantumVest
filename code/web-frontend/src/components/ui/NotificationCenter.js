@@ -1,29 +1,31 @@
-import React from 'react';
-import '../../styles/NotificationCenter.css';
+import React from "react";
+import "../../styles/NotificationCenter.css";
 
 const NotificationCenter = () => {
   const notifications = [
     {
       id: 1,
-      type: 'info',
-      title: 'Portfolio Update',
-      message: 'Your portfolio has been optimized with the latest market data.',
-      time: '10 minutes ago'
+      type: "info",
+      title: "Portfolio Update",
+      message: "Your portfolio has been optimized with the latest market data.",
+      time: "10 minutes ago",
     },
     {
       id: 2,
-      type: 'success',
-      title: 'Prediction Accuracy',
-      message: 'Our BTC price prediction was 98.5% accurate over the last 7 days!',
-      time: '2 hours ago'
+      type: "success",
+      title: "Prediction Accuracy",
+      message:
+        "Our BTC price prediction was 98.5% accurate over the last 7 days!",
+      time: "2 hours ago",
     },
     {
       id: 3,
-      type: 'warning',
-      title: 'Market Alert',
-      message: 'Unusual volatility detected in ETH. Consider reviewing your allocation.',
-      time: '1 day ago'
-    }
+      type: "warning",
+      title: "Market Alert",
+      message:
+        "Unusual volatility detected in ETH. Consider reviewing your allocation.",
+      time: "1 day ago",
+    },
   ];
 
   return (
@@ -35,8 +37,11 @@ const NotificationCenter = () => {
 
       <div className="notification-list">
         {notifications.length > 0 ? (
-          notifications.map(notification => (
-            <div key={notification.id} className={`notification-item ${notification.type}`}>
+          notifications.map((notification) => (
+            <div
+              key={notification.id}
+              className={`notification-item ${notification.type}`}
+            >
               <div className="notification-icon"></div>
               <div className="notification-content">
                 <h4>{notification.title}</h4>

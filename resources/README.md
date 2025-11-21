@@ -58,12 +58,14 @@ These reference materials are typically stored as PDF documents, though some may
 ### For Developers
 
 Developers should reference the resources directory when:
+
 - Implementing new features that require specific design specifications
 - Training or testing AI models with appropriate datasets
 - Ensuring compliance with industry standards and regulations
 - Understanding the theoretical basis for implemented algorithms
 
 When using resources from this directory, developers should:
+
 1. Verify the version and relevance of the resource
 2. Document any dependencies on specific resources
 3. Follow the appropriate licensing and attribution requirements
@@ -71,6 +73,7 @@ When using resources from this directory, developers should:
 ### For Designers
 
 Designers working on QuantumVest should:
+
 - Store all design assets in the designs subdirectory
 - Maintain version control for design files
 - Ensure exported assets are optimized for web and mobile use
@@ -79,6 +82,7 @@ Designers working on QuantumVest should:
 ### For Data Scientists
 
 Data scientists should:
+
 - Document the source, structure, and preprocessing steps for all datasets
 - Version datasets appropriately when updates are made
 - Provide sample data for testing without including sensitive information
@@ -106,6 +110,7 @@ When adding new resources to this directory:
 ## Maintenance
 
 The resources directory should be periodically reviewed to:
+
 - Remove outdated or unused resources
 - Update datasets with more current information when appropriate
 - Ensure design assets remain aligned with the current application
@@ -114,6 +119,7 @@ The resources directory should be periodically reviewed to:
 ## Additional Information
 
 For more detailed information about specific resources, refer to:
+
 - The data pipeline documentation in the docs directory
 - The UI design plan in the docs directory
 - The AI models documentation for information about dataset requirements

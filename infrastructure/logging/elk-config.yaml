@@ -79,7 +79,7 @@ elasticsearch:
                 allocate:
                   number_of_replicas: 0
             delete:
-              min_age: 2555d  # 7 years for financial compliance
+              min_age: 2555d # 7 years for financial compliance
 
   index_templates:
     - name: quantumvest-logs
@@ -136,7 +136,12 @@ logstash:
   monitoring:
     enabled: true
     elasticsearch:
-      hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+      hosts:
+        [
+          "https://es-master-1:9200",
+          "https://es-master-2:9200",
+          "https://es-master-3:9200",
+        ]
       username: logstash_system
       password: ${LOGSTASH_PASSWORD}
       ssl:
@@ -171,7 +176,12 @@ kibana:
       key: /usr/share/kibana/config/certs/kibana.key
 
   elasticsearch:
-    hosts: ["https://es-master-1:9200", "https://es-master-2:9200", "https://es-master-3:9200"]
+    hosts:
+      [
+        "https://es-master-1:9200",
+        "https://es-master-2:9200",
+        "https://es-master-3:9200",
+      ]
     username: kibana_system
     password: ${KIBANA_PASSWORD}
     ssl:
@@ -427,19 +437,19 @@ log_retention:
       hot_phase: "7d"
       warm_phase: "30d"
       cold_phase: "365d"
-      delete_phase: "2555d"  # 7 years
+      delete_phase: "2555d" # 7 years
 
     security_logs:
       hot_phase: "30d"
       warm_phase: "90d"
       cold_phase: "365d"
-      delete_phase: "2555d"  # 7 years
+      delete_phase: "2555d" # 7 years
 
     audit_logs:
       hot_phase: "90d"
       warm_phase: "365d"
-      cold_phase: "1825d"  # 5 years
-      delete_phase: "2555d"  # 7 years
+      cold_phase: "1825d" # 5 years
+      delete_phase: "2555d" # 7 years
 
     system_logs:
       hot_phase: "7d"
@@ -457,7 +467,7 @@ log_retention:
 log_alerting:
   watchers:
     - name: "high_error_rate"
-      schedule: "0 */5 * * * ?"  # Every 5 minutes
+      schedule: "0 */5 * * * ?" # Every 5 minutes
       query: |
         {
           "query": {
@@ -483,7 +493,7 @@ log_alerting:
             subject: "High Error Rate Alert"
 
     - name: "failed_login_attempts"
-      schedule: "0 */1 * * * ?"  # Every minute
+      schedule: "0 */1 * * * ?" # Every minute
       query: |
         {
           "query": {

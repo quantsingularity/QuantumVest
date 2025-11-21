@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 700;
   font-size: 1.25rem;
   color: var(--primary);
@@ -81,7 +81,7 @@
 }
 
 .homepage-nav-link.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -125,7 +125,7 @@
 .homepage-container {
   width: 100%;
   overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 /* Hero Section */
@@ -149,7 +149,7 @@
 }
 
 .hero-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
@@ -234,7 +234,7 @@
 }
 
 .section-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
@@ -277,7 +277,7 @@
 }
 
 .feature-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -310,7 +310,7 @@
 }
 
 .stat-value {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 3rem;
   font-weight: 700;
   color: var(--primary);
@@ -344,7 +344,7 @@
 }
 
 .step-number {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 4rem;
   font-weight: 700;
   color: var(--primary);
@@ -357,7 +357,7 @@
 }
 
 .step-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -441,7 +441,7 @@
 }
 
 .cta-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
@@ -536,7 +536,8 @@
     width: 100%;
   }
 
-  .hero-cta-primary, .hero-cta-secondary {
+  .hero-cta-primary,
+  .hero-cta-secondary {
     width: 100%;
   }
 

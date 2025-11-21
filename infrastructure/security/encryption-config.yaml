@@ -29,14 +29,14 @@ encryption_at_rest:
     backup_storage:
       enabled: true
       algorithm: "AES-256-GCM"
-      key_rotation_days: 15  # More frequent for backups
+      key_rotation_days: 15 # More frequent for backups
       compression_before_encryption: true
 
 # Encryption in Transit
 encryption_in_transit:
   api_endpoints:
     tls_version: "1.3"
-    certificate_type: "EV_SSL"  # Extended Validation
+    certificate_type: "EV_SSL" # Extended Validation
     hsts_enabled: true
     hsts_max_age: 31536000
 
@@ -57,7 +57,7 @@ encryption_in_transit:
 
 # Key Management Service (KMS)
 kms_config:
-  provider: "cloud_native"  # AWS KMS, Azure Key Vault, etc.
+  provider: "cloud_native" # AWS KMS, Azure Key Vault, etc.
 
   master_keys:
     - name: "quantumvest-master-key"
@@ -147,12 +147,12 @@ certificate_management:
 # Hardware Security Modules (HSM)
 hsm_config:
   enabled: true
-  type: "cloud_hsm"  # or "network_attached"
+  type: "cloud_hsm" # or "network_attached"
 
   key_storage:
     master_keys: true
     signing_keys: true
-    ssl_certificates: false  # Use KMS for SSL certs
+    ssl_certificates: false # Use KMS for SSL certs
 
   high_availability: true
   backup_strategy: "cross_region"

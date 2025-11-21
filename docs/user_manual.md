@@ -47,6 +47,7 @@ QuantumVest combines artificial intelligence, blockchain technology, and quantit
 ### Account Recovery
 
 If you forget your password:
+
 1. Click on "Forgot Password" on the login page
 2. Enter your email address
 3. Follow the instructions sent to your email to reset your password

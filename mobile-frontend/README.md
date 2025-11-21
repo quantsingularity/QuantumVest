@@ -62,12 +62,14 @@ To work on the mobile frontend, you'll need:
 ### Getting Started
 
 1. Install dependencies:
+
    ```
    cd mobile-frontend
    yarn install
    ```
 
 2. Start the development server:
+
    ```
    yarn start
    ```
@@ -124,6 +126,7 @@ The mobile application includes several types of tests:
 - **End-to-End Tests**: Validate complete user flows
 
 Run tests using:
+
 ```
 yarn test
 ```

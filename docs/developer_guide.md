@@ -273,12 +273,12 @@ def calculate_sharpe_ratio(returns: List[float], risk_free_rate: float = 0.0) ->
 Example:
 
 ```javascript
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { fetchPrediction } from '../api/predictions';
-import { LoadingSpinner } from './ui/LoadingSpinner';
-import { ErrorMessage } from './ui/ErrorMessage';
-import './styles/PredictionChart.css';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { fetchPrediction } from "../api/predictions";
+import { LoadingSpinner } from "./ui/LoadingSpinner";
+import { ErrorMessage } from "./ui/ErrorMessage";
+import "./styles/PredictionChart.css";
 
 export const PredictionChart = ({ assetId, timeframe }) => {
   const [prediction, setPrediction] = useState(null);
@@ -315,7 +315,7 @@ export const PredictionChart = ({ assetId, timeframe }) => {
 
 PredictionChart.propTypes = {
   assetId: PropTypes.string.isRequired,
-  timeframe: PropTypes.oneOf(['1d', '1w', '1m', '3m']).isRequired,
+  timeframe: PropTypes.oneOf(["1d", "1w", "1m", "3m"]).isRequired,
 };
 ```
 

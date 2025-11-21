@@ -36,6 +36,7 @@ QuantumVest Platform provides:
 ## ✨ Key Features
 
 ### 🔐 Security & Compliance
+
 - **Multi-Factor Authentication (MFA)** with TOTP support
 - **Role-Based Access Control (RBAC)** with granular permissions
 - **End-to-End Encryption** for sensitive data
@@ -44,6 +45,7 @@ QuantumVest Platform provides:
 - **Threat Detection** with real-time security monitoring
 
 ### 🤖 AI & Machine Learning
+
 - **Advanced Time Series Prediction** using LSTM, Transformer, and ensemble models
 - **Portfolio Optimization** with modern portfolio theory and machine learning
 - **Risk Assessment** with VaR, CVaR, and stress testing
@@ -52,6 +54,7 @@ QuantumVest Platform provides:
 - **Real-time Model Training** with automated retraining pipelines
 
 ### 📊 Portfolio Management
+
 - **Multi-Asset Support** (stocks, crypto, bonds, ETFs, commodities, forex)
 - **Real-time Portfolio Valuation** with live market data
 - **Performance Analytics** with comprehensive metrics
@@ -60,6 +63,7 @@ QuantumVest Platform provides:
 - **Transaction Management** with detailed audit trails
 
 ### 🔗 Blockchain Integration
+
 - **Smart Contracts** for transparent portfolio management
 - **Token-based Governance** with voting mechanisms
 - **Staking and Rewards** system for platform tokens
@@ -67,6 +71,7 @@ QuantumVest Platform provides:
 - **Decentralized Identity** for enhanced security
 
 ### 📈 Analytics & Reporting
+
 - **Real-time Dashboards** with customizable widgets
 - **Advanced Charting** with technical indicators
 - **Performance Attribution** analysis
@@ -142,6 +147,7 @@ QuantumVest Platform provides:
 ### Technology Stack
 
 **Backend:**
+
 - **Framework**: Flask 2.3+ with SQLAlchemy ORM
 - **Database**: PostgreSQL 14+ (primary), Redis 7+ (cache)
 - **AI/ML**: TensorFlow 2.13+, scikit-learn, XGBoost, LightGBM
@@ -149,12 +155,14 @@ QuantumVest Platform provides:
 - **API**: RESTful APIs with OpenAPI/Swagger documentation
 
 **Frontend:**
+
 - **Framework**: React.js 18+ with TypeScript
 - **State Management**: Redux Toolkit
 - **UI Components**: Material-UI / Ant Design
 - **Charts**: Chart.js / D3.js for advanced visualizations
 
 **Blockchain:**
+
 - **Platform**: Ethereum (Solidity 0.8+)
 - **Framework**: Truffle / Hardhat
 - **Libraries**: OpenZeppelin contracts
@@ -353,6 +361,7 @@ curl -X GET http://localhost:5000/api/v1/portfolios/{portfolio_id}/compliance \
 ### Prediction Models
 
 #### Time Series Forecasting
+
 - **LSTM Networks** for sequential pattern recognition
 - **Transformer Models** for attention-based predictions
 - **Ensemble Methods** combining multiple algorithms
@@ -360,6 +369,7 @@ curl -X GET http://localhost:5000/api/v1/portfolios/{portfolio_id}/compliance \
 - **Prophet** for seasonal decomposition
 
 #### Portfolio Optimization
+
 - **Modern Portfolio Theory** implementation
 - **Black-Litterman Model** for expected returns
 - **Risk Parity** optimization
@@ -367,6 +377,7 @@ curl -X GET http://localhost:5000/api/v1/portfolios/{portfolio_id}/compliance \
 - **Monte Carlo Simulation** for scenario analysis
 
 #### Risk Assessment
+
 - **Value at Risk (VaR)** calculation
 - **Expected Shortfall (CVaR)** analysis
 - **Stress Testing** with historical scenarios
@@ -403,18 +414,21 @@ predictor.save_model("models/stock_predictor")
 ### Smart Contracts
 
 #### QuantumVest Token (QVT)
+
 - **ERC-20 Compatible** utility token
 - **Governance Rights** for platform decisions
 - **Staking Rewards** for long-term holders
 - **Compliance Features** with blacklisting and vesting
 
 #### Portfolio Manager Contract
+
 - **Transparent Portfolio Management** on-chain
 - **Asset Tokenization** for fractional ownership
 - **Automated Rebalancing** with smart contracts
 - **Fee Collection** and distribution
 
 #### Staking Contract
+
 - **Flexible Staking Pools** with different lock periods
 - **Reward Distribution** based on staking duration
 - **Governance Participation** through staked tokens
@@ -567,16 +581,16 @@ spec:
         app: quantumvest-backend
     spec:
       containers:
-      - name: backend
-        image: quantumvest/backend:latest
-        ports:
-        - containerPort: 5000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: url
+        - name: backend
+          image: quantumvest/backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: url
 ```
 
 ## 🔄 CI/CD Pipeline
@@ -653,12 +667,14 @@ fi
 ### Common Issues
 
 1. **Database Connection Issues**
+
    ```bash
    # Check database connectivity
    docker-compose exec backend python -c "from app import db; print(db.engine.execute("SELECT 1").scalar())"
    ```
 
 2. **Memory Issues**
+
    ```bash
    # Monitor memory usage
    docker stats
@@ -693,4 +709,5 @@ docker-compose exec postgres psql -U quantumvest_user -d quantumvest_prod -c "SE
 # Monitor Redis
 docker-compose exec redis redis-cli info memory
 ```
+
 ---

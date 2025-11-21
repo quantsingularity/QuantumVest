@@ -1,13 +1,13 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import '../../styles/Sidebar.css';
-import { motion } from 'framer-motion';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import "../../styles/Sidebar.css";
+import { motion } from "framer-motion";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
 
   const isActive = (path) => {
-    return location.pathname === path ? 'active' : '';
+    return location.pathname === path ? "active" : "";
   };
 
   return (
@@ -16,7 +16,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <div className="sidebar-overlay" onClick={toggleSidebar}></div>
       )}
       <motion.aside
-        className={`sidebar ${!isOpen ? 'sidebar-collapsed' : ''}`}
+        className={`sidebar ${!isOpen ? "sidebar-collapsed" : ""}`}
         initial={{ x: -280 }}
         animate={{ x: isOpen ? 0 : -280 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -30,56 +30,53 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
         <nav className="sidebar-nav">
           <ul>
-            <motion.li
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}>
+            <motion.li whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+              <Link
+                to="/dashboard"
+                className={`nav-link ${isActive("/dashboard")}`}
+              >
                 <i className="nav-icon dashboard-icon"></i>
                 <span>Dashboard</span>
               </Link>
             </motion.li>
-            <motion.li
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link to="/" className={`nav-link ${isActive('/')}`}>
+            <motion.li whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+              <Link to="/" className={`nav-link ${isActive("/")}`}>
                 <i className="nav-icon home-icon"></i>
                 <span>Home</span>
               </Link>
             </motion.li>
-            <motion.li
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link to="/predictions" className={`nav-link ${isActive('/predictions')}`}>
+            <motion.li whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+              <Link
+                to="/predictions"
+                className={`nav-link ${isActive("/predictions")}`}
+              >
                 <i className="nav-icon predictions-icon"></i>
                 <span>Predictions</span>
               </Link>
             </motion.li>
-            <motion.li
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link to="/optimize" className={`nav-link ${isActive('/optimize')}`}>
+            <motion.li whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+              <Link
+                to="/optimize"
+                className={`nav-link ${isActive("/optimize")}`}
+              >
                 <i className="nav-icon portfolio-icon"></i>
                 <span>Portfolio</span>
               </Link>
             </motion.li>
-            <motion.li
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link to="/analytics" className={`nav-link ${isActive('/analytics')}`}>
+            <motion.li whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+              <Link
+                to="/analytics"
+                className={`nav-link ${isActive("/analytics")}`}
+              >
                 <i className="nav-icon analytics-icon"></i>
                 <span>Analytics</span>
               </Link>
             </motion.li>
-            <motion.li
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link to="/settings" className={`nav-link ${isActive('/settings')}`}>
+            <motion.li whileHover={{ x: 5 }} transition={{ duration: 0.2 }}>
+              <Link
+                to="/settings"
+                className={`nav-link ${isActive("/settings")}`}
+              >
                 <i className="nav-icon settings-icon"></i>
                 <span>Settings</span>
               </Link>

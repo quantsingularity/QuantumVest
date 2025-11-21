@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 // Custom hook for handling API requests with loading and error states
-export const useApi = (apiFunction, initialData = null, immediate = false, ...params) => {
+export const useApi = (
+  apiFunction,
+  initialData = null,
+  immediate = false,
+  ...params
+) => {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -10,11 +15,13 @@ export const useApi = (apiFunction, initialData = null, immediate = false, ...pa
     try {
       setLoading(true);
       setError(null);
-      const result = await apiFunction(...(executeParams.length > 0 ? executeParams : params));
+      const result = await apiFunction(
+        ...(executeParams.length > 0 ? executeParams : params),
+      );
       setData(result);
       return result;
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || "An error occurred");
       return null;
     } finally {
       setLoading(false);
@@ -41,7 +48,7 @@ export const useForm = (initialValues = {}, validate = () => ({})) => {
     const { name, value } = e.target;
     setValues({
       ...values,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -49,7 +56,7 @@ export const useForm = (initialValues = {}, validate = () => ({})) => {
     const { name } = e.target;
     setTouched({
       ...touched,
-      [name]: true
+      [name]: true,
     });
 
     // Validate on blur
@@ -63,7 +70,7 @@ export const useForm = (initialValues = {}, validate = () => ({})) => {
     // Mark all fields as touched
     const allTouched = Object.keys(values).reduce(
       (acc, key) => ({ ...acc, [key]: true }),
-      {}
+      {},
     );
     setTouched(allTouched);
 
@@ -95,7 +102,7 @@ export const useForm = (initialValues = {}, validate = () => ({})) => {
     handleSubmit,
     resetForm,
     setValues,
-    setIsSubmitting
+    setIsSubmitting,
   };
 };
 
@@ -113,7 +120,8 @@ export const useLocalStorage = (key, initialValue) => {
 
   const setValue = (value) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
@@ -135,9 +143,9 @@ export const useMediaQuery = (query) => {
     }
 
     const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
+    media.addEventListener("change", listener);
 
-    return () => media.removeEventListener('change', listener);
+    return () => media.removeEventListener("change", listener);
   }, [matches, query]);
 
   return matches;

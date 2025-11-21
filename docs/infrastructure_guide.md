@@ -121,35 +121,35 @@ spec:
         app: backend
     spec:
       containers:
-      - name: backend
-        image: quantumvest/backend:latest
-        ports:
-        - containerPort: 5000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: app-secrets
-              key: database-url
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 5000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 5000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: backend
+          image: quantumvest/backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: database-url
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ```
 
 #### Frontend Deployment
@@ -170,35 +170,35 @@ spec:
         app: frontend
     spec:
       containers:
-      - name: frontend
-        image: quantumvest/frontend:latest
-        ports:
-        - containerPort: 80
-        env:
-        - name: API_URL
-          valueFrom:
-            configMapKeyRef:
-              name: app-configmap
-              key: api-url
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "300m"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: frontend
+          image: quantumvest/frontend:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-configmap
+                  key: api-url
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "300m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ```
 
 #### Ingress Configuration
@@ -213,31 +213,31 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
-  - hosts:
-    - api.quantumvest.com
-    - www.quantumvest.com
-    secretName: quantumvest-tls
+    - hosts:
+        - api.quantumvest.com
+        - www.quantumvest.com
+      secretName: quantumvest-tls
   rules:
-  - host: api.quantumvest.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: backend
-            port:
-              number: 5000
-  - host: www.quantumvest.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend
-            port:
-              number: 80
+    - host: api.quantumvest.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 5000
+    - host: www.quantumvest.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
 ```
 
 ### Deploying to Kubernetes
@@ -627,7 +627,7 @@ infrastructure/ansible/
     state: directory
     owner: "{{ app_user }}"
     group: "{{ app_group }}"
-    mode: '0755'
+    mode: "0755"
   become: yes
 ```
 
@@ -649,7 +649,7 @@ infrastructure/ansible/
     dest: /etc/nginx/nginx.conf
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   become: yes
   notify: restart nginx
 
@@ -659,7 +659,7 @@ infrastructure/ansible/
     dest: /etc/nginx/sites-available/quantumvest
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   become: yes
   notify: restart nginx
 
@@ -699,7 +699,7 @@ infrastructure/ansible/
     dest: /etc/postgresql/13/main/postgresql.conf
     owner: postgres
     group: postgres
-    mode: '0644'
+    mode: "0644"
   become: yes
   notify: restart postgresql
 
@@ -709,7 +709,7 @@ infrastructure/ansible/
     dest: /etc/postgresql/13/main/pg_hba.conf
     owner: postgres
     group: postgres
-    mode: '0640'
+    mode: "0640"
   become: yes
   notify: restart postgresql
 
@@ -819,34 +819,34 @@ Configure alerting rules in Prometheus for critical conditions:
 
 ```yaml
 groups:
-- name: example
-  rules:
-  - alert: HighCPUUsage
-    expr: avg(node_cpu_seconds_total{mode="idle"}) by (instance) < 0.2
-    for: 5m
-    labels:
-      severity: warning
-    annotations:
-      summary: High CPU usage on {{ $labels.instance }}
-      description: CPU usage is above 80% for more than 5 minutes.
+  - name: example
+    rules:
+      - alert: HighCPUUsage
+        expr: avg(node_cpu_seconds_total{mode="idle"}) by (instance) < 0.2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High CPU usage on {{ $labels.instance }}
+          description: CPU usage is above 80% for more than 5 minutes.
 
-  - alert: HighMemoryUsage
-    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
-    for: 5m
-    labels:
-      severity: warning
-    annotations:
-      summary: High memory usage on {{ $labels.instance }}
-      description: Memory available is less than 10% for more than 5 minutes.
+      - alert: HighMemoryUsage
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High memory usage on {{ $labels.instance }}
+          description: Memory available is less than 10% for more than 5 minutes.
 
-  - alert: HighAPIErrorRate
-    expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      summary: High API error rate
-      description: API error rate is above 5% for more than 5 minutes.
+      - alert: HighAPIErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: High API error rate
+          description: API error rate is above 5% for more than 5 minutes.
 ```
 
 ## Backup and Disaster Recovery

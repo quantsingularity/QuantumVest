@@ -1,29 +1,34 @@
 # QuantumVest Enhancement Documentation
 
 ## Overview
+
 This document provides an overview of the enhancements made to the QuantumVest project, focusing on the integration of a real-time data pipeline with predictive modeling capabilities.
 
 ## Enhancements Implemented
 
 ### 1. Real-Time Data Pipeline
+
 - Implemented modular data fetchers for both stock and cryptocurrency data
 - Added robust error handling and data validation
 - Created caching mechanisms to optimize API usage
 - Integrated with Yahoo Finance API for stock data and CoinGecko API for cryptocurrency data
 
 ### 2. Time-Series Predictive Modeling
+
 - Developed LSTM-based models for price prediction
 - Implemented feature engineering for technical indicators
 - Created model training, evaluation, and prediction services
 - Added support for model versioning and performance tracking
 
 ### 3. Flask API Integration
+
 - Enhanced the existing Flask application with new API endpoints
 - Created RESTful endpoints for data and predictions
 - Maintained backward compatibility with legacy endpoints
 - Added comprehensive error handling and validation
 
 ### 4. Project Structure
+
 The enhanced project follows a modular architecture:
 
 ```
@@ -52,6 +57,7 @@ code/
 ### New API Endpoints
 
 #### Data Endpoints
+
 - `GET /api/v1/data/stocks/<symbol>` - Get stock data
   - Query parameters:
     - `interval` (optional): Data interval (default: '1d')
@@ -63,6 +69,7 @@ code/
     - `use_cache` (optional): Whether to use cached data (default: true)
 
 #### Prediction Endpoints
+
 - `GET /api/v1/predictions/stocks/<symbol>` - Get stock price predictions
   - Query parameters:
     - `days_ahead` (optional): Number of days to predict ahead (default: 7)
@@ -74,9 +81,11 @@ code/
     - `use_cache` (optional): Whether to use cached data (default: true)
 
 #### Model Status Endpoint
+
 - `GET /api/v1/models/status` - Get model training status and performance metrics
 
 ### Legacy API Endpoints (Maintained for Backward Compatibility)
+
 - `GET /api/health` - Health check endpoint
 - `GET /api/blockchain-data/<asset>` - Legacy blockchain data endpoint
 - `POST /api/predict` - Legacy prediction endpoint
@@ -85,6 +94,7 @@ code/
 ## Usage Examples
 
 ### Fetching Stock Data
+
 ```python
 import requests
 
@@ -95,6 +105,7 @@ print(f"Retrieved {len(data['data'])} records for {data['symbol']}")
 ```
 
 ### Getting Stock Predictions
+
 ```python
 import requests
 
@@ -107,6 +118,7 @@ for date, price in zip(predictions['dates'], predictions['predictions']):
 ```
 
 ### Fetching Cryptocurrency Data
+
 ```python
 import requests
 
@@ -119,11 +131,13 @@ print(f"Retrieved {len(data['data'])} records for {data['symbol']}")
 ## Running the Application
 
 1. Install dependencies:
+
 ```bash
 pip install -r code/backend/requirements.txt
 ```
 
 2. Start the Flask application:
+
 ```bash
 cd code/backend
 python app.py
@@ -132,6 +146,7 @@ python app.py
 3. Access the API at `http://localhost:5000/api/v1/health`
 
 ## Future Enhancements
+
 - Add support for more data sources
 - Implement ensemble models for improved prediction accuracy
 - Add user authentication for API access

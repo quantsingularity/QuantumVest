@@ -1,11 +1,13 @@
 # QuantumVest Real-Time Data Pipeline Architecture
 
 ## Overview
+
 This document outlines the architecture for enhancing QuantumVest with a real-time data pipeline and predictive modeling capabilities. The architecture is designed to be modular, scalable, and maintainable.
 
 ## Architecture Components
 
 ### 1. Data Fetching Module
+
 - **Purpose**: Fetch real-time cryptocurrency and stock market data from public APIs
 - **Components**:
   - `data_fetcher.py`: Core module for fetching data from various sources
@@ -22,6 +24,7 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
   - Data normalization
 
 ### 2. Data Storage Module
+
 - **Purpose**: Store historical and real-time data for model training and analysis
 - **Components**:
   - `data_storage.py`: Handles data persistence operations
@@ -32,6 +35,7 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
   - Time-series optimized storage for efficient retrieval
 
 ### 3. Time-Series Modeling Module
+
 - **Purpose**: Train and update LSTM models for price prediction
 - **Components**:
   - `model_trainer.py`: Handles model training and validation
@@ -45,6 +49,7 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
   - Automated retraining based on performance thresholds
 
 ### 4. Prediction Service Module
+
 - **Purpose**: Generate predictions using trained models
 - **Components**:
   - `prediction_service.py`: Core prediction logic
@@ -52,6 +57,7 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
   - `prediction_formatter.py`: Formats predictions for API responses
 
 ### 5. Flask API Integration
+
 - **Purpose**: Serve predictions and data through RESTful endpoints
 - **Components**:
   - Enhanced `app.py`: Integrates new endpoints
@@ -91,6 +97,7 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
 ## Implementation Considerations
 
 ### Dependencies
+
 - TensorFlow/Keras for LSTM implementation
 - Pandas and NumPy for data manipulation
 - Requests for API calls
@@ -98,11 +105,13 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
 - SQLite for lightweight database (optional)
 
 ### Scalability
+
 - Modular design allows for easy replacement of components
 - Separation of concerns enables parallel development
 - Configurable parameters for different deployment environments
 
 ### Monitoring
+
 - Logging of API calls and response times
 - Tracking of model performance metrics
 - Alerting for data fetch failures or model degradation

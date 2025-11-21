@@ -1,25 +1,25 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { storage } from '../utils/helpers';
+import React, { createContext, useState, useEffect } from "react";
+import { storage } from "../utils/helpers";
 
 // Create Theme Context
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
 
   // Initialize theme from localStorage on mount
   useEffect(() => {
-    const savedTheme = storage.get('theme', 'light');
+    const savedTheme = storage.get("theme", "light");
     setTheme(savedTheme);
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
 
   // Toggle theme function
   const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
+    const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
-    storage.set('theme', newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
+    storage.set("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
   };
 
   return (
@@ -33,7 +33,7 @@ export const ThemeProvider = ({ children }) => {
 export const useTheme = () => {
   const context = React.useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 };

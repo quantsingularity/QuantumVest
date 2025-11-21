@@ -1,10 +1,10 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import ErrorBoundary from '../../components/ui/ErrorBoundary';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import ErrorBoundary from "../../components/ui/ErrorBoundary";
 
 // Create a component that throws an error
 const ErrorComponent = () => {
-  throw new Error('Test error');
+  throw new Error("Test error");
   return <div>This should not render</div>;
 };
 
@@ -13,7 +13,7 @@ const WorkingComponent = () => {
   return <div>Working component</div>;
 };
 
-describe('ErrorBoundary Component', () => {
+describe("ErrorBoundary Component", () => {
   // Suppress console errors for clean test output
   const originalConsoleError = console.error;
   beforeAll(() => {
@@ -24,36 +24,40 @@ describe('ErrorBoundary Component', () => {
     console.error = originalConsoleError;
   });
 
-  test('renders children when no error occurs', () => {
+  test("renders children when no error occurs", () => {
     render(
       <ErrorBoundary>
         <WorkingComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
-    expect(screen.getByText('Working component')).toBeInTheDocument();
+    expect(screen.getByText("Working component")).toBeInTheDocument();
   });
 
-  test('renders fallback UI when error occurs', () => {
+  test("renders fallback UI when error occurs", () => {
     render(
       <ErrorBoundary>
         <ErrorComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
-    expect(screen.getByText("We're sorry, but there was an error loading this component.")).toBeInTheDocument();
-    expect(screen.getByText('Try Again')).toBeInTheDocument();
+    expect(screen.getByText("Something went wrong")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "We're sorry, but there was an error loading this component.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Try Again")).toBeInTheDocument();
   });
 
-  test('shows error details when showDetails prop is true', () => {
+  test("shows error details when showDetails prop is true", () => {
     render(
       <ErrorBoundary showDetails={true}>
         <ErrorComponent />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
-    expect(screen.getByText('Error Details')).toBeInTheDocument();
-    expect(screen.getByText('Error: Test error')).toBeInTheDocument();
+    expect(screen.getByText("Error Details")).toBeInTheDocument();
+    expect(screen.getByText("Error: Test error")).toBeInTheDocument();
   });
 });

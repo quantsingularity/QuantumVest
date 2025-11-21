@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [main, develop]
   schedule:
-    - cron: '0 2 * * *'  # Daily security scans
+    - cron: "0 2 * * *" # Daily security scans
 
 env:
   REGISTRY: ghcr.io
@@ -35,16 +35,16 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
 
       - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
       - name: Run Snyk security scan
         uses: snyk/actions/node@master
@@ -75,8 +75,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -389,7 +389,7 @@ jobs:
         with:
           name: compliance-report
           path: reports/compliance/
-          retention-days: 2555  # 7 years for financial compliance
+          retention-days: 2555 # 7 years for financial compliance
 
   disaster-recovery-test:
     name: Disaster Recovery Test
@@ -427,7 +427,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: failure
-          channel: '#critical-alerts'
+          channel: "#critical-alerts"
           webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   notification:
@@ -440,6 +440,6 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          channel: '#deployments'
+          channel: "#deployments"
           webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
           fields: repo,message,commit,author,action,eventName,ref,workflow

@@ -1,83 +1,117 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Line, Bar, Pie } from 'react-chartjs-2';
+import React from "react";
+import { motion } from "framer-motion";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+import { Line, Bar, Pie } from "react-chartjs-2";
 
 // Register ChartJS components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const Analytics = () => {
   // Sample data for charts
   const lineChartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [
       {
-        label: 'Portfolio Performance',
+        label: "Portfolio Performance",
         data: [65, 59, 80, 81, 56, 55, 72, 78, 80, 85, 91, 95],
         fill: false,
-        backgroundColor: 'rgba(37, 99, 235, 0.2)',
-        borderColor: 'rgba(37, 99, 235, 1)',
+        backgroundColor: "rgba(37, 99, 235, 0.2)",
+        borderColor: "rgba(37, 99, 235, 1)",
         tension: 0.4,
       },
       {
-        label: 'Market Index',
+        label: "Market Index",
         data: [70, 62, 75, 70, 50, 58, 69, 74, 78, 80, 85, 88],
         fill: false,
-        backgroundColor: 'rgba(124, 58, 237, 0.2)',
-        borderColor: 'rgba(124, 58, 237, 1)',
+        backgroundColor: "rgba(124, 58, 237, 0.2)",
+        borderColor: "rgba(124, 58, 237, 1)",
         tension: 0.4,
       },
     ],
   };
 
   const barChartData = {
-    labels: ['Stocks', 'Bonds', 'Real Estate', 'Commodities', 'Crypto', 'Cash'],
+    labels: ["Stocks", "Bonds", "Real Estate", "Commodities", "Crypto", "Cash"],
     datasets: [
       {
-        label: 'Current Allocation',
+        label: "Current Allocation",
         data: [35, 20, 15, 10, 15, 5],
         backgroundColor: [
-          'rgba(37, 99, 235, 0.7)',
-          'rgba(124, 58, 237, 0.7)',
-          'rgba(14, 165, 233, 0.7)',
-          'rgba(16, 185, 129, 0.7)',
-          'rgba(245, 158, 11, 0.7)',
-          'rgba(239, 68, 68, 0.7)',
+          "rgba(37, 99, 235, 0.7)",
+          "rgba(124, 58, 237, 0.7)",
+          "rgba(14, 165, 233, 0.7)",
+          "rgba(16, 185, 129, 0.7)",
+          "rgba(245, 158, 11, 0.7)",
+          "rgba(239, 68, 68, 0.7)",
         ],
       },
       {
-        label: 'Recommended Allocation',
+        label: "Recommended Allocation",
         data: [30, 25, 20, 5, 10, 10],
         backgroundColor: [
-          'rgba(37, 99, 235, 0.3)',
-          'rgba(124, 58, 237, 0.3)',
-          'rgba(14, 165, 233, 0.3)',
-          'rgba(16, 185, 129, 0.3)',
-          'rgba(245, 158, 11, 0.3)',
-          'rgba(239, 68, 68, 0.3)',
+          "rgba(37, 99, 235, 0.3)",
+          "rgba(124, 58, 237, 0.3)",
+          "rgba(14, 165, 233, 0.3)",
+          "rgba(16, 185, 129, 0.3)",
+          "rgba(245, 158, 11, 0.3)",
+          "rgba(239, 68, 68, 0.3)",
         ],
       },
     ],
   };
 
   const pieChartData = {
-    labels: ['North America', 'Europe', 'Asia', 'Emerging Markets', 'Other'],
+    labels: ["North America", "Europe", "Asia", "Emerging Markets", "Other"],
     datasets: [
       {
         data: [45, 25, 15, 10, 5],
         backgroundColor: [
-          'rgba(37, 99, 235, 0.7)',
-          'rgba(124, 58, 237, 0.7)',
-          'rgba(14, 165, 233, 0.7)',
-          'rgba(16, 185, 129, 0.7)',
-          'rgba(245, 158, 11, 0.7)',
+          "rgba(37, 99, 235, 0.7)",
+          "rgba(124, 58, 237, 0.7)",
+          "rgba(14, 165, 233, 0.7)",
+          "rgba(16, 185, 129, 0.7)",
+          "rgba(245, 158, 11, 0.7)",
         ],
         borderColor: [
-          'rgba(37, 99, 235, 1)',
-          'rgba(124, 58, 237, 1)',
-          'rgba(14, 165, 233, 1)',
-          'rgba(16, 185, 129, 1)',
-          'rgba(245, 158, 11, 1)',
+          "rgba(37, 99, 235, 1)",
+          "rgba(124, 58, 237, 1)",
+          "rgba(14, 165, 233, 1)",
+          "rgba(16, 185, 129, 1)",
+          "rgba(245, 158, 11, 1)",
         ],
         borderWidth: 1,
       },
@@ -89,11 +123,11 @@ const Analytics = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
-        text: 'Portfolio Performance vs Market Index',
+        text: "Portfolio Performance vs Market Index",
       },
     },
     scales: {
@@ -107,11 +141,11 @@ const Analytics = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
       },
       title: {
         display: true,
-        text: 'Asset Allocation',
+        text: "Asset Allocation",
       },
     },
   };
@@ -120,21 +154,26 @@ const Analytics = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'right',
+        position: "right",
       },
       title: {
         display: true,
-        text: 'Geographic Distribution',
+        text: "Geographic Distribution",
       },
     },
   };
 
   // Stats data
   const stats = [
-    { label: 'Total Return', value: '+24.8%', change: '+2.3%', isPositive: true },
-    { label: 'Annual Yield', value: '3.2%', change: '+0.4%', isPositive: true },
-    { label: 'Risk Score', value: '68/100', change: '-5', isPositive: false },
-    { label: 'Sharpe Ratio', value: '1.8', change: '+0.2', isPositive: true },
+    {
+      label: "Total Return",
+      value: "+24.8%",
+      change: "+2.3%",
+      isPositive: true,
+    },
+    { label: "Annual Yield", value: "3.2%", change: "+0.4%", isPositive: true },
+    { label: "Risk Score", value: "68/100", change: "-5", isPositive: false },
+    { label: "Sharpe Ratio", value: "1.8", change: "+0.2", isPositive: true },
   ];
 
   return (
@@ -158,11 +197,18 @@ const Analytics = () => {
             >
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <h3 className="card-title mb-0">{stat.label}</h3>
-                <span className={`badge ${stat.isPositive ? 'badge-success' : 'badge-danger'}`}>
+                <span
+                  className={`badge ${stat.isPositive ? "badge-success" : "badge-danger"}`}
+                >
                   {stat.change}
                 </span>
               </div>
-              <p className="text-primary" style={{ fontSize: '2rem', fontWeight: '600' }}>{stat.value}</p>
+              <p
+                className="text-primary"
+                style={{ fontSize: "2rem", fontWeight: "600" }}
+              >
+                {stat.value}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -175,7 +221,7 @@ const Analytics = () => {
           transition={{ delay: 0.5, duration: 0.5 }}
         >
           <h3 className="card-title">Performance Analysis</h3>
-          <div style={{ height: '300px' }}>
+          <div style={{ height: "300px" }}>
             <Line data={lineChartData} options={lineOptions} />
           </div>
         </motion.div>
@@ -189,7 +235,7 @@ const Analytics = () => {
             transition={{ delay: 0.7, duration: 0.5 }}
           >
             <h3 className="card-title">Asset Allocation</h3>
-            <div style={{ height: '300px' }}>
+            <div style={{ height: "300px" }}>
               <Bar data={barChartData} options={barOptions} />
             </div>
           </motion.div>
@@ -201,7 +247,7 @@ const Analytics = () => {
             transition={{ delay: 0.9, duration: 0.5 }}
           >
             <h3 className="card-title">Geographic Distribution</h3>
-            <div style={{ height: '300px' }}>
+            <div style={{ height: "300px" }}>
               <Pie data={pieChartData} options={pieOptions} />
             </div>
           </motion.div>
@@ -219,32 +265,84 @@ const Analytics = () => {
             <div className="d-flex flex-column">
               <span className="text-secondary mb-1">Volatility</span>
               <div className="d-flex align-items-center">
-                <div style={{ width: '80%', height: '8px', backgroundColor: 'var(--light-gray)', borderRadius: '4px' }}>
-                  <div style={{ width: '65%', height: '100%', backgroundColor: 'var(--warning-color)', borderRadius: '4px' }}></div>
+                <div
+                  style={{
+                    width: "80%",
+                    height: "8px",
+                    backgroundColor: "var(--light-gray)",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "65%",
+                      height: "100%",
+                      backgroundColor: "var(--warning-color)",
+                      borderRadius: "4px",
+                    }}
+                  ></div>
                 </div>
-                <span className="ml-2" style={{ marginLeft: '8px' }}>65%</span>
+                <span className="ml-2" style={{ marginLeft: "8px" }}>
+                  65%
+                </span>
               </div>
             </div>
             <div className="d-flex flex-column">
               <span className="text-secondary mb-1">Drawdown</span>
               <div className="d-flex align-items-center">
-                <div style={{ width: '80%', height: '8px', backgroundColor: 'var(--light-gray)', borderRadius: '4px' }}>
-                  <div style={{ width: '42%', height: '100%', backgroundColor: 'var(--success-color)', borderRadius: '4px' }}></div>
+                <div
+                  style={{
+                    width: "80%",
+                    height: "8px",
+                    backgroundColor: "var(--light-gray)",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "42%",
+                      height: "100%",
+                      backgroundColor: "var(--success-color)",
+                      borderRadius: "4px",
+                    }}
+                  ></div>
                 </div>
-                <span className="ml-2" style={{ marginLeft: '8px' }}>42%</span>
+                <span className="ml-2" style={{ marginLeft: "8px" }}>
+                  42%
+                </span>
               </div>
             </div>
             <div className="d-flex flex-column">
               <span className="text-secondary mb-1">Beta</span>
               <div className="d-flex align-items-center">
-                <div style={{ width: '80%', height: '8px', backgroundColor: 'var(--light-gray)', borderRadius: '4px' }}>
-                  <div style={{ width: '78%', height: '100%', backgroundColor: 'var(--danger-color)', borderRadius: '4px' }}></div>
+                <div
+                  style={{
+                    width: "80%",
+                    height: "8px",
+                    backgroundColor: "var(--light-gray)",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "78%",
+                      height: "100%",
+                      backgroundColor: "var(--danger-color)",
+                      borderRadius: "4px",
+                    }}
+                  ></div>
                 </div>
-                <span className="ml-2" style={{ marginLeft: '8px' }}>78%</span>
+                <span className="ml-2" style={{ marginLeft: "8px" }}>
+                  78%
+                </span>
               </div>
             </div>
           </div>
-          <p className="text-secondary">Your portfolio shows moderate volatility with a beta of 0.78 relative to the market. The maximum drawdown over the past year was 12.3%, which is within acceptable limits for your risk profile.</p>
+          <p className="text-secondary">
+            Your portfolio shows moderate volatility with a beta of 0.78
+            relative to the market. The maximum drawdown over the past year was
+            12.3%, which is within acceptable limits for your risk profile.
+          </p>
         </motion.div>
       </motion.div>
     </div>
