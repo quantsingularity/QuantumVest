@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
+import '@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol';
+import '@openzeppelin/contracts/security/Pausable.sol';
+import '@openzeppelin/contracts/access/AccessControl.sol';
+import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
+import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 /**
  * @title QuantumVest Enhanced Smart Contracts
@@ -21,12 +21,12 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract QuantumVestToken is ERC20, ERC20Burnable, Pausable, AccessControl {
     using SafeMath for uint256;
 
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-    bytes32 public constant COMPLIANCE_ROLE = keccak256("COMPLIANCE_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256('MINTER_ROLE');
+    bytes32 public constant PAUSER_ROLE = keccak256('PAUSER_ROLE');
+    bytes32 public constant COMPLIANCE_ROLE = keccak256('COMPLIANCE_ROLE');
 
-    uint256 public constant MAX_SUPPLY = 1000000000 * 10**18; // 1 billion tokens
-    uint256 public constant INITIAL_SUPPLY = 100000000 * 10**18; // 100 million tokens
+    uint256 public constant MAX_SUPPLY = 1000000000 * 10 ** 18; // 1 billion tokens
+    uint256 public constant INITIAL_SUPPLY = 100000000 * 10 ** 18; // 100 million tokens
 
     mapping(address => bool) public blacklisted;
     mapping(address => uint256) public vestingSchedule;
@@ -40,22 +40,22 @@ contract QuantumVestToken is ERC20, ERC20Burnable, Pausable, AccessControl {
     event ComplianceToggled(bool enabled);
 
     modifier notBlacklisted(address account) {
-        require(!blacklisted[account], "Account is blacklisted");
+        require(!blacklisted[account], 'Account is blacklisted');
         _;
     }
 
     modifier complianceCheck(address from, address to) {
         if (complianceEnabled) {
-            require(!blacklisted[from] && !blacklisted[to], "Compliance violation");
+            require(!blacklisted[from] && !blacklisted[to], 'Compliance violation');
             require(
                 block.timestamp >= lastTransferTime[from].add(transferCooldown),
-                "Transfer cooldown active"
+                'Transfer cooldown active'
             );
         }
         _;
     }
 
-    constructor() ERC20("QuantumVest Token", "QVT") {
+    constructor() ERC20('QuantumVest Token', 'QVT') {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
@@ -65,7 +65,7 @@ contract QuantumVestToken is ERC20, ERC20Burnable, Pausable, AccessControl {
     }
 
     function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
-        require(totalSupply().add(amount) <= MAX_SUPPLY, "Exceeds max supply");
+        require(totalSupply().add(amount) <= MAX_SUPPLY, 'Exceeds max supply');
         _mint(to, amount);
     }
 
@@ -77,18 +77,15 @@ contract QuantumVestToken is ERC20, ERC20Burnable, Pausable, AccessControl {
         _unpause();
     }
 
-    function setBlacklist(address account, bool isBlacklisted)
-        public
-        onlyRole(COMPLIANCE_ROLE)
-    {
+    function setBlacklist(address account, bool isBlacklisted) public onlyRole(COMPLIANCE_ROLE) {
         blacklisted[account] = isBlacklisted;
         emit BlacklistUpdated(account, isBlacklisted);
     }
 
-    function setVestingSchedule(address account, uint256 vestingPeriod)
-        public
-        onlyRole(COMPLIANCE_ROLE)
-    {
+    function setVestingSchedule(
+        address account,
+        uint256 vestingPeriod
+    ) public onlyRole(COMPLIANCE_ROLE) {
         vestingSchedule[account] = vestingPeriod;
         emit VestingScheduleSet(account, vestingPeriod);
     }
@@ -118,8 +115,8 @@ contract QuantumVestToken is ERC20, ERC20Burnable, Pausable, AccessControl {
 contract PortfolioManager is ReentrancyGuard, AccessControl {
     using SafeMath for uint256;
 
-    bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
-    bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
+    bytes32 public constant MANAGER_ROLE = keccak256('MANAGER_ROLE');
+    bytes32 public constant AUDITOR_ROLE = keccak256('AUDITOR_ROLE');
 
     struct Portfolio {
         address owner;
@@ -158,12 +155,12 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
     event FeesCollected(uint256 indexed portfolioId, uint256 managementFee, uint256 performanceFee);
 
     modifier onlyPortfolioOwner(uint256 portfolioId) {
-        require(portfolios[portfolioId].owner == msg.sender, "Not portfolio owner");
+        require(portfolios[portfolioId].owner == msg.sender, 'Not portfolio owner');
         _;
     }
 
     modifier portfolioExists(uint256 portfolioId) {
-        require(portfolios[portfolioId].owner != address(0), "Portfolio does not exist");
+        require(portfolios[portfolioId].owner != address(0), 'Portfolio does not exist');
         _;
     }
 
@@ -198,8 +195,8 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
         address assetAddress,
         uint256 amount
     ) external portfolioExists(portfolioId) onlyPortfolioOwner(portfolioId) nonReentrant {
-        require(supportedAssets[assetAddress].isActive, "Asset not supported");
-        require(amount > 0, "Amount must be greater than 0");
+        require(supportedAssets[assetAddress].isActive, 'Asset not supported');
+        require(amount > 0, 'Amount must be greater than 0');
 
         Portfolio storage portfolio = portfolios[portfolioId];
 
@@ -226,7 +223,7 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
         uint256 amount
     ) external portfolioExists(portfolioId) onlyPortfolioOwner(portfolioId) nonReentrant {
         Portfolio storage portfolio = portfolios[portfolioId];
-        require(portfolio.assetBalances[assetAddress] >= amount, "Insufficient balance");
+        require(portfolio.assetBalances[assetAddress] >= amount, 'Insufficient balance');
 
         // Update portfolio
         portfolio.assetBalances[assetAddress] = portfolio.assetBalances[assetAddress].sub(amount);
@@ -251,7 +248,7 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
         address[] memory assets,
         uint256[] memory targetWeights
     ) external portfolioExists(portfolioId) onlyPortfolioOwner(portfolioId) onlyRole(MANAGER_ROLE) {
-        require(assets.length == targetWeights.length, "Arrays length mismatch");
+        require(assets.length == targetWeights.length, 'Arrays length mismatch');
 
         Portfolio storage portfolio = portfolios[portfolioId];
         uint256 totalWeight = 0;
@@ -260,7 +257,7 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
             totalWeight = totalWeight.add(targetWeights[i]);
         }
 
-        require(totalWeight == 10000, "Total weight must equal 100%"); // 10000 basis points = 100%
+        require(totalWeight == 10000, 'Total weight must equal 100%'); // 10000 basis points = 100%
 
         // Calculate new total value
         uint256 newTotalValue = calculatePortfolioValue(portfolioId);
@@ -285,10 +282,10 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
 
     function getAssetValue(address assetAddress, uint256 amount) public view returns (uint256) {
         Asset memory asset = supportedAssets[assetAddress];
-        require(asset.isActive, "Asset not supported");
+        require(asset.isActive, 'Asset not supported');
 
         // In a real implementation, this would query an oracle
-        return amount.mul(asset.priceOracle).div(10**asset.decimals);
+        return amount.mul(asset.priceOracle).div(10 ** asset.decimals);
     }
 
     function addSupportedAsset(
@@ -307,20 +304,18 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
         });
     }
 
-    function updateAssetPrice(address assetAddress, uint256 newPrice)
-        external
-        onlyRole(MANAGER_ROLE)
-    {
-        require(supportedAssets[assetAddress].isActive, "Asset not supported");
+    function updateAssetPrice(
+        address assetAddress,
+        uint256 newPrice
+    ) external onlyRole(MANAGER_ROLE) {
+        require(supportedAssets[assetAddress].isActive, 'Asset not supported');
         supportedAssets[assetAddress].priceOracle = newPrice;
         supportedAssets[assetAddress].lastUpdated = block.timestamp;
     }
 
-    function collectFees(uint256 portfolioId)
-        external
-        onlyRole(MANAGER_ROLE)
-        portfolioExists(portfolioId)
-    {
+    function collectFees(
+        uint256 portfolioId
+    ) external onlyRole(MANAGER_ROLE) portfolioExists(portfolioId) {
         Portfolio storage portfolio = portfolios[portfolioId];
         uint256 totalValue = calculatePortfolioValue(portfolioId);
 
@@ -340,11 +335,9 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
         return userPortfolios[user];
     }
 
-    function getPortfolioAssets(uint256 portfolioId)
-        external
-        view
-        returns (address[] memory, uint256[] memory)
-    {
+    function getPortfolioAssets(
+        uint256 portfolioId
+    ) external view returns (address[] memory, uint256[] memory) {
         Portfolio storage portfolio = portfolios[portfolioId];
         uint256[] memory balances = new uint256[](portfolio.assetList.length);
 
@@ -375,7 +368,7 @@ contract PortfolioManager is ReentrancyGuard, AccessControl {
 contract QuantumVestStaking is ReentrancyGuard, AccessControl {
     using SafeMath for uint256;
 
-    bytes32 public constant REWARDS_DISTRIBUTOR_ROLE = keccak256("REWARDS_DISTRIBUTOR_ROLE");
+    bytes32 public constant REWARDS_DISTRIBUTOR_ROLE = keccak256('REWARDS_DISTRIBUTOR_ROLE');
 
     struct StakeInfo {
         uint256 amount;
@@ -424,7 +417,7 @@ contract QuantumVestStaking is ReentrancyGuard, AccessControl {
     }
 
     modifier poolExists(uint256 poolId) {
-        require(pools[poolId].isActive, "Pool does not exist or is inactive");
+        require(pools[poolId].isActive, 'Pool does not exist or is inactive');
         _;
     }
 
@@ -459,14 +452,12 @@ contract QuantumVestStaking is ReentrancyGuard, AccessControl {
         return poolId;
     }
 
-    function stake(uint256 poolId, uint256 amount)
-        external
-        nonReentrant
-        updateReward(poolId, msg.sender)
-        poolExists(poolId)
-    {
+    function stake(
+        uint256 poolId,
+        uint256 amount
+    ) external nonReentrant updateReward(poolId, msg.sender) poolExists(poolId) {
         Pool storage pool = pools[poolId];
-        require(amount >= pool.minStakeAmount, "Amount below minimum stake");
+        require(amount >= pool.minStakeAmount, 'Amount below minimum stake');
 
         StakeInfo storage stakeInfo = stakes[poolId][msg.sender];
 
@@ -486,20 +477,18 @@ contract QuantumVestStaking is ReentrancyGuard, AccessControl {
         emit Staked(msg.sender, poolId, amount);
     }
 
-    function withdraw(uint256 poolId, uint256 amount)
-        external
-        nonReentrant
-        updateReward(poolId, msg.sender)
-        poolExists(poolId)
-    {
+    function withdraw(
+        uint256 poolId,
+        uint256 amount
+    ) external nonReentrant updateReward(poolId, msg.sender) poolExists(poolId) {
         Pool storage pool = pools[poolId];
         StakeInfo storage stakeInfo = stakes[poolId][msg.sender];
 
-        require(stakeInfo.isActive, "No active stake");
-        require(stakeInfo.amount >= amount, "Insufficient staked amount");
+        require(stakeInfo.isActive, 'No active stake');
+        require(stakeInfo.amount >= amount, 'Insufficient staked amount');
         require(
             block.timestamp >= stakeInfo.stakingTime.add(pool.lockupPeriod),
-            "Lockup period not met"
+            'Lockup period not met'
         );
 
         stakeInfo.amount = stakeInfo.amount.sub(amount);
@@ -514,12 +503,9 @@ contract QuantumVestStaking is ReentrancyGuard, AccessControl {
         emit Withdrawn(msg.sender, poolId, amount);
     }
 
-    function claimReward(uint256 poolId)
-        external
-        nonReentrant
-        updateReward(poolId, msg.sender)
-        poolExists(poolId)
-    {
+    function claimReward(
+        uint256 poolId
+    ) external nonReentrant updateReward(poolId, msg.sender) poolExists(poolId) {
         uint256 reward = rewards[poolId][msg.sender];
         if (reward > 0) {
             rewards[poolId][msg.sender] = 0;
@@ -535,25 +521,32 @@ contract QuantumVestStaking is ReentrancyGuard, AccessControl {
             return pool.rewardPerTokenStored;
         }
 
-        return pool.rewardPerTokenStored.add(
-            block.timestamp
-                .sub(pool.lastUpdateTime)
-                .mul(pool.rewardRate)
-                .mul(REWARD_PRECISION)
-                .div(pool.totalStaked)
-        );
+        return
+            pool.rewardPerTokenStored.add(
+                block
+                    .timestamp
+                    .sub(pool.lastUpdateTime)
+                    .mul(pool.rewardRate)
+                    .mul(REWARD_PRECISION)
+                    .div(pool.totalStaked)
+            );
     }
 
     function earned(uint256 poolId, address account) public view returns (uint256) {
         StakeInfo storage stakeInfo = stakes[poolId][account];
 
-        return stakeInfo.amount
-            .mul(rewardPerToken(poolId).sub(userRewardPerTokenPaid[poolId][account]))
-            .div(REWARD_PRECISION)
-            .add(rewards[poolId][account]);
+        return
+            stakeInfo
+                .amount
+                .mul(rewardPerToken(poolId).sub(userRewardPerTokenPaid[poolId][account]))
+                .div(REWARD_PRECISION)
+                .add(rewards[poolId][account]);
     }
 
-    function updateRewardRate(uint256 poolId, uint256 newRate)
+    function updateRewardRate(
+        uint256 poolId,
+        uint256 newRate
+    )
         external
         onlyRole(REWARDS_DISTRIBUTOR_ROLE)
         updateReward(poolId, address(0))
@@ -563,7 +556,10 @@ contract QuantumVestStaking is ReentrancyGuard, AccessControl {
         emit RewardRateUpdated(poolId, newRate);
     }
 
-    function getStakeInfo(uint256 poolId, address account)
+    function getStakeInfo(
+        uint256 poolId,
+        address account
+    )
         external
         view
         returns (uint256 amount, uint256 stakingTime, uint256 earnedRewards, bool isActive)
@@ -585,8 +581,8 @@ contract QuantumVestStaking is ReentrancyGuard, AccessControl {
 contract QuantumVestGovernance is AccessControl {
     using SafeMath for uint256;
 
-    bytes32 public constant PROPOSER_ROLE = keccak256("PROPOSER_ROLE");
-    bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
+    bytes32 public constant PROPOSER_ROLE = keccak256('PROPOSER_ROLE');
+    bytes32 public constant EXECUTOR_ROLE = keccak256('EXECUTOR_ROLE');
 
     struct Proposal {
         uint256 id;
@@ -610,7 +606,7 @@ contract QuantumVestGovernance is AccessControl {
     IERC20 public governanceToken;
     uint256 public votingDelay = 1 days;
     uint256 public votingPeriod = 7 days;
-    uint256 public proposalThreshold = 100000 * 10**18; // 100k tokens
+    uint256 public proposalThreshold = 100000 * 10 ** 18; // 100k tokens
     uint256 public quorumThreshold = 4; // 4% of total supply
 
     event ProposalCreated(
@@ -632,7 +628,7 @@ contract QuantumVestGovernance is AccessControl {
     event ProposalCanceled(uint256 indexed proposalId);
 
     modifier onlyTokenHolder() {
-        require(governanceToken.balanceOf(msg.sender) > 0, "Must hold governance tokens");
+        require(governanceToken.balanceOf(msg.sender) > 0, 'Must hold governance tokens');
         _;
     }
 
@@ -650,7 +646,7 @@ contract QuantumVestGovernance is AccessControl {
     ) external onlyRole(PROPOSER_ROLE) returns (uint256) {
         require(
             governanceToken.balanceOf(msg.sender) >= proposalThreshold,
-            "Insufficient tokens to propose"
+            'Insufficient tokens to propose'
         );
 
         proposalCounter = proposalCounter.add(1);
@@ -664,26 +660,20 @@ contract QuantumVestGovernance is AccessControl {
         proposal.startTime = block.timestamp.add(votingDelay);
         proposal.endTime = proposal.startTime.add(votingPeriod);
 
-        emit ProposalCreated(
-            proposalId,
-            msg.sender,
-            title,
-            proposal.startTime,
-            proposal.endTime
-        );
+        emit ProposalCreated(proposalId, msg.sender, title, proposal.startTime, proposal.endTime);
 
         return proposalId;
     }
 
     function castVote(uint256 proposalId, uint8 support) external onlyTokenHolder {
         Proposal storage proposal = proposals[proposalId];
-        require(proposal.id != 0, "Proposal does not exist");
-        require(block.timestamp >= proposal.startTime, "Voting not started");
-        require(block.timestamp <= proposal.endTime, "Voting ended");
-        require(!proposal.hasVoted[msg.sender], "Already voted");
+        require(proposal.id != 0, 'Proposal does not exist');
+        require(block.timestamp >= proposal.startTime, 'Voting not started');
+        require(block.timestamp <= proposal.endTime, 'Voting ended');
+        require(!proposal.hasVoted[msg.sender], 'Already voted');
 
         uint256 weight = governanceToken.balanceOf(msg.sender);
-        require(weight > 0, "No voting power");
+        require(weight > 0, 'No voting power');
 
         proposal.hasVoted[msg.sender] = true;
         proposal.votes[msg.sender] = support;
@@ -701,17 +691,19 @@ contract QuantumVestGovernance is AccessControl {
 
     function executeProposal(uint256 proposalId) external onlyRole(EXECUTOR_ROLE) {
         Proposal storage proposal = proposals[proposalId];
-        require(proposal.id != 0, "Proposal does not exist");
-        require(block.timestamp > proposal.endTime, "Voting not ended");
-        require(!proposal.executed, "Already executed");
-        require(!proposal.canceled, "Proposal canceled");
+        require(proposal.id != 0, 'Proposal does not exist');
+        require(block.timestamp > proposal.endTime, 'Voting not ended');
+        require(!proposal.executed, 'Already executed');
+        require(!proposal.canceled, 'Proposal canceled');
 
-        uint256 totalVotes = proposal.forVotes.add(proposal.againstVotes).add(proposal.abstainVotes);
+        uint256 totalVotes = proposal.forVotes.add(proposal.againstVotes).add(
+            proposal.abstainVotes
+        );
         uint256 totalSupply = governanceToken.totalSupply();
         uint256 quorum = totalSupply.mul(quorumThreshold).div(100);
 
-        require(totalVotes >= quorum, "Quorum not reached");
-        require(proposal.forVotes > proposal.againstVotes, "Proposal rejected");
+        require(totalVotes >= quorum, 'Quorum not reached');
+        require(proposal.forVotes > proposal.againstVotes, 'Proposal rejected');
 
         proposal.executed = true;
 
@@ -720,24 +712,22 @@ contract QuantumVestGovernance is AccessControl {
 
     function cancelProposal(uint256 proposalId) external {
         Proposal storage proposal = proposals[proposalId];
-        require(proposal.id != 0, "Proposal does not exist");
+        require(proposal.id != 0, 'Proposal does not exist');
         require(
             msg.sender == proposal.proposer || hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
-            "Not authorized to cancel"
+            'Not authorized to cancel'
         );
-        require(!proposal.executed, "Already executed");
-        require(!proposal.canceled, "Already canceled");
+        require(!proposal.executed, 'Already executed');
+        require(!proposal.canceled, 'Already canceled');
 
         proposal.canceled = true;
 
         emit ProposalCanceled(proposalId);
     }
 
-    function getProposalVotes(uint256 proposalId)
-        external
-        view
-        returns (uint256 forVotes, uint256 againstVotes, uint256 abstainVotes)
-    {
+    function getProposalVotes(
+        uint256 proposalId
+    ) external view returns (uint256 forVotes, uint256 againstVotes, uint256 abstainVotes) {
         Proposal storage proposal = proposals[proposalId];
         return (proposal.forVotes, proposal.againstVotes, proposal.abstainVotes);
     }
@@ -747,7 +737,7 @@ contract QuantumVestGovernance is AccessControl {
     }
 
     function getVote(uint256 proposalId, address voter) external view returns (uint8) {
-        require(proposals[proposalId].hasVoted[voter], "Voter has not voted");
+        require(proposals[proposalId].hasVoted[voter], 'Voter has not voted');
         return proposals[proposalId].votes[voter];
     }
 }
@@ -759,7 +749,7 @@ contract QuantumVestGovernance is AccessControl {
 contract QuantumVestOracle is AccessControl {
     using SafeMath for uint256;
 
-    bytes32 public constant ORACLE_ROLE = keccak256("ORACLE_ROLE");
+    bytes32 public constant ORACLE_ROLE = keccak256('ORACLE_ROLE');
 
     struct PriceData {
         uint256 price;
@@ -779,12 +769,9 @@ contract QuantumVestOracle is AccessControl {
 
     modifier onlyValidPrice(address asset) {
         PriceData storage data = assetPrices[asset];
-        require(data.isValid, "Price not available");
-        require(
-            block.timestamp.sub(data.timestamp) <= PRICE_VALIDITY_PERIOD,
-            "Price data stale"
-        );
-        require(data.confidence >= MIN_CONFIDENCE, "Price confidence too low");
+        require(data.isValid, 'Price not available');
+        require(block.timestamp.sub(data.timestamp) <= PRICE_VALIDITY_PERIOD, 'Price data stale');
+        require(data.confidence >= MIN_CONFIDENCE, 'Price confidence too low');
         _;
     }
 
@@ -798,7 +785,7 @@ contract QuantumVestOracle is AccessControl {
         uint256 price,
         uint256 confidence
     ) external onlyRole(ORACLE_ROLE) {
-        require(confidence <= 100, "Invalid confidence level");
+        require(confidence <= 100, 'Invalid confidence level');
 
         assetPrices[asset] = PriceData({
             price: price,
@@ -814,21 +801,19 @@ contract QuantumVestOracle is AccessControl {
         return assetPrices[asset].price;
     }
 
-    function getPriceWithTimestamp(address asset)
-        external
-        view
-        onlyValidPrice(asset)
-        returns (uint256 price, uint256 timestamp)
-    {
+    function getPriceWithTimestamp(
+        address asset
+    ) external view onlyValidPrice(asset) returns (uint256 price, uint256 timestamp) {
         PriceData storage data = assetPrices[asset];
         return (data.price, data.timestamp);
     }
 
     function isPriceValid(address asset) external view returns (bool) {
         PriceData storage data = assetPrices[asset];
-        return data.isValid &&
-               block.timestamp.sub(data.timestamp) <= PRICE_VALIDITY_PERIOD &&
-               data.confidence >= MIN_CONFIDENCE;
+        return
+            data.isValid &&
+            block.timestamp.sub(data.timestamp) <= PRICE_VALIDITY_PERIOD &&
+            data.confidence >= MIN_CONFIDENCE;
     }
 
     function addPriceFeed(address asset, address feed) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -838,7 +823,7 @@ contract QuantumVestOracle is AccessControl {
 
     function aggregatePrices(address asset) external onlyRole(ORACLE_ROLE) {
         address[] memory feeds = priceFeeds[asset];
-        require(feeds.length > 0, "No price feeds available");
+        require(feeds.length > 0, 'No price feeds available');
 
         uint256 totalPrice = 0;
         uint256 validFeeds = 0;

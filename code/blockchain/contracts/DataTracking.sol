@@ -18,12 +18,12 @@ contract DataTracking {
     event NewData(string indexed ticker, uint256 price, uint256 volume);
 
     function addDataPoint(string memory ticker, uint256 price, uint256 volume) external {
-        require(msg.sender == owner, "Unauthorized");
+        require(msg.sender == owner, 'Unauthorized');
         assetData[ticker].push(MarketData(block.timestamp, price, volume));
         emit NewData(ticker, price, volume);
     }
 
-    function getHistoricalData(string memory ticker) external view returns(MarketData[] memory) {
+    function getHistoricalData(string memory ticker) external view returns (MarketData[] memory) {
         return assetData[ticker];
     }
 }
