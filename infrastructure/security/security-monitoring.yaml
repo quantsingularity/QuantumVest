@@ -2,304 +2,304 @@
 
 # Vulnerability Scanning
 vulnerability_scanning:
-  schedule:
-    infrastructure_scan: "daily"
-    application_scan: "weekly"
-    dependency_scan: "daily"
-    container_scan: "on_build"
+    schedule:
+        infrastructure_scan: 'daily'
+        application_scan: 'weekly'
+        dependency_scan: 'daily'
+        container_scan: 'on_build'
 
-  tools:
-    infrastructure:
-      - name: "nessus"
-        enabled: true
-        severity_threshold: "medium"
+    tools:
+        infrastructure:
+            - name: 'nessus'
+              enabled: true
+              severity_threshold: 'medium'
 
-      - name: "openvas"
-        enabled: true
-        severity_threshold: "medium"
+            - name: 'openvas'
+              enabled: true
+              severity_threshold: 'medium'
 
-    application:
-      - name: "owasp_zap"
-        enabled: true
-        scan_type: "full"
+        application:
+            - name: 'owasp_zap'
+              enabled: true
+              scan_type: 'full'
 
-      - name: "burp_suite"
-        enabled: true
-        scan_type: "authenticated"
+            - name: 'burp_suite'
+              enabled: true
+              scan_type: 'authenticated'
 
-    dependencies:
-      - name: "snyk"
-        enabled: true
-        auto_fix: true
+        dependencies:
+            - name: 'snyk'
+              enabled: true
+              auto_fix: true
 
-      - name: "dependabot"
-        enabled: true
-        auto_merge: false
+            - name: 'dependabot'
+              enabled: true
+              auto_merge: false
 
-    containers:
-      - name: "trivy"
-        enabled: true
-        fail_on_critical: true
+        containers:
+            - name: 'trivy'
+              enabled: true
+              fail_on_critical: true
 
-      - name: "clair"
-        enabled: true
-        database_updates: "hourly"
+            - name: 'clair'
+              enabled: true
+              database_updates: 'hourly'
 
-  reporting:
-    format: ["json", "pdf", "html"]
-    recipients:
-      - "security@quantumvest.com"
-      - "devops@quantumvest.com"
-    severity_escalation:
-      critical: "immediate"
-      high: "4_hours"
-      medium: "24_hours"
-      low: "weekly_report"
+    reporting:
+        format: ['json', 'pdf', 'html']
+        recipients:
+            - 'security@quantumvest.com'
+            - 'devops@quantumvest.com'
+        severity_escalation:
+            critical: 'immediate'
+            high: '4_hours'
+            medium: '24_hours'
+            low: 'weekly_report'
 
 # Security Information and Event Management (SIEM)
 siem_config:
-  enabled: true
+    enabled: true
 
-  data_sources:
-    - "application_logs"
-    - "system_logs"
-    - "network_logs"
-    - "database_logs"
-    - "authentication_logs"
-    - "firewall_logs"
-    - "intrusion_detection_logs"
+    data_sources:
+        - 'application_logs'
+        - 'system_logs'
+        - 'network_logs'
+        - 'database_logs'
+        - 'authentication_logs'
+        - 'firewall_logs'
+        - 'intrusion_detection_logs'
 
-  correlation_rules:
-    - name: "multiple_failed_logins"
-      condition: "failed_login_count > 5 in 5_minutes"
-      severity: "high"
-      action: "alert_and_block"
+    correlation_rules:
+        - name: 'multiple_failed_logins'
+          condition: 'failed_login_count > 5 in 5_minutes'
+          severity: 'high'
+          action: 'alert_and_block'
 
-    - name: "privilege_escalation"
-      condition: "sudo_usage AND user_not_in_admin_group"
-      severity: "critical"
-      action: "immediate_alert"
+        - name: 'privilege_escalation'
+          condition: 'sudo_usage AND user_not_in_admin_group'
+          severity: 'critical'
+          action: 'immediate_alert'
 
-    - name: "unusual_data_access"
-      condition: "data_access_volume > baseline * 3"
-      severity: "medium"
-      action: "alert"
+        - name: 'unusual_data_access'
+          condition: 'data_access_volume > baseline * 3'
+          severity: 'medium'
+          action: 'alert'
 
-    - name: "off_hours_access"
-      condition: "login_time NOT IN business_hours AND role != on_call"
-      severity: "medium"
-      action: "alert"
+        - name: 'off_hours_access'
+          condition: 'login_time NOT IN business_hours AND role != on_call'
+          severity: 'medium'
+          action: 'alert'
 
-  retention:
-    raw_logs: "90_days"
-    processed_events: "2_years"
-    alerts: "7_years"
+    retention:
+        raw_logs: '90_days'
+        processed_events: '2_years'
+        alerts: '7_years'
 
-  integration:
-    ticketing_system: true
-    email_alerts: true
-    sms_alerts: true
-    slack_notifications: true
+    integration:
+        ticketing_system: true
+        email_alerts: true
+        sms_alerts: true
+        slack_notifications: true
 
 # Intrusion Detection System (IDS)
 ids_config:
-  network_ids:
-    enabled: true
-    mode: "passive"
-    sensors:
-      - location: "dmz"
-        monitoring: "all_traffic"
+    network_ids:
+        enabled: true
+        mode: 'passive'
+        sensors:
+            - location: 'dmz'
+              monitoring: 'all_traffic'
 
-      - location: "internal_network"
-        monitoring: "east_west_traffic"
+            - location: 'internal_network'
+              monitoring: 'east_west_traffic'
 
-    signatures:
-      update_frequency: "hourly"
-      custom_rules: true
+        signatures:
+            update_frequency: 'hourly'
+            custom_rules: true
 
-  host_ids:
-    enabled: true
-    agents:
-      - "ossec"
-      - "wazuh"
-    monitoring:
-      - "file_integrity"
-      - "log_analysis"
-      - "rootkit_detection"
-      - "policy_monitoring"
+    host_ids:
+        enabled: true
+        agents:
+            - 'ossec'
+            - 'wazuh'
+        monitoring:
+            - 'file_integrity'
+            - 'log_analysis'
+            - 'rootkit_detection'
+            - 'policy_monitoring'
 
-  behavioral_analysis:
-    enabled: true
-    machine_learning: true
-    baseline_period: "30_days"
-    anomaly_threshold: "2_standard_deviations"
+    behavioral_analysis:
+        enabled: true
+        machine_learning: true
+        baseline_period: '30_days'
+        anomaly_threshold: '2_standard_deviations'
 
 # Incident Response
 incident_response:
-  playbooks:
-    - name: "data_breach"
-      steps:
-        - "isolate_affected_systems"
-        - "preserve_evidence"
-        - "assess_scope"
-        - "notify_stakeholders"
-        - "regulatory_notification"
-        - "remediation"
-        - "post_incident_review"
-      timeline: "72_hours"
+    playbooks:
+        - name: 'data_breach'
+          steps:
+              - 'isolate_affected_systems'
+              - 'preserve_evidence'
+              - 'assess_scope'
+              - 'notify_stakeholders'
+              - 'regulatory_notification'
+              - 'remediation'
+              - 'post_incident_review'
+          timeline: '72_hours'
 
-    - name: "malware_infection"
-      steps:
-        - "isolate_infected_system"
-        - "malware_analysis"
-        - "system_restoration"
-        - "vulnerability_assessment"
-        - "security_hardening"
-      timeline: "24_hours"
+        - name: 'malware_infection'
+          steps:
+              - 'isolate_infected_system'
+              - 'malware_analysis'
+              - 'system_restoration'
+              - 'vulnerability_assessment'
+              - 'security_hardening'
+          timeline: '24_hours'
 
-    - name: "ddos_attack"
-      steps:
-        - "activate_ddos_protection"
-        - "traffic_analysis"
-        - "upstream_filtering"
-        - "capacity_scaling"
-        - "attack_mitigation"
-      timeline: "4_hours"
+        - name: 'ddos_attack'
+          steps:
+              - 'activate_ddos_protection'
+              - 'traffic_analysis'
+              - 'upstream_filtering'
+              - 'capacity_scaling'
+              - 'attack_mitigation'
+          timeline: '4_hours'
 
-  team:
-    incident_commander: "security_lead"
-    technical_lead: "senior_engineer"
-    communications_lead: "compliance_officer"
-    legal_counsel: "external_legal"
+    team:
+        incident_commander: 'security_lead'
+        technical_lead: 'senior_engineer'
+        communications_lead: 'compliance_officer'
+        legal_counsel: 'external_legal'
 
-  communication:
-    internal_channels:
-      - "incident_response_slack"
-      - "executive_email_list"
+    communication:
+        internal_channels:
+            - 'incident_response_slack'
+            - 'executive_email_list'
 
-    external_channels:
-      - "customer_notification_system"
-      - "regulatory_reporting_portal"
-      - "media_relations"
+        external_channels:
+            - 'customer_notification_system'
+            - 'regulatory_reporting_portal'
+            - 'media_relations'
 
-  documentation:
-    incident_tracking: true
-    evidence_preservation: true
-    timeline_reconstruction: true
-    lessons_learned: true
+    documentation:
+        incident_tracking: true
+        evidence_preservation: true
+        timeline_reconstruction: true
+        lessons_learned: true
 
 # Threat Intelligence
 threat_intelligence:
-  feeds:
-    - name: "commercial_feed"
-      provider: "recorded_future"
-      update_frequency: "hourly"
+    feeds:
+        - name: 'commercial_feed'
+          provider: 'recorded_future'
+          update_frequency: 'hourly'
 
-    - name: "open_source_feed"
-      provider: "misp"
-      update_frequency: "daily"
+        - name: 'open_source_feed'
+          provider: 'misp'
+          update_frequency: 'daily'
 
-    - name: "government_feed"
-      provider: "us_cert"
-      update_frequency: "daily"
+        - name: 'government_feed'
+          provider: 'us_cert'
+          update_frequency: 'daily'
 
-  indicators:
-    - "ip_addresses"
-    - "domain_names"
-    - "file_hashes"
-    - "urls"
-    - "email_addresses"
+    indicators:
+        - 'ip_addresses'
+        - 'domain_names'
+        - 'file_hashes'
+        - 'urls'
+        - 'email_addresses'
 
-  integration:
-    firewall: true
-    ids_ips: true
-    email_security: true
-    web_proxy: true
+    integration:
+        firewall: true
+        ids_ips: true
+        email_security: true
+        web_proxy: true
 
-  sharing:
-    industry_groups: true
-    government_agencies: true
-    anonymization: true
+    sharing:
+        industry_groups: true
+        government_agencies: true
+        anonymization: true
 
 # Security Metrics and KPIs
 security_metrics:
-  vulnerability_metrics:
-    - "mean_time_to_detection"
-    - "mean_time_to_remediation"
-    - "vulnerability_density"
-    - "patch_compliance_rate"
+    vulnerability_metrics:
+        - 'mean_time_to_detection'
+        - 'mean_time_to_remediation'
+        - 'vulnerability_density'
+        - 'patch_compliance_rate'
 
-  incident_metrics:
-    - "incident_count_by_severity"
-    - "mean_time_to_response"
-    - "mean_time_to_resolution"
-    - "false_positive_rate"
+    incident_metrics:
+        - 'incident_count_by_severity'
+        - 'mean_time_to_response'
+        - 'mean_time_to_resolution'
+        - 'false_positive_rate'
 
-  compliance_metrics:
-    - "policy_compliance_rate"
-    - "audit_findings_count"
-    - "training_completion_rate"
-    - "access_review_completion"
+    compliance_metrics:
+        - 'policy_compliance_rate'
+        - 'audit_findings_count'
+        - 'training_completion_rate'
+        - 'access_review_completion'
 
-  reporting:
-    frequency: "monthly"
-    recipients:
-      - "ciso"
-      - "cto"
-      - "compliance_team"
-      - "board_of_directors"
-    format: "executive_dashboard"
+    reporting:
+        frequency: 'monthly'
+        recipients:
+            - 'ciso'
+            - 'cto'
+            - 'compliance_team'
+            - 'board_of_directors'
+        format: 'executive_dashboard'
 
 # Security Training and Awareness
 security_training:
-  mandatory_training:
-    - name: "security_awareness"
-      frequency: "annual"
-      target_audience: "all_employees"
+    mandatory_training:
+        - name: 'security_awareness'
+          frequency: 'annual'
+          target_audience: 'all_employees'
 
-    - name: "phishing_simulation"
-      frequency: "quarterly"
-      target_audience: "all_employees"
+        - name: 'phishing_simulation'
+          frequency: 'quarterly'
+          target_audience: 'all_employees'
 
-    - name: "incident_response"
-      frequency: "bi_annual"
-      target_audience: "technical_staff"
+        - name: 'incident_response'
+          frequency: 'bi_annual'
+          target_audience: 'technical_staff'
 
-    - name: "compliance_training"
-      frequency: "annual"
-      target_audience: "all_employees"
+        - name: 'compliance_training'
+          frequency: 'annual'
+          target_audience: 'all_employees'
 
-  specialized_training:
-    - name: "secure_coding"
-      frequency: "annual"
-      target_audience: "developers"
+    specialized_training:
+        - name: 'secure_coding'
+          frequency: 'annual'
+          target_audience: 'developers'
 
-    - name: "penetration_testing"
-      frequency: "annual"
-      target_audience: "security_team"
+        - name: 'penetration_testing'
+          frequency: 'annual'
+          target_audience: 'security_team'
 
-  tracking:
-    completion_rates: true
-    quiz_scores: true
-    certification_status: true
-    remedial_training: true
+    tracking:
+        completion_rates: true
+        quiz_scores: true
+        certification_status: true
+        remedial_training: true
 
 # Third-Party Security Assessment
 third_party_security:
-  vendor_assessment:
-    security_questionnaire: true
-    penetration_testing: true
-    compliance_certification: true
-    insurance_verification: true
+    vendor_assessment:
+        security_questionnaire: true
+        penetration_testing: true
+        compliance_certification: true
+        insurance_verification: true
 
-  ongoing_monitoring:
-    security_ratings: true
-    breach_notifications: true
-    compliance_status: true
-    contract_reviews: "annual"
+    ongoing_monitoring:
+        security_ratings: true
+        breach_notifications: true
+        compliance_status: true
+        contract_reviews: 'annual'
 
-  requirements:
-    minimum_security_standards: true
-    data_handling_agreements: true
-    incident_notification: "24_hours"
-    audit_rights: true
+    requirements:
+        minimum_security_standards: true
+        data_handling_agreements: true
+        incident_notification: '24_hours'
+        audit_rights: true

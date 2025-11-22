@@ -4,72 +4,72 @@ name: quantumvest
 description: A comprehensive Helm chart for QuantumVest financial platform
 type: application
 version: 1.0.0
-appVersion: "1.0.0"
-kubeVersion: ">=1.25.0"
+appVersion: '1.0.0'
+kubeVersion: '>=1.25.0'
 
 keywords:
-  - fintech
-  - investment
-  - financial-services
-  - microservices
+    - fintech
+    - investment
+    - financial-services
+    - microservices
 
 home: https://quantumvest.com
 sources:
-  - https://github.com/quantumvest/quantumvest
+    - https://github.com/quantumvest/quantumvest
 
 maintainers:
-  - name: QuantumVest DevOps Team
-    email: devops@quantumvest.com
-    url: https://quantumvest.com
+    - name: QuantumVest DevOps Team
+      email: devops@quantumvest.com
+      url: https://quantumvest.com
 
 annotations:
-  category: Financial Services
-  licenses: Proprietary
-  images: |
-    - name: backend
-      image: ghcr.io/quantumvest/backend:1.0.0
-    - name: frontend
-      image: ghcr.io/quantumvest/frontend:1.0.0
-    - name: analytics
-      image: ghcr.io/quantumvest/analytics:1.0.0
+    category: Financial Services
+    licenses: Proprietary
+    images: |
+        - name: backend
+          image: ghcr.io/quantumvest/backend:1.0.0
+        - name: frontend
+          image: ghcr.io/quantumvest/frontend:1.0.0
+        - name: analytics
+          image: ghcr.io/quantumvest/analytics:1.0.0
 
 dependencies:
-  - name: postgresql
-    version: 12.1.9
-    repository: https://charts.bitnami.com/bitnami
-    condition: postgresql.enabled
+    - name: postgresql
+      version: 12.1.9
+      repository: https://charts.bitnami.com/bitnami
+      condition: postgresql.enabled
 
-  - name: redis
-    version: 17.3.7
-    repository: https://charts.bitnami.com/bitnami
-    condition: redis.enabled
+    - name: redis
+      version: 17.3.7
+      repository: https://charts.bitnami.com/bitnami
+      condition: redis.enabled
 
-  - name: nginx-ingress
-    version: 4.4.0
-    repository: https://kubernetes.github.io/ingress-nginx
-    condition: ingress.enabled
+    - name: nginx-ingress
+      version: 4.4.0
+      repository: https://kubernetes.github.io/ingress-nginx
+      condition: ingress.enabled
 
-  - name: cert-manager
-    version: 1.13.2
-    repository: https://charts.jetstack.io
-    condition: certManager.enabled
+    - name: cert-manager
+      version: 1.13.2
+      repository: https://charts.jetstack.io
+      condition: certManager.enabled
 
-  - name: prometheus
-    version: 25.6.0
-    repository: https://prometheus-community.github.io/helm-charts
-    condition: monitoring.prometheus.enabled
+    - name: prometheus
+      version: 25.6.0
+      repository: https://prometheus-community.github.io/helm-charts
+      condition: monitoring.prometheus.enabled
 
-  - name: grafana
-    version: 7.0.8
-    repository: https://grafana.github.io/helm-charts
-    condition: monitoring.grafana.enabled
+    - name: grafana
+      version: 7.0.8
+      repository: https://grafana.github.io/helm-charts
+      condition: monitoring.grafana.enabled
 
-  - name: elasticsearch
-    version: 8.5.1
-    repository: https://helm.elastic.co
-    condition: logging.elasticsearch.enabled
+    - name: elasticsearch
+      version: 8.5.1
+      repository: https://helm.elastic.co
+      condition: logging.elasticsearch.enabled
 
-  - name: vault
-    version: 0.27.0
-    repository: https://helm.releases.hashicorp.com
-    condition: vault.enabled
+    - name: vault
+      version: 0.27.0
+      repository: https://helm.releases.hashicorp.com
+      condition: vault.enabled

@@ -2,539 +2,539 @@
 
 # Environment Definitions
 environments:
-  development:
-    name: "development"
-    description: "Local development environment"
-    tier: "dev"
-    region: "us-east-1"
-    availability_zones: ["us-east-1a", "us-east-1b"]
+    development:
+        name: 'development'
+        description: 'Local development environment'
+        tier: 'dev'
+        region: 'us-east-1'
+        availability_zones: ['us-east-1a', 'us-east-1b']
 
-    # Resource allocation
-    resources:
-      compute:
-        instance_type: "t3.medium"
-        min_instances: 1
-        max_instances: 3
+        # Resource allocation
+        resources:
+            compute:
+                instance_type: 't3.medium'
+                min_instances: 1
+                max_instances: 3
 
-      database:
-        instance_class: "db.t3.micro"
-        allocated_storage: 20
-        multi_az: false
+            database:
+                instance_class: 'db.t3.micro'
+                allocated_storage: 20
+                multi_az: false
 
-      cache:
-        node_type: "cache.t3.micro"
-        num_cache_nodes: 1
+            cache:
+                node_type: 'cache.t3.micro'
+                num_cache_nodes: 1
 
-    # Feature flags
-    features:
-      debug_mode: true
-      detailed_logging: true
-      mock_external_services: true
-      rate_limiting: false
+        # Feature flags
+        features:
+            debug_mode: true
+            detailed_logging: true
+            mock_external_services: true
+            rate_limiting: false
 
-    # Security settings
-    security:
-      ssl_enforcement: false
-      mfa_required: false
-      ip_whitelist: []
+        # Security settings
+        security:
+            ssl_enforcement: false
+            mfa_required: false
+            ip_whitelist: []
 
-  staging:
-    name: "staging"
-    description: "Pre-production staging environment"
-    tier: "staging"
-    region: "us-east-1"
-    availability_zones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+    staging:
+        name: 'staging'
+        description: 'Pre-production staging environment'
+        tier: 'staging'
+        region: 'us-east-1'
+        availability_zones: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 
-    # Resource allocation
-    resources:
-      compute:
-        instance_type: "t3.large"
-        min_instances: 2
-        max_instances: 6
+        # Resource allocation
+        resources:
+            compute:
+                instance_type: 't3.large'
+                min_instances: 2
+                max_instances: 6
 
-      database:
-        instance_class: "db.t3.small"
-        allocated_storage: 100
-        multi_az: true
+            database:
+                instance_class: 'db.t3.small'
+                allocated_storage: 100
+                multi_az: true
 
-      cache:
-        node_type: "cache.t3.small"
-        num_cache_nodes: 2
+            cache:
+                node_type: 'cache.t3.small'
+                num_cache_nodes: 2
 
-    # Feature flags
-    features:
-      debug_mode: false
-      detailed_logging: true
-      mock_external_services: false
-      rate_limiting: true
+        # Feature flags
+        features:
+            debug_mode: false
+            detailed_logging: true
+            mock_external_services: false
+            rate_limiting: true
 
-    # Security settings
-    security:
-      ssl_enforcement: true
-      mfa_required: true
-      ip_whitelist: ["10.0.0.0/8", "172.16.0.0/12"]
+        # Security settings
+        security:
+            ssl_enforcement: true
+            mfa_required: true
+            ip_whitelist: ['10.0.0.0/8', '172.16.0.0/12']
 
-  production:
-    name: "production"
-    description: "Production environment"
-    tier: "prod"
-    region: "us-east-1"
-    availability_zones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+    production:
+        name: 'production'
+        description: 'Production environment'
+        tier: 'prod'
+        region: 'us-east-1'
+        availability_zones: ['us-east-1a', 'us-east-1b', 'us-east-1c']
 
-    # Resource allocation
-    resources:
-      compute:
-        instance_type: "c5.xlarge"
-        min_instances: 3
-        max_instances: 20
+        # Resource allocation
+        resources:
+            compute:
+                instance_type: 'c5.xlarge'
+                min_instances: 3
+                max_instances: 20
 
-      database:
-        instance_class: "db.r5.xlarge"
-        allocated_storage: 500
-        multi_az: true
-        read_replicas: 2
+            database:
+                instance_class: 'db.r5.xlarge'
+                allocated_storage: 500
+                multi_az: true
+                read_replicas: 2
 
-      cache:
-        node_type: "cache.r5.large"
-        num_cache_nodes: 3
+            cache:
+                node_type: 'cache.r5.large'
+                num_cache_nodes: 3
 
-    # Feature flags
-    features:
-      debug_mode: false
-      detailed_logging: false
-      mock_external_services: false
-      rate_limiting: true
+        # Feature flags
+        features:
+            debug_mode: false
+            detailed_logging: false
+            mock_external_services: false
+            rate_limiting: true
 
-    # Security settings
-    security:
-      ssl_enforcement: true
-      mfa_required: true
-      ip_whitelist: [] # Open to public with proper authentication
+        # Security settings
+        security:
+            ssl_enforcement: true
+            mfa_required: true
+            ip_whitelist: [] # Open to public with proper authentication
 
 # Configuration Schema Validation
 configuration_schema:
-  database:
-    required_fields:
-      - host
-      - port
-      - username
-      - password
-      - database_name
-      - ssl_mode
+    database:
+        required_fields:
+            - host
+            - port
+            - username
+            - password
+            - database_name
+            - ssl_mode
 
-    validation_rules:
-      host:
-        type: string
-        pattern: "^[a-zA-Z0-9.-]+$"
+        validation_rules:
+            host:
+                type: string
+                pattern: '^[a-zA-Z0-9.-]+$'
 
-      port:
-        type: integer
-        minimum: 1
-        maximum: 65535
+            port:
+                type: integer
+                minimum: 1
+                maximum: 65535
 
-      ssl_mode:
-        type: string
-        enum: ["disable", "require", "verify-ca", "verify-full"]
+            ssl_mode:
+                type: string
+                enum: ['disable', 'require', 'verify-ca', 'verify-full']
 
-  api:
-    required_fields:
-      - base_url
-      - timeout
-      - retry_attempts
-      - rate_limit
+    api:
+        required_fields:
+            - base_url
+            - timeout
+            - retry_attempts
+            - rate_limit
 
-    validation_rules:
-      base_url:
-        type: string
-        pattern: "^https?://[a-zA-Z0-9.-]+.*$"
+        validation_rules:
+            base_url:
+                type: string
+                pattern: '^https?://[a-zA-Z0-9.-]+.*$'
 
-      timeout:
-        type: integer
-        minimum: 1
-        maximum: 300
+            timeout:
+                type: integer
+                minimum: 1
+                maximum: 300
 
-      retry_attempts:
-        type: integer
-        minimum: 0
-        maximum: 10
+            retry_attempts:
+                type: integer
+                minimum: 0
+                maximum: 10
 
-  security:
-    required_fields:
-      - jwt_secret
-      - encryption_key
-      - session_timeout
+    security:
+        required_fields:
+            - jwt_secret
+            - encryption_key
+            - session_timeout
 
-    validation_rules:
-      jwt_secret:
-        type: string
-        min_length: 32
+        validation_rules:
+            jwt_secret:
+                type: string
+                min_length: 32
 
-      encryption_key:
-        type: string
-        min_length: 32
+            encryption_key:
+                type: string
+                min_length: 32
 
-      session_timeout:
-        type: integer
-        minimum: 300 # 5 minutes
-        maximum: 86400 # 24 hours
+            session_timeout:
+                type: integer
+                minimum: 300 # 5 minutes
+                maximum: 86400 # 24 hours
 
 # Secrets Management Configuration
 secrets_management:
-  provider: "hashicorp_vault"
+    provider: 'hashicorp_vault'
 
-  vault_config:
-    address: "https://vault.quantumvest.com"
-    auth_method: "kubernetes"
-    role: "quantumvest-app"
+    vault_config:
+        address: 'https://vault.quantumvest.com'
+        auth_method: 'kubernetes'
+        role: 'quantumvest-app'
 
-    # Secret paths
-    secret_paths:
-      database:
-        path: "secret/quantumvest/database"
-        keys:
-          - "host"
-          - "port"
-          - "username"
-          - "password"
-          - "database_name"
+        # Secret paths
+        secret_paths:
+            database:
+                path: 'secret/quantumvest/database'
+                keys:
+                    - 'host'
+                    - 'port'
+                    - 'username'
+                    - 'password'
+                    - 'database_name'
 
-      api_keys:
-        path: "secret/quantumvest/api-keys"
-        keys:
-          - "stripe_secret_key"
-          - "sendgrid_api_key"
-          - "market_data_api_key"
+            api_keys:
+                path: 'secret/quantumvest/api-keys'
+                keys:
+                    - 'stripe_secret_key'
+                    - 'sendgrid_api_key'
+                    - 'market_data_api_key'
 
-      encryption:
-        path: "secret/quantumvest/encryption"
-        keys:
-          - "jwt_secret"
-          - "encryption_key"
-          - "signing_key"
+            encryption:
+                path: 'secret/quantumvest/encryption'
+                keys:
+                    - 'jwt_secret'
+                    - 'encryption_key'
+                    - 'signing_key'
 
-      external_services:
-        path: "secret/quantumvest/external"
-        keys:
-          - "oauth_client_secret"
-          - "webhook_secret"
-          - "api_gateway_key"
+            external_services:
+                path: 'secret/quantumvest/external'
+                keys:
+                    - 'oauth_client_secret'
+                    - 'webhook_secret'
+                    - 'api_gateway_key'
 
-  # Secret rotation
-  rotation:
-    enabled: true
-    schedule:
-      database_passwords: "90d"
-      api_keys: "30d"
-      encryption_keys: "365d"
-      certificates: "90d"
+    # Secret rotation
+    rotation:
+        enabled: true
+        schedule:
+            database_passwords: '90d'
+            api_keys: '30d'
+            encryption_keys: '365d'
+            certificates: '90d'
 
-  # Secret validation
-  validation:
-    enabled: true
-    rules:
-      - name: "password_complexity"
-        pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{12,}$"
+    # Secret validation
+    validation:
+        enabled: true
+        rules:
+            - name: 'password_complexity'
+              pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{12,}$"
 
-      - name: "api_key_format"
-        pattern: "^[a-zA-Z0-9_-]{32,}$"
+            - name: 'api_key_format'
+              pattern: '^[a-zA-Z0-9_-]{32,}$'
 
-      - name: "jwt_secret_length"
-        min_length: 32
+            - name: 'jwt_secret_length'
+              min_length: 32
 
 # Feature Flag Management
 feature_flags:
-  provider: "launchdarkly"
+    provider: 'launchdarkly'
 
-  # Global flags
-  global_flags:
-    maintenance_mode:
-      description: "Enable maintenance mode across all services"
-      default: false
-      type: "boolean"
+    # Global flags
+    global_flags:
+        maintenance_mode:
+            description: 'Enable maintenance mode across all services'
+            default: false
+            type: 'boolean'
 
-    new_user_registration:
-      description: "Allow new user registrations"
-      default: true
-      type: "boolean"
+        new_user_registration:
+            description: 'Allow new user registrations'
+            default: true
+            type: 'boolean'
 
-    enhanced_logging:
-      description: "Enable detailed application logging"
-      default: false
-      type: "boolean"
+        enhanced_logging:
+            description: 'Enable detailed application logging'
+            default: false
+            type: 'boolean'
 
-    rate_limiting_strict:
-      description: "Enable strict rate limiting"
-      default: true
-      type: "boolean"
+        rate_limiting_strict:
+            description: 'Enable strict rate limiting'
+            default: true
+            type: 'boolean'
 
-  # Service-specific flags
-  service_flags:
-    backend:
-      experimental_features:
-        description: "Enable experimental backend features"
-        default: false
-        type: "boolean"
+    # Service-specific flags
+    service_flags:
+        backend:
+            experimental_features:
+                description: 'Enable experimental backend features'
+                default: false
+                type: 'boolean'
 
-      database_read_replica:
-        description: "Use database read replicas for queries"
-        default: true
-        type: "boolean"
+            database_read_replica:
+                description: 'Use database read replicas for queries'
+                default: true
+                type: 'boolean'
 
-      async_processing:
-        description: "Enable asynchronous request processing"
-        default: true
-        type: "boolean"
+            async_processing:
+                description: 'Enable asynchronous request processing'
+                default: true
+                type: 'boolean'
 
-    frontend:
-      new_dashboard:
-        description: "Show new dashboard interface"
-        default: false
-        type: "boolean"
-        rollout_percentage: 10
+        frontend:
+            new_dashboard:
+                description: 'Show new dashboard interface'
+                default: false
+                type: 'boolean'
+                rollout_percentage: 10
 
-      dark_mode:
-        description: "Enable dark mode theme"
-        default: true
-        type: "boolean"
+            dark_mode:
+                description: 'Enable dark mode theme'
+                default: true
+                type: 'boolean'
 
-    analytics:
-      real_time_processing:
-        description: "Enable real-time analytics processing"
-        default: false
-        type: "boolean"
+        analytics:
+            real_time_processing:
+                description: 'Enable real-time analytics processing'
+                default: false
+                type: 'boolean'
 
-      advanced_metrics:
-        description: "Collect advanced performance metrics"
-        default: true
-        type: "boolean"
+            advanced_metrics:
+                description: 'Collect advanced performance metrics'
+                default: true
+                type: 'boolean'
 
-  # Environment overrides
-  environment_overrides:
-    development:
-      enhanced_logging: true
-      experimental_features: true
+    # Environment overrides
+    environment_overrides:
+        development:
+            enhanced_logging: true
+            experimental_features: true
 
-    staging:
-      new_dashboard: true
-      rollout_percentage: 50
+        staging:
+            new_dashboard: true
+            rollout_percentage: 50
 
-    production:
-      maintenance_mode: false
-      rate_limiting_strict: true
+        production:
+            maintenance_mode: false
+            rate_limiting_strict: true
 
 # Configuration Templates
 configuration_templates:
-  application_config:
-    template: |
-      # Application Configuration for {{ environment }}
-      app:
-        name: "quantumvest"
-        version: "{{ app_version }}"
-        environment: "{{ environment }}"
-        debug: {{ debug_mode }}
+    application_config:
+        template: |
+            # Application Configuration for {{ environment }}
+            app:
+              name: "quantumvest"
+              version: "{{ app_version }}"
+              environment: "{{ environment }}"
+              debug: {{ debug_mode }}
 
-      server:
-        host: "{{ server_host | default('0.0.0.0') }}"
-        port: {{ server_port | default(8080) }}
-        workers: {{ server_workers | default(4) }}
-        timeout: {{ server_timeout | default(30) }}
+            server:
+              host: "{{ server_host | default('0.0.0.0') }}"
+              port: {{ server_port | default(8080) }}
+              workers: {{ server_workers | default(4) }}
+              timeout: {{ server_timeout | default(30) }}
 
-      database:
-        host: "{{ vault_secret('database/host') }}"
-        port: {{ vault_secret('database/port') }}
-        username: "{{ vault_secret('database/username') }}"
-        password: "{{ vault_secret('database/password') }}"
-        database: "{{ vault_secret('database/database_name') }}"
-        ssl_mode: "{{ database_ssl_mode | default('require') }}"
-        pool_size: {{ database_pool_size | default(10) }}
+            database:
+              host: "{{ vault_secret('database/host') }}"
+              port: {{ vault_secret('database/port') }}
+              username: "{{ vault_secret('database/username') }}"
+              password: "{{ vault_secret('database/password') }}"
+              database: "{{ vault_secret('database/database_name') }}"
+              ssl_mode: "{{ database_ssl_mode | default('require') }}"
+              pool_size: {{ database_pool_size | default(10) }}
 
-      redis:
-        host: "{{ redis_host }}"
-        port: {{ redis_port | default(6379) }}
-        password: "{{ vault_secret('redis/password') }}"
-        db: {{ redis_db | default(0) }}
+            redis:
+              host: "{{ redis_host }}"
+              port: {{ redis_port | default(6379) }}
+              password: "{{ vault_secret('redis/password') }}"
+              db: {{ redis_db | default(0) }}
 
-      logging:
-        level: "{{ log_level | default('INFO') }}"
-        format: "{{ log_format | default('json') }}"
-        output: "{{ log_output | default('stdout') }}"
+            logging:
+              level: "{{ log_level | default('INFO') }}"
+              format: "{{ log_format | default('json') }}"
+              output: "{{ log_output | default('stdout') }}"
 
-      security:
-        jwt_secret: "{{ vault_secret('encryption/jwt_secret') }}"
-        encryption_key: "{{ vault_secret('encryption/encryption_key') }}"
-        session_timeout: {{ session_timeout | default(3600) }}
+            security:
+              jwt_secret: "{{ vault_secret('encryption/jwt_secret') }}"
+              encryption_key: "{{ vault_secret('encryption/encryption_key') }}"
+              session_timeout: {{ session_timeout | default(3600) }}
 
-      external_services:
-        stripe:
-          api_key: "{{ vault_secret('api-keys/stripe_secret_key') }}"
-          webhook_secret: "{{ vault_secret('external/webhook_secret') }}"
+            external_services:
+              stripe:
+                api_key: "{{ vault_secret('api-keys/stripe_secret_key') }}"
+                webhook_secret: "{{ vault_secret('external/webhook_secret') }}"
 
-        sendgrid:
-          api_key: "{{ vault_secret('api-keys/sendgrid_api_key') }}"
+              sendgrid:
+                api_key: "{{ vault_secret('api-keys/sendgrid_api_key') }}"
 
-        market_data:
-          api_key: "{{ vault_secret('api-keys/market_data_api_key') }}"
-          base_url: "{{ market_data_base_url }}"
+              market_data:
+                api_key: "{{ vault_secret('api-keys/market_data_api_key') }}"
+                base_url: "{{ market_data_base_url }}"
 
-    variables:
-      development:
-        debug_mode: true
-        log_level: "DEBUG"
-        server_workers: 1
-        database_pool_size: 5
+        variables:
+            development:
+                debug_mode: true
+                log_level: 'DEBUG'
+                server_workers: 1
+                database_pool_size: 5
 
-      staging:
-        debug_mode: false
-        log_level: "INFO"
-        server_workers: 2
-        database_pool_size: 10
+            staging:
+                debug_mode: false
+                log_level: 'INFO'
+                server_workers: 2
+                database_pool_size: 10
 
-      production:
-        debug_mode: false
-        log_level: "WARNING"
-        server_workers: 4
-        database_pool_size: 20
+            production:
+                debug_mode: false
+                log_level: 'WARNING'
+                server_workers: 4
+                database_pool_size: 20
 
 # Configuration Validation and Testing
 validation:
-  pre_deployment:
-    enabled: true
-    checks:
-      - name: "schema_validation"
-        description: "Validate configuration against schema"
+    pre_deployment:
+        enabled: true
+        checks:
+            - name: 'schema_validation'
+              description: 'Validate configuration against schema'
 
-      - name: "secret_availability"
-        description: "Verify all required secrets are available"
+            - name: 'secret_availability'
+              description: 'Verify all required secrets are available'
 
-      - name: "connectivity_test"
-        description: "Test connectivity to external services"
+            - name: 'connectivity_test'
+              description: 'Test connectivity to external services'
 
-      - name: "feature_flag_consistency"
-        description: "Validate feature flag configurations"
+            - name: 'feature_flag_consistency'
+              description: 'Validate feature flag configurations'
 
-  runtime:
-    enabled: true
-    checks:
-      - name: "configuration_drift"
-        description: "Detect configuration changes"
-        frequency: "hourly"
+    runtime:
+        enabled: true
+        checks:
+            - name: 'configuration_drift'
+              description: 'Detect configuration changes'
+              frequency: 'hourly'
 
-      - name: "secret_expiration"
-        description: "Monitor secret expiration dates"
-        frequency: "daily"
+            - name: 'secret_expiration'
+              description: 'Monitor secret expiration dates'
+              frequency: 'daily'
 
-      - name: "feature_flag_usage"
-        description: "Monitor feature flag usage patterns"
-        frequency: "daily"
+            - name: 'feature_flag_usage'
+              description: 'Monitor feature flag usage patterns'
+              frequency: 'daily'
 
 # Configuration Deployment
 deployment:
-  strategy: "blue_green"
+    strategy: 'blue_green'
 
-  stages:
-    - name: "validation"
-      description: "Validate configuration changes"
-      checks:
-        - "schema_validation"
-        - "secret_availability"
+    stages:
+        - name: 'validation'
+          description: 'Validate configuration changes'
+          checks:
+              - 'schema_validation'
+              - 'secret_availability'
 
-    - name: "canary"
-      description: "Deploy to canary instances"
-      percentage: 5
-      duration: "10m"
+        - name: 'canary'
+          description: 'Deploy to canary instances'
+          percentage: 5
+          duration: '10m'
 
-    - name: "staging"
-      description: "Deploy to staging environment"
-      approval_required: false
+        - name: 'staging'
+          description: 'Deploy to staging environment'
+          approval_required: false
 
-    - name: "production"
-      description: "Deploy to production environment"
-      approval_required: true
-      approvers:
-        - "ops-team"
-        - "security-team"
+        - name: 'production'
+          description: 'Deploy to production environment'
+          approval_required: true
+          approvers:
+              - 'ops-team'
+              - 'security-team'
 
-  rollback:
-    enabled: true
-    automatic: true
-    triggers:
-      - "health_check_failure"
-      - "error_rate_increase"
-      - "manual_trigger"
+    rollback:
+        enabled: true
+        automatic: true
+        triggers:
+            - 'health_check_failure'
+            - 'error_rate_increase'
+            - 'manual_trigger'
 
 # Configuration Monitoring
 monitoring:
-  metrics:
-    - name: "configuration_changes"
-      description: "Track configuration change frequency"
+    metrics:
+        - name: 'configuration_changes'
+          description: 'Track configuration change frequency'
 
-    - name: "secret_rotation_status"
-      description: "Monitor secret rotation compliance"
+        - name: 'secret_rotation_status'
+          description: 'Monitor secret rotation compliance'
 
-    - name: "feature_flag_evaluations"
-      description: "Track feature flag evaluation performance"
+        - name: 'feature_flag_evaluations'
+          description: 'Track feature flag evaluation performance'
 
-    - name: "configuration_errors"
-      description: "Monitor configuration-related errors"
+        - name: 'configuration_errors'
+          description: 'Monitor configuration-related errors'
 
-  alerts:
-    - name: "configuration_validation_failure"
-      condition: "validation_failures > 0"
-      severity: "critical"
+    alerts:
+        - name: 'configuration_validation_failure'
+          condition: 'validation_failures > 0'
+          severity: 'critical'
 
-    - name: "secret_expiration_warning"
-      condition: "secret_expires_in < 7d"
-      severity: "warning"
+        - name: 'secret_expiration_warning'
+          condition: 'secret_expires_in < 7d'
+          severity: 'warning'
 
-    - name: "feature_flag_error_rate"
-      condition: "flag_error_rate > 1%"
-      severity: "warning"
+        - name: 'feature_flag_error_rate'
+          condition: 'flag_error_rate > 1%'
+          severity: 'warning'
 
-  dashboards:
-    - name: "Configuration Overview"
-      panels:
-        - "Configuration Changes Over Time"
-        - "Secret Rotation Status"
-        - "Feature Flag Usage"
-        - "Validation Success Rate"
+    dashboards:
+        - name: 'Configuration Overview'
+          panels:
+              - 'Configuration Changes Over Time'
+              - 'Secret Rotation Status'
+              - 'Feature Flag Usage'
+              - 'Validation Success Rate'
 
 # Compliance and Governance
 compliance:
-  change_management:
-    enabled: true
-    approval_workflow: true
-    audit_trail: true
+    change_management:
+        enabled: true
+        approval_workflow: true
+        audit_trail: true
 
-  access_control:
-    role_based: true
-    principle: "least_privilege"
+    access_control:
+        role_based: true
+        principle: 'least_privilege'
 
-    roles:
-      - name: "ConfigAdmin"
-        permissions:
-          - "config:read"
-          - "config:write"
-          - "config:delete"
-          - "secrets:read"
-          - "secrets:write"
+        roles:
+            - name: 'ConfigAdmin'
+              permissions:
+                  - 'config:read'
+                  - 'config:write'
+                  - 'config:delete'
+                  - 'secrets:read'
+                  - 'secrets:write'
 
-      - name: "ConfigReader"
-        permissions:
-          - "config:read"
-          - "secrets:read"
+            - name: 'ConfigReader'
+              permissions:
+                  - 'config:read'
+                  - 'secrets:read'
 
-      - name: "FeatureFlagManager"
-        permissions:
-          - "flags:read"
-          - "flags:write"
+            - name: 'FeatureFlagManager'
+              permissions:
+                  - 'flags:read'
+                  - 'flags:write'
 
-  audit:
-    enabled: true
-    events:
-      - "configuration_changes"
-      - "secret_access"
-      - "feature_flag_changes"
-      - "validation_failures"
+    audit:
+        enabled: true
+        events:
+            - 'configuration_changes'
+            - 'secret_access'
+            - 'feature_flag_changes'
+            - 'validation_failures'
 
-    retention: "7_years"
-    immutable: true
+        retention: '7_years'
+        immutable: true
