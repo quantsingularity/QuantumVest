@@ -60,7 +60,7 @@ contract DataTracking {
     event DataAdded(string assetId, uint256 timestamp, uint256 price, uint256 volume);
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == owner, 'Only owner can call this function');
         _;
     }
 
@@ -74,10 +74,11 @@ contract DataTracking {
      * @param price Current price of the asset
      * @param volume Trading volume of the asset
      */
-    function addMarketData(string memory assetId, uint256 price, uint256 volume)
-        external
-        onlyOwner
-    {
+    function addMarketData(
+        string memory assetId,
+        uint256 price,
+        uint256 volume
+    ) external onlyOwner {
         uint256 timestamp = block.timestamp;
 
         MarketData memory data = MarketData({
@@ -97,12 +98,8 @@ contract DataTracking {
      * @param assetId Identifier for the asset
      * @return The latest MarketData struct for the asset
      */
-    function getLatestData(string memory assetId)
-        external
-        view
-        returns (MarketData memory)
-    {
-        require(assetData[assetId].length > 0, "No data available for this asset");
+    function getLatestData(string memory assetId) external view returns (MarketData memory) {
+        require(assetData[assetId].length > 0, 'No data available for this asset');
 
         return assetData[assetId][assetData[assetId].length - 1];
     }
@@ -113,12 +110,11 @@ contract DataTracking {
      * @param count Number of historical data points to retrieve
      * @return Array of MarketData structs
      */
-    function getHistoricalData(string memory assetId, uint256 count)
-        external
-        view
-        returns (MarketData[] memory)
-    {
-        require(assetData[assetId].length > 0, "No data available for this asset");
+    function getHistoricalData(
+        string memory assetId,
+        uint256 count
+    ) external view returns (MarketData[] memory) {
+        require(assetData[assetId].length > 0, 'No data available for this asset');
 
         uint256 dataLength = assetData[assetId].length;
         uint256 resultCount = count > dataLength ? dataLength : count;
@@ -159,10 +155,16 @@ contract TrendAnalysis {
 
     mapping(string => TrendData[]) public assetTrends;
 
-    event TrendRecorded(string assetId, uint256 timestamp, uint256 transactionCount, uint256 totalValue, int8 sentiment);
+    event TrendRecorded(
+        string assetId,
+        uint256 timestamp,
+        uint256 transactionCount,
+        uint256 totalValue,
+        int8 sentiment
+    );
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == owner, 'Only owner can call this function');
         _;
     }
 
@@ -182,11 +184,8 @@ contract TrendAnalysis {
         uint256 transactionCount,
         uint256 totalValue,
         int8 sentiment
-    )
-        external
-        onlyOwner
-    {
-        require(sentiment >= -100 && sentiment <= 100, "Sentiment must be between -100 and 100");
+    ) external onlyOwner {
+        require(sentiment >= -100 && sentiment <= 100, 'Sentiment must be between -100 and 100');
 
         uint256 timestamp = block.timestamp;
 
@@ -208,12 +207,8 @@ contract TrendAnalysis {
      * @param assetId Identifier for the asset
      * @return The latest TrendData struct for the asset
      */
-    function getLatestTrend(string memory assetId)
-        external
-        view
-        returns (TrendData memory)
-    {
-        require(assetTrends[assetId].length > 0, "No trend data available for this asset");
+    function getLatestTrend(string memory assetId) external view returns (TrendData memory) {
+        require(assetTrends[assetId].length > 0, 'No trend data available for this asset');
 
         return assetTrends[assetId][assetTrends[assetId].length - 1];
     }
@@ -224,12 +219,11 @@ contract TrendAnalysis {
      * @param count Number of historical data points to retrieve
      * @return Array of TrendData structs
      */
-    function getHistoricalTrends(string memory assetId, uint256 count)
-        external
-        view
-        returns (TrendData[] memory)
-    {
-        require(assetTrends[assetId].length > 0, "No trend data available for this asset");
+    function getHistoricalTrends(
+        string memory assetId,
+        uint256 count
+    ) external view returns (TrendData[] memory) {
+        require(assetTrends[assetId].length > 0, 'No trend data available for this asset');
 
         uint256 dataLength = assetTrends[assetId].length;
         uint256 resultCount = count > dataLength ? dataLength : count;
@@ -249,12 +243,11 @@ contract TrendAnalysis {
      * @param count Number of data points to include
      * @return Average sentiment score
      */
-    function calculateAverageSentiment(string memory assetId, uint256 count)
-        external
-        view
-        returns (int8)
-    {
-        require(assetTrends[assetId].length > 0, "No trend data available for this asset");
+    function calculateAverageSentiment(
+        string memory assetId,
+        uint256 count
+    ) external view returns (int8) {
+        require(assetTrends[assetId].length > 0, 'No trend data available for this asset');
 
         uint256 dataLength = assetTrends[assetId].length;
         uint256 resultCount = count > dataLength ? dataLength : count;
@@ -317,65 +310,60 @@ QuantumVest implements sophisticated transaction tracking to derive insights fro
 The transaction tracking system is implemented using Web3.js:
 
 ```javascript
-const Web3 = require("web3");
-const web3 = new Web3("https://mainnet.infura.io/v3/YOUR_INFURA_KEY");
+const Web3 = require('web3');
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR_INFURA_KEY');
 
 async function trackTransactions(assetAddress, blockRange) {
-  const currentBlock = await web3.eth.getBlockNumber();
-  const startBlock = currentBlock - blockRange;
+    const currentBlock = await web3.eth.getBlockNumber();
+    const startBlock = currentBlock - blockRange;
 
-  // Get all transfer events for the token
-  const contract = new web3.eth.Contract(ERC20_ABI, assetAddress);
-  const events = await contract.getPastEvents("Transfer", {
-    fromBlock: startBlock,
-    toBlock: "latest",
-  });
+    // Get all transfer events for the token
+    const contract = new web3.eth.Contract(ERC20_ABI, assetAddress);
+    const events = await contract.getPastEvents('Transfer', {
+        fromBlock: startBlock,
+        toBlock: 'latest',
+    });
 
-  // Process the events
-  const transactions = events.map((event) => ({
-    from: event.returnValues.from,
-    to: event.returnValues.to,
-    value: web3.utils.fromWei(event.returnValues.value, "ether"),
-    blockNumber: event.blockNumber,
-    transactionHash: event.transactionHash,
-  }));
+    // Process the events
+    const transactions = events.map((event) => ({
+        from: event.returnValues.from,
+        to: event.returnValues.to,
+        value: web3.utils.fromWei(event.returnValues.value, 'ether'),
+        blockNumber: event.blockNumber,
+        transactionHash: event.transactionHash,
+    }));
 
-  // Analyze the transactions
-  const analysis = analyzeTransactions(transactions);
+    // Analyze the transactions
+    const analysis = analyzeTransactions(transactions);
 
-  return {
-    transactions,
-    analysis,
-  };
+    return {
+        transactions,
+        analysis,
+    };
 }
 
 function analyzeTransactions(transactions) {
-  // Calculate total volume
-  const totalVolume = transactions.reduce(
-    (sum, tx) => sum + parseFloat(tx.value),
-    0,
-  );
+    // Calculate total volume
+    const totalVolume = transactions.reduce((sum, tx) => sum + parseFloat(tx.value), 0);
 
-  // Identify large transactions (whales)
-  const whaleThreshold = totalVolume * 0.05; // 5% of total volume
-  const whaleTransactions = transactions.filter(
-    (tx) => parseFloat(tx.value) > whaleThreshold,
-  );
+    // Identify large transactions (whales)
+    const whaleThreshold = totalVolume * 0.05; // 5% of total volume
+    const whaleTransactions = transactions.filter((tx) => parseFloat(tx.value) > whaleThreshold);
 
-  // Calculate unique addresses
-  const uniqueAddresses = new Set();
-  transactions.forEach((tx) => {
-    uniqueAddresses.add(tx.from);
-    uniqueAddresses.add(tx.to);
-  });
+    // Calculate unique addresses
+    const uniqueAddresses = new Set();
+    transactions.forEach((tx) => {
+        uniqueAddresses.add(tx.from);
+        uniqueAddresses.add(tx.to);
+    });
 
-  return {
-    totalVolume,
-    transactionCount: transactions.length,
-    whaleTransactions,
-    uniqueAddressCount: uniqueAddresses.size,
-    averageTransactionValue: totalVolume / transactions.length,
-  };
+    return {
+        totalVolume,
+        transactionCount: transactions.length,
+        whaleTransactions,
+        uniqueAddressCount: uniqueAddresses.size,
+        averageTransactionValue: totalVolume / transactions.length,
+    };
 }
 ```
 
@@ -466,68 +454,62 @@ Smart contracts undergo rigorous testing:
 Example test for the DataTracking contract:
 
 ```javascript
-const DataTracking = artifacts.require("DataTracking");
+const DataTracking = artifacts.require('DataTracking');
 
-contract("DataTracking", (accounts) => {
-  const owner = accounts[0];
-  const nonOwner = accounts[1];
-  const assetId = "BTC";
-  const price = web3.utils.toWei("50000", "ether");
-  const volume = web3.utils.toWei("1000", "ether");
+contract('DataTracking', (accounts) => {
+    const owner = accounts[0];
+    const nonOwner = accounts[1];
+    const assetId = 'BTC';
+    const price = web3.utils.toWei('50000', 'ether');
+    const volume = web3.utils.toWei('1000', 'ether');
 
-  let dataTracking;
+    let dataTracking;
 
-  beforeEach(async () => {
-    dataTracking = await DataTracking.new({ from: owner });
-  });
+    beforeEach(async () => {
+        dataTracking = await DataTracking.new({ from: owner });
+    });
 
-  it("should allow owner to add market data", async () => {
-    await dataTracking.addMarketData(assetId, price, volume, { from: owner });
+    it('should allow owner to add market data', async () => {
+        await dataTracking.addMarketData(assetId, price, volume, { from: owner });
 
-    const latestData = await dataTracking.getLatestData(assetId);
-    assert.equal(latestData.assetId, assetId, "Asset ID should match");
-    assert.equal(latestData.price.toString(), price, "Price should match");
-    assert.equal(latestData.volume.toString(), volume, "Volume should match");
-  });
+        const latestData = await dataTracking.getLatestData(assetId);
+        assert.equal(latestData.assetId, assetId, 'Asset ID should match');
+        assert.equal(latestData.price.toString(), price, 'Price should match');
+        assert.equal(latestData.volume.toString(), volume, 'Volume should match');
+    });
 
-  it("should not allow non-owner to add market data", async () => {
-    try {
-      await dataTracking.addMarketData(assetId, price, volume, {
-        from: nonOwner,
-      });
-      assert.fail("Non-owner should not be able to add market data");
-    } catch (error) {
-      assert(
-        error.message.includes("Only owner can call this function"),
-        "Wrong error message",
-      );
-    }
-  });
+    it('should not allow non-owner to add market data', async () => {
+        try {
+            await dataTracking.addMarketData(assetId, price, volume, {
+                from: nonOwner,
+            });
+            assert.fail('Non-owner should not be able to add market data');
+        } catch (error) {
+            assert(
+                error.message.includes('Only owner can call this function'),
+                'Wrong error message',
+            );
+        }
+    });
 
-  it("should retrieve historical data correctly", async () => {
-    // Add multiple data points
-    await dataTracking.addMarketData(assetId, price, volume, { from: owner });
-    await dataTracking.addMarketData(
-      assetId,
-      web3.utils.toWei("51000", "ether"),
-      volume,
-      { from: owner },
-    );
-    await dataTracking.addMarketData(
-      assetId,
-      web3.utils.toWei("52000", "ether"),
-      volume,
-      { from: owner },
-    );
+    it('should retrieve historical data correctly', async () => {
+        // Add multiple data points
+        await dataTracking.addMarketData(assetId, price, volume, { from: owner });
+        await dataTracking.addMarketData(assetId, web3.utils.toWei('51000', 'ether'), volume, {
+            from: owner,
+        });
+        await dataTracking.addMarketData(assetId, web3.utils.toWei('52000', 'ether'), volume, {
+            from: owner,
+        });
 
-    const historicalData = await dataTracking.getHistoricalData(assetId, 2);
-    assert.equal(historicalData.length, 2, "Should return 2 data points");
-    assert.equal(
-      historicalData[1].price.toString(),
-      web3.utils.toWei("52000", "ether"),
-      "Latest price should match",
-    );
-  });
+        const historicalData = await dataTracking.getHistoricalData(assetId, 2);
+        assert.equal(historicalData.length, 2, 'Should return 2 data points');
+        assert.equal(
+            historicalData[1].price.toString(),
+            web3.utils.toWei('52000', 'ether'),
+            'Latest price should match',
+        );
+    });
 });
 ```
 
@@ -543,31 +525,31 @@ Smart contracts are deployed using a systematic process:
 Deployment script example:
 
 ```javascript
-const DataTracking = artifacts.require("DataTracking");
-const TrendAnalysis = artifacts.require("TrendAnalysis");
+const DataTracking = artifacts.require('DataTracking');
+const TrendAnalysis = artifacts.require('TrendAnalysis');
 
 module.exports = async function (deployer, network, accounts) {
-  // Deploy DataTracking contract
-  await deployer.deploy(DataTracking);
-  const dataTracking = await DataTracking.deployed();
+    // Deploy DataTracking contract
+    await deployer.deploy(DataTracking);
+    const dataTracking = await DataTracking.deployed();
 
-  // Deploy TrendAnalysis contract
-  await deployer.deploy(TrendAnalysis);
-  const trendAnalysis = await TrendAnalysis.deployed();
+    // Deploy TrendAnalysis contract
+    await deployer.deploy(TrendAnalysis);
+    const trendAnalysis = await TrendAnalysis.deployed();
 
-  console.log("DataTracking deployed at:", dataTracking.address);
-  console.log("TrendAnalysis deployed at:", trendAnalysis.address);
+    console.log('DataTracking deployed at:', dataTracking.address);
+    console.log('TrendAnalysis deployed at:', trendAnalysis.address);
 
-  // If on mainnet, perform additional setup
-  if (network === "mainnet") {
-    // Add initial data for key assets
-    const assets = ["BTC", "ETH", "LINK", "UNI"];
+    // If on mainnet, perform additional setup
+    if (network === 'mainnet') {
+        // Add initial data for key assets
+        const assets = ['BTC', 'ETH', 'LINK', 'UNI'];
 
-    for (const asset of assets) {
-      console.log(`Initializing data for ${asset}...`);
-      // Implementation depends on available data sources
+        for (const asset of assets) {
+            console.log(`Initializing data for ${asset}...`);
+            // Implementation depends on available data sources
+        }
     }
-  }
 };
 ```
 

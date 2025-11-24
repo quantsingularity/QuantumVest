@@ -67,28 +67,28 @@ Retrieve AI-generated predictions for a specific asset.
 
 ```json
 {
-  "asset": {
-    "id": "AAPL",
-    "name": "Apple Inc.",
-    "type": "stocks"
-  },
-  "prediction": {
-    "timestamp": "2025-04-25T10:00:00Z",
-    "timeframe": "1w",
-    "current_price": 185.92,
-    "predicted_price": 192.45,
-    "confidence_interval": {
-      "lower": 188.76,
-      "upper": 196.14
+    "asset": {
+        "id": "AAPL",
+        "name": "Apple Inc.",
+        "type": "stocks"
     },
-    "direction": "up",
-    "confidence_score": 0.78
-  },
-  "historical_accuracy": {
-    "1d": 0.82,
-    "1w": 0.76,
-    "1m": 0.71
-  }
+    "prediction": {
+        "timestamp": "2025-04-25T10:00:00Z",
+        "timeframe": "1w",
+        "current_price": 185.92,
+        "predicted_price": 192.45,
+        "confidence_interval": {
+            "lower": 188.76,
+            "upper": 196.14
+        },
+        "direction": "up",
+        "confidence_score": 0.78
+    },
+    "historical_accuracy": {
+        "1d": 0.82,
+        "1w": 0.76,
+        "1m": 0.71
+    }
 }
 ```
 
@@ -112,40 +112,40 @@ Retrieve a list of recent predictions.
 
 ```json
 {
-  "predictions": [
-    {
-      "asset": {
-        "id": "AAPL",
-        "name": "Apple Inc.",
-        "type": "stocks"
-      },
-      "prediction": {
-        "timestamp": "2025-04-25T10:00:00Z",
-        "timeframe": "1w",
-        "direction": "up",
-        "confidence_score": 0.78
-      }
-    },
-    {
-      "asset": {
-        "id": "BTC",
-        "name": "Bitcoin",
-        "type": "crypto"
-      },
-      "prediction": {
-        "timestamp": "2025-04-25T10:00:00Z",
-        "timeframe": "1w",
-        "direction": "down",
-        "confidence_score": 0.65
-      }
+    "predictions": [
+        {
+            "asset": {
+                "id": "AAPL",
+                "name": "Apple Inc.",
+                "type": "stocks"
+            },
+            "prediction": {
+                "timestamp": "2025-04-25T10:00:00Z",
+                "timeframe": "1w",
+                "direction": "up",
+                "confidence_score": 0.78
+            }
+        },
+        {
+            "asset": {
+                "id": "BTC",
+                "name": "Bitcoin",
+                "type": "crypto"
+            },
+            "prediction": {
+                "timestamp": "2025-04-25T10:00:00Z",
+                "timeframe": "1w",
+                "direction": "down",
+                "confidence_score": 0.65
+            }
+        }
+    ],
+    "pagination": {
+        "total": 42,
+        "page": 1,
+        "limit": 10,
+        "pages": 5
     }
-  ],
-  "pagination": {
-    "total": 42,
-    "page": 1,
-    "limit": 10,
-    "pages": 5
-  }
 }
 ```
 
@@ -163,35 +163,35 @@ Retrieve the user's current portfolio.
 
 ```json
 {
-  "portfolio": {
-    "total_value": 25000.0,
-    "assets": [
-      {
-        "id": "AAPL",
-        "name": "Apple Inc.",
-        "type": "stocks",
-        "quantity": 10,
-        "current_price": 185.92,
-        "value": 1859.2,
-        "allocation_percentage": 7.44
-      },
-      {
-        "id": "BTC",
-        "name": "Bitcoin",
-        "type": "crypto",
-        "quantity": 0.25,
-        "current_price": 65000.0,
-        "value": 16250.0,
-        "allocation_percentage": 65.0
-      }
-    ],
-    "performance": {
-      "daily": 2.3,
-      "weekly": -1.5,
-      "monthly": 5.7,
-      "yearly": 12.4
+    "portfolio": {
+        "total_value": 25000.0,
+        "assets": [
+            {
+                "id": "AAPL",
+                "name": "Apple Inc.",
+                "type": "stocks",
+                "quantity": 10,
+                "current_price": 185.92,
+                "value": 1859.2,
+                "allocation_percentage": 7.44
+            },
+            {
+                "id": "BTC",
+                "name": "Bitcoin",
+                "type": "crypto",
+                "quantity": 0.25,
+                "current_price": 65000.0,
+                "value": 16250.0,
+                "allocation_percentage": 65.0
+            }
+        ],
+        "performance": {
+            "daily": 2.3,
+            "weekly": -1.5,
+            "monthly": 5.7,
+            "yearly": 12.4
+        }
     }
-  }
 }
 ```
 
@@ -207,18 +207,18 @@ Update the user's portfolio.
 
 ```json
 {
-  "assets": [
-    {
-      "id": "AAPL",
-      "type": "stocks",
-      "quantity": 15
-    },
-    {
-      "id": "BTC",
-      "type": "crypto",
-      "quantity": 0.3
-    }
-  ]
+    "assets": [
+        {
+            "id": "AAPL",
+            "type": "stocks",
+            "quantity": 15
+        },
+        {
+            "id": "BTC",
+            "type": "crypto",
+            "quantity": 0.3
+        }
+    ]
 }
 ```
 
@@ -226,31 +226,31 @@ Update the user's portfolio.
 
 ```json
 {
-  "status": "success",
-  "message": "Portfolio updated successfully",
-  "portfolio": {
-    "total_value": 28538.8,
-    "assets": [
-      {
-        "id": "AAPL",
-        "name": "Apple Inc.",
-        "type": "stocks",
-        "quantity": 15,
-        "current_price": 185.92,
-        "value": 2788.8,
-        "allocation_percentage": 9.77
-      },
-      {
-        "id": "BTC",
-        "name": "Bitcoin",
-        "type": "crypto",
-        "quantity": 0.3,
-        "current_price": 65000.0,
-        "value": 19500.0,
-        "allocation_percentage": 68.33
-      }
-    ]
-  }
+    "status": "success",
+    "message": "Portfolio updated successfully",
+    "portfolio": {
+        "total_value": 28538.8,
+        "assets": [
+            {
+                "id": "AAPL",
+                "name": "Apple Inc.",
+                "type": "stocks",
+                "quantity": 15,
+                "current_price": 185.92,
+                "value": 2788.8,
+                "allocation_percentage": 9.77
+            },
+            {
+                "id": "BTC",
+                "name": "Bitcoin",
+                "type": "crypto",
+                "quantity": 0.3,
+                "current_price": 65000.0,
+                "value": 19500.0,
+                "allocation_percentage": 68.33
+            }
+        ]
+    }
 }
 ```
 
@@ -268,13 +268,13 @@ Generate a portfolio optimization plan.
 
 ```json
 {
-  "risk_profile": "moderate",
-  "investment_horizon": "medium",
-  "initial_investment": 25000,
-  "constraints": {
-    "max_crypto_allocation": 0.3,
-    "min_stock_allocation": 0.4
-  }
+    "risk_profile": "moderate",
+    "investment_horizon": "medium",
+    "initial_investment": 25000,
+    "constraints": {
+        "max_crypto_allocation": 0.3,
+        "min_stock_allocation": 0.4
+    }
 }
 ```
 
@@ -282,42 +282,42 @@ Generate a portfolio optimization plan.
 
 ```json
 {
-  "optimization_id": "opt-123456",
-  "recommended_allocation": {
-    "stocks": {
-      "AAPL": 0.15,
-      "MSFT": 0.1,
-      "GOOGL": 0.1,
-      "AMZN": 0.05
+    "optimization_id": "opt-123456",
+    "recommended_allocation": {
+        "stocks": {
+            "AAPL": 0.15,
+            "MSFT": 0.1,
+            "GOOGL": 0.1,
+            "AMZN": 0.05
+        },
+        "crypto": {
+            "BTC": 0.15,
+            "ETH": 0.1
+        },
+        "bonds": {
+            "GOVT": 0.2,
+            "VCIT": 0.15
+        }
     },
-    "crypto": {
-      "BTC": 0.15,
-      "ETH": 0.1
+    "expected_performance": {
+        "annual_return": 0.12,
+        "volatility": 0.08,
+        "sharpe_ratio": 1.5
     },
-    "bonds": {
-      "GOVT": 0.2,
-      "VCIT": 0.15
-    }
-  },
-  "expected_performance": {
-    "annual_return": 0.12,
-    "volatility": 0.08,
-    "sharpe_ratio": 1.5
-  },
-  "implementation_steps": [
-    {
-      "action": "buy",
-      "asset_id": "AAPL",
-      "asset_type": "stocks",
-      "quantity": 20
-    },
-    {
-      "action": "sell",
-      "asset_id": "BTC",
-      "asset_type": "crypto",
-      "quantity": 0.1
-    }
-  ]
+    "implementation_steps": [
+        {
+            "action": "buy",
+            "asset_id": "AAPL",
+            "asset_type": "stocks",
+            "quantity": 20
+        },
+        {
+            "action": "sell",
+            "asset_id": "BTC",
+            "asset_type": "crypto",
+            "quantity": 0.1
+        }
+    ]
 }
 ```
 
@@ -344,40 +344,40 @@ Retrieve current and historical price data for an asset.
 
 ```json
 {
-  "asset": {
-    "id": "AAPL",
-    "name": "Apple Inc.",
-    "type": "stocks"
-  },
-  "current_price": 185.92,
-  "price_change": {
-    "value": 2.45,
-    "percentage": 1.34
-  },
-  "historical_data": [
-    {
-      "timestamp": "2025-04-24T16:00:00Z",
-      "open": 183.47,
-      "high": 186.2,
-      "low": 182.95,
-      "close": 185.92,
-      "volume": 32456789
+    "asset": {
+        "id": "AAPL",
+        "name": "Apple Inc.",
+        "type": "stocks"
     },
-    {
-      "timestamp": "2025-04-23T16:00:00Z",
-      "open": 184.1,
-      "high": 185.35,
-      "low": 182.8,
-      "close": 183.47,
-      "volume": 28765432
+    "current_price": 185.92,
+    "price_change": {
+        "value": 2.45,
+        "percentage": 1.34
+    },
+    "historical_data": [
+        {
+            "timestamp": "2025-04-24T16:00:00Z",
+            "open": 183.47,
+            "high": 186.2,
+            "low": 182.95,
+            "close": 185.92,
+            "volume": 32456789
+        },
+        {
+            "timestamp": "2025-04-23T16:00:00Z",
+            "open": 184.1,
+            "high": 185.35,
+            "low": 182.8,
+            "close": 183.47,
+            "volume": 28765432
+        }
+    ],
+    "metadata": {
+        "period": "1w",
+        "interval": "1d",
+        "currency": "USD",
+        "timezone": "UTC"
     }
-  ],
-  "metadata": {
-    "period": "1w",
-    "interval": "1d",
-    "currency": "USD",
-    "timezone": "UTC"
-  }
 }
 ```
 
@@ -400,28 +400,28 @@ Retrieve market sentiment analysis for an asset.
 
 ```json
 {
-  "asset": {
-    "id": "AAPL",
-    "name": "Apple Inc.",
-    "type": "stocks"
-  },
-  "sentiment": {
-    "overall_score": 0.72,
-    "classification": "bullish",
-    "components": {
-      "news_sentiment": 0.68,
-      "social_media_sentiment": 0.75,
-      "technical_indicators": 0.65,
-      "analyst_ratings": 0.8
-    }
-  },
-  "sources": {
-    "news_articles": 42,
-    "social_media_posts": 1250,
-    "technical_indicators_analyzed": 15,
-    "analysts_coverage": 28
-  },
-  "timestamp": "2025-04-25T10:00:00Z"
+    "asset": {
+        "id": "AAPL",
+        "name": "Apple Inc.",
+        "type": "stocks"
+    },
+    "sentiment": {
+        "overall_score": 0.72,
+        "classification": "bullish",
+        "components": {
+            "news_sentiment": 0.68,
+            "social_media_sentiment": 0.75,
+            "technical_indicators": 0.65,
+            "analyst_ratings": 0.8
+        }
+    },
+    "sources": {
+        "news_articles": 42,
+        "social_media_posts": 1250,
+        "technical_indicators_analyzed": 15,
+        "analysts_coverage": 28
+    },
+    "timestamp": "2025-04-25T10:00:00Z"
 }
 ```
 
@@ -439,20 +439,20 @@ Retrieve the user's profile information.
 
 ```json
 {
-  "user": {
-    "id": "usr-123456",
-    "email": "user@example.com",
-    "name": "John Doe",
-    "subscription_tier": "premium",
-    "created_at": "2024-01-15T08:30:00Z",
-    "preferences": {
-      "theme": "dark",
-      "notification_preferences": {
-        "email": true,
-        "push": true
-      }
+    "user": {
+        "id": "usr-123456",
+        "email": "user@example.com",
+        "name": "John Doe",
+        "subscription_tier": "premium",
+        "created_at": "2024-01-15T08:30:00Z",
+        "preferences": {
+            "theme": "dark",
+            "notification_preferences": {
+                "email": true,
+                "push": true
+            }
+        }
     }
-  }
 }
 ```
 
@@ -468,14 +468,14 @@ Update the user's profile information.
 
 ```json
 {
-  "name": "John Smith",
-  "preferences": {
-    "theme": "light",
-    "notification_preferences": {
-      "email": false,
-      "push": true
+    "name": "John Smith",
+    "preferences": {
+        "theme": "light",
+        "notification_preferences": {
+            "email": false,
+            "push": true
+        }
     }
-  }
 }
 ```
 
@@ -483,22 +483,22 @@ Update the user's profile information.
 
 ```json
 {
-  "status": "success",
-  "message": "User profile updated successfully",
-  "user": {
-    "id": "usr-123456",
-    "email": "user@example.com",
-    "name": "John Smith",
-    "subscription_tier": "premium",
-    "created_at": "2024-01-15T08:30:00Z",
-    "preferences": {
-      "theme": "light",
-      "notification_preferences": {
-        "email": false,
-        "push": true
-      }
+    "status": "success",
+    "message": "User profile updated successfully",
+    "user": {
+        "id": "usr-123456",
+        "email": "user@example.com",
+        "name": "John Smith",
+        "subscription_tier": "premium",
+        "created_at": "2024-01-15T08:30:00Z",
+        "preferences": {
+            "theme": "light",
+            "notification_preferences": {
+                "email": false,
+                "push": true
+            }
+        }
     }
-  }
 }
 ```
 
@@ -508,11 +508,11 @@ All API errors follow a standard format:
 
 ```json
 {
-  "error": {
-    "code": "invalid_request",
-    "message": "The request was invalid",
-    "details": "The asset_id parameter is required"
-  }
+    "error": {
+        "code": "invalid_request",
+        "message": "The request was invalid",
+        "details": "The asset_id parameter is required"
+    }
 }
 ```
 
@@ -552,20 +552,20 @@ QuantumVest supports webhooks for real-time notifications about various events.
 
 ```json
 {
-  "event": "prediction.created",
-  "timestamp": "2025-04-25T10:00:00Z",
-  "data": {
-    "asset": {
-      "id": "AAPL",
-      "name": "Apple Inc.",
-      "type": "stocks"
-    },
-    "prediction": {
-      "timeframe": "1w",
-      "direction": "up",
-      "confidence_score": 0.78
+    "event": "prediction.created",
+    "timestamp": "2025-04-25T10:00:00Z",
+    "data": {
+        "asset": {
+            "id": "AAPL",
+            "name": "Apple Inc.",
+            "type": "stocks"
+        },
+        "prediction": {
+            "timeframe": "1w",
+            "direction": "up",
+            "confidence_score": 0.78
+        }
     }
-  }
 }
 ```
 

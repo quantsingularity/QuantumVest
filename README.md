@@ -211,7 +211,7 @@ npm install
 ```
 
 5. Set up environment variables:
-   - Create `.env` files in both frontend and backend directories based on the provided `.env.example` files
+    - Create `.env` files in both frontend and backend directories based on the provided `.env.example` files
 
 6. Start the services:
 

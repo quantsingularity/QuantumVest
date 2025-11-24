@@ -159,41 +159,41 @@ infrastructure/
 
 1. **Clone the repository**
 
-   ```bash
-   git clone https://github.com/quantumvest/quantumvest.git
-   cd quantumvest/infrastructure
-   ```
+    ```bash
+    git clone https://github.com/quantumvest/quantumvest.git
+    cd quantumvest/infrastructure
+    ```
 
 2. **Configure environment variables**
 
-   ```bash
-   cp .env.example .env
-   # Edit .env with your specific values
-   ```
+    ```bash
+    cp .env.example .env
+    # Edit .env with your specific values
+    ```
 
 3. **Deploy infrastructure with Terraform**
 
-   ```bash
-   cd terraform
-   terraform init
-   terraform plan -var-file="environments/production/terraform.tfvars"
-   terraform apply
-   ```
+    ```bash
+    cd terraform
+    terraform init
+    terraform plan -var-file="environments/production/terraform.tfvars"
+    terraform apply
+    ```
 
 4. **Deploy applications with Helm**
 
-   ```bash
-   helm install quantumvest ./helm/quantumvest \
-     --namespace quantumvest-production \
-     --create-namespace \
-     --values ./helm/quantumvest/values-production.yaml
-   ```
+    ```bash
+    helm install quantumvest ./helm/quantumvest \
+      --namespace quantumvest-production \
+      --create-namespace \
+      --values ./helm/quantumvest/values-production.yaml
+    ```
 
 5. **Verify deployment**
-   ```bash
-   kubectl get pods -n quantumvest-production
-   kubectl get services -n quantumvest-production
-   ```
+    ```bash
+    kubectl get pods -n quantumvest-production
+    kubectl get services -n quantumvest-production
+    ```
 
 ## 📋 Configuration Guide
 

@@ -39,13 +39,13 @@ mobile-frontend/
 - **assets/**: Stores static resources used by the mobile application, including images, fonts, and other media files. These assets are bundled with the application during the build process.
 
 - **src/**: Contains the source code for the mobile application, organized into several subdirectories:
-  - **components/**: Reusable UI components
-  - **screens/**: Individual application screens
-  - **navigation/**: Navigation configuration and routing
-  - **services/**: API integration and business logic
-  - **utils/**: Utility functions and helpers
-  - **styles/**: Global styling and theme definitions
-  - **store/**: State management (Redux/Context API)
+    - **components/**: Reusable UI components
+    - **screens/**: Individual application screens
+    - **navigation/**: Navigation configuration and routing
+    - **services/**: API integration and business logic
+    - **utils/**: Utility functions and helpers
+    - **styles/**: Global styling and theme definitions
+    - **store/**: State management (Redux/Context API)
 
 ## Development Environment
 
@@ -63,22 +63,22 @@ To work on the mobile frontend, you'll need:
 
 1. Install dependencies:
 
-   ```
-   cd mobile-frontend
-   yarn install
-   ```
+    ```
+    cd mobile-frontend
+    yarn install
+    ```
 
 2. Start the development server:
 
-   ```
-   yarn start
-   ```
+    ```
+    yarn start
+    ```
 
 3. Run on a specific platform:
-   ```
-   yarn ios     # For iOS simulator
-   yarn android # For Android emulator
-   ```
+    ```
+    yarn ios     # For iOS simulator
+    yarn android # For Android emulator
+    ```
 
 The Expo development server provides a QR code that can be scanned with the Expo Go app on a physical device for testing on real hardware.
 
@@ -110,10 +110,10 @@ To create a production build:
 1. Update the version in app.json
 2. Configure the appropriate build settings for each platform
 3. Run the build command:
-   ```
-   expo build:ios
-   expo build:android
-   ```
+    ```
+    expo build:ios
+    expo build:android
+    ```
 
 The build process can be customized through the Expo configuration in app.json or by ejecting to a bare React Native project for more control.
 

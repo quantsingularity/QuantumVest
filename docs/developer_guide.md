@@ -273,49 +273,49 @@ def calculate_sharpe_ratio(returns: List[float], risk_free_rate: float = 0.0) ->
 Example:
 
 ```javascript
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { fetchPrediction } from "../api/predictions";
-import { LoadingSpinner } from "./ui/LoadingSpinner";
-import { ErrorMessage } from "./ui/ErrorMessage";
-import "./styles/PredictionChart.css";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { fetchPrediction } from '../api/predictions';
+import { LoadingSpinner } from './ui/LoadingSpinner';
+import { ErrorMessage } from './ui/ErrorMessage';
+import './styles/PredictionChart.css';
 
 export const PredictionChart = ({ assetId, timeframe }) => {
-  const [prediction, setPrediction] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+    const [prediction, setPrediction] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const loadPrediction = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchPrediction(assetId, timeframe);
-        setPrediction(data);
-        setError(null);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    useEffect(() => {
+        const loadPrediction = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchPrediction(assetId, timeframe);
+                setPrediction(data);
+                setError(null);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    loadPrediction();
-  }, [assetId, timeframe]);
+        loadPrediction();
+    }, [assetId, timeframe]);
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage message={error} />;
+    if (loading) return <LoadingSpinner />;
+    if (error) return <ErrorMessage message={error} />;
 
-  return (
-    <div className="prediction-chart">
-      <h2>Prediction for {prediction.asset.name}</h2>
-      {/* Chart rendering logic */}
-    </div>
-  );
+    return (
+        <div className="prediction-chart">
+            <h2>Prediction for {prediction.asset.name}</h2>
+            {/* Chart rendering logic */}
+        </div>
+    );
 };
 
 PredictionChart.propTypes = {
-  assetId: PropTypes.string.isRequired,
-  timeframe: PropTypes.oneOf(["1d", "1w", "1m", "3m"]).isRequired,
+    assetId: PropTypes.string.isRequired,
+    timeframe: PropTypes.oneOf(['1d', '1w', '1m', '3m']).isRequired,
 };
 ```
 
@@ -333,7 +333,7 @@ Example:
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 /**
  * @title DataTracking
@@ -356,7 +356,7 @@ contract DataTracking {
     event DataAdded(string assetId, uint256 timestamp, uint256 price, uint256 volume);
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
+        require(msg.sender == owner, 'Only owner can call this function');
         _;
     }
 
@@ -370,10 +370,11 @@ contract DataTracking {
      * @param price Current price of the asset
      * @param volume Trading volume of the asset
      */
-    function addMarketData(string memory assetId, uint256 price, uint256 volume)
-        external
-        onlyOwner
-    {
+    function addMarketData(
+        string memory assetId,
+        uint256 price,
+        uint256 volume
+    ) external onlyOwner {
         uint256 timestamp = block.timestamp;
 
         MarketData memory data = MarketData({
@@ -393,12 +394,8 @@ contract DataTracking {
      * @param assetId Identifier for the asset
      * @return The latest MarketData struct for the asset
      */
-    function getLatestData(string memory assetId)
-        external
-        view
-        returns (MarketData memory)
-    {
-        require(assetData[assetId].length > 0, "No data available for this asset");
+    function getLatestData(string memory assetId) external view returns (MarketData memory) {
+        require(assetData[assetId].length > 0, 'No data available for this asset');
 
         return assetData[assetId][assetData[assetId].length - 1];
     }

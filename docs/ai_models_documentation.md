@@ -9,24 +9,24 @@ This document provides comprehensive documentation for the AI models used in the
 QuantumVest employs several specialized AI models to provide accurate predictions and insights for investment decision-making:
 
 1. **Time Series Prediction Model**
-   - Forecasts asset price movements
-   - Provides confidence intervals for predictions
-   - Supports multiple timeframes (1 day, 1 week, 1 month, 3 months)
+    - Forecasts asset price movements
+    - Provides confidence intervals for predictions
+    - Supports multiple timeframes (1 day, 1 week, 1 month, 3 months)
 
 2. **Portfolio Optimization Model**
-   - Recommends optimal asset allocation
-   - Balances risk and return based on user preferences
-   - Incorporates modern portfolio theory principles
+    - Recommends optimal asset allocation
+    - Balances risk and return based on user preferences
+    - Incorporates modern portfolio theory principles
 
 3. **Sentiment Analysis Model**
-   - Analyzes market sentiment from news and social media
-   - Detects emerging trends and market shifts
-   - Provides sentiment scores for individual assets
+    - Analyzes market sentiment from news and social media
+    - Detects emerging trends and market shifts
+    - Provides sentiment scores for individual assets
 
 4. **Anomaly Detection Model**
-   - Identifies unusual market behavior
-   - Detects potential market manipulation
-   - Alerts users to significant deviations from expected patterns
+    - Identifies unusual market behavior
+    - Detects potential market manipulation
+    - Alerts users to significant deviations from expected patterns
 
 ## Time Series Prediction Model
 
@@ -67,28 +67,28 @@ Output Layer (Predictions with Confidence Intervals)
 The Time Series Prediction Model is trained using the following procedure:
 
 1. **Data Collection**:
-   - Historical price data from multiple sources
-   - Trading volume and liquidity metrics
-   - Technical indicators (RSI, MACD, Bollinger Bands)
-   - Market sentiment data
-   - On-chain metrics for cryptocurrencies
+    - Historical price data from multiple sources
+    - Trading volume and liquidity metrics
+    - Technical indicators (RSI, MACD, Bollinger Bands)
+    - Market sentiment data
+    - On-chain metrics for cryptocurrencies
 
 2. **Data Preprocessing**:
-   - Normalization of input features
-   - Handling of missing values
-   - Time series decomposition
-   - Feature scaling and transformation
+    - Normalization of input features
+    - Handling of missing values
+    - Time series decomposition
+    - Feature scaling and transformation
 
 3. **Model Training**:
-   - Split data into training, validation, and test sets
-   - Train individual models with optimized hyperparameters
-   - Train ensemble model to combine individual predictions
-   - Calibrate uncertainty estimates
+    - Split data into training, validation, and test sets
+    - Train individual models with optimized hyperparameters
+    - Train ensemble model to combine individual predictions
+    - Calibrate uncertainty estimates
 
 4. **Hyperparameter Optimization**:
-   - Grid search for optimal parameters
-   - Cross-validation to prevent overfitting
-   - Early stopping based on validation loss
+    - Grid search for optimal parameters
+    - Cross-validation to prevent overfitting
+    - Early stopping based on validation loss
 
 ### Implementation Details
 
@@ -204,25 +204,25 @@ Output (Optimal Portfolio Allocation)
 The Portfolio Optimization Model is trained using the following procedure:
 
 1. **Data Collection**:
-   - Historical returns for all assets
-   - Risk factors and exposures
-   - Correlation matrices
-   - Market capitalization and liquidity data
+    - Historical returns for all assets
+    - Risk factors and exposures
+    - Correlation matrices
+    - Market capitalization and liquidity data
 
 2. **Expected Returns Estimation**:
-   - Factor models for expected returns
-   - Time series forecasting for return predictions
-   - Bayesian methods for uncertainty quantification
+    - Factor models for expected returns
+    - Time series forecasting for return predictions
+    - Bayesian methods for uncertainty quantification
 
 3. **Risk Modeling**:
-   - Covariance matrix estimation
-   - Shrinkage methods for stability
-   - Stress testing for extreme scenarios
+    - Covariance matrix estimation
+    - Shrinkage methods for stability
+    - Stress testing for extreme scenarios
 
 4. **Optimization**:
-   - Efficient frontier calculation
-   - Monte Carlo simulation for robustness
-   - Resampling techniques for stability
+    - Efficient frontier calculation
+    - Monte Carlo simulation for robustness
+    - Resampling techniques for stability
 
 ### Implementation Details
 
@@ -370,26 +370,26 @@ Output (Sentiment Scores and Trends)
 The Sentiment Analysis Model is trained using the following procedure:
 
 1. **Data Collection**:
-   - Financial news articles
-   - Social media posts about financial markets
-   - Analyst reports and commentary
-   - Labeled sentiment dataset for supervised learning
+    - Financial news articles
+    - Social media posts about financial markets
+    - Analyst reports and commentary
+    - Labeled sentiment dataset for supervised learning
 
 2. **Data Preprocessing**:
-   - Text cleaning and normalization
-   - Tokenization using BERT tokenizer
-   - Handling of financial terminology and symbols
+    - Text cleaning and normalization
+    - Tokenization using BERT tokenizer
+    - Handling of financial terminology and symbols
 
 3. **Model Training**:
-   - Pre-training on general financial corpus
-   - Fine-tuning on labeled sentiment data
-   - Adversarial training for robustness
-   - Domain adaptation techniques
+    - Pre-training on general financial corpus
+    - Fine-tuning on labeled sentiment data
+    - Adversarial training for robustness
+    - Domain adaptation techniques
 
 4. **Evaluation and Calibration**:
-   - Cross-validation on held-out data
-   - Correlation with market movements
-   - Human evaluation of sentiment scores
+    - Cross-validation on held-out data
+    - Correlation with market movements
+    - Human evaluation of sentiment scores
 
 ### Implementation Details
 
@@ -513,27 +513,27 @@ Output (Anomaly Alerts with Confidence)
 The Anomaly Detection Model is trained using the following procedure:
 
 1. **Data Collection**:
-   - Historical market data with known anomalies
-   - Trading volume and liquidity metrics
-   - Order book data
-   - Market microstructure features
+    - Historical market data with known anomalies
+    - Trading volume and liquidity metrics
+    - Order book data
+    - Market microstructure features
 
 2. **Feature Engineering**:
-   - Statistical features (mean, variance, skewness)
-   - Technical indicators
-   - Temporal features
-   - Cross-asset correlation features
+    - Statistical features (mean, variance, skewness)
+    - Technical indicators
+    - Temporal features
+    - Cross-asset correlation features
 
 3. **Model Training**:
-   - Unsupervised learning for normal pattern recognition
-   - Semi-supervised learning with labeled anomalies
-   - Cross-validation for parameter tuning
-   - Threshold calibration for alert generation
+    - Unsupervised learning for normal pattern recognition
+    - Semi-supervised learning with labeled anomalies
+    - Cross-validation for parameter tuning
+    - Threshold calibration for alert generation
 
 4. **Ensemble Integration**:
-   - Weighted voting scheme
-   - Diversity promotion among base detectors
-   - Calibration of final anomaly scores
+    - Weighted voting scheme
+    - Diversity promotion among base detectors
+    - Calibration of final anomaly scores
 
 ### Implementation Details
 
@@ -689,29 +689,29 @@ QuantumVest models are deployed using a robust infrastructure:
 The AI models in QuantumVest are continuously evolving. Planned enhancements include:
 
 1. **Reinforcement Learning**
-   - Deep reinforcement learning for portfolio management
-   - Multi-agent systems for market simulation
-   - Adversarial training for robustness
+    - Deep reinforcement learning for portfolio management
+    - Multi-agent systems for market simulation
+    - Adversarial training for robustness
 
 2. **Explainable AI**
-   - SHAP values for feature importance
-   - Counterfactual explanations for predictions
-   - Natural language explanations of model decisions
+    - SHAP values for feature importance
+    - Counterfactual explanations for predictions
+    - Natural language explanations of model decisions
 
 3. **Federated Learning**
-   - Privacy-preserving model training
-   - Collaborative learning across users
-   - Personalized models based on user preferences
+    - Privacy-preserving model training
+    - Collaborative learning across users
+    - Personalized models based on user preferences
 
 4. **Quantum Computing Integration**
-   - Quantum algorithms for portfolio optimization
-   - Quantum machine learning for pattern recognition
-   - Hybrid classical-quantum approaches
+    - Quantum algorithms for portfolio optimization
+    - Quantum machine learning for pattern recognition
+    - Hybrid classical-quantum approaches
 
 5. **Advanced NLP**
-   - Document-level sentiment analysis
-   - Entity relationship extraction
-   - Causal inference from financial text
+    - Document-level sentiment analysis
+    - Entity relationship extraction
+    - Causal inference from financial text
 
 ## Conclusion
 

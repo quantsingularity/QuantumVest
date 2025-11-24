@@ -13,36 +13,36 @@ QuantumVest follows a microservices architecture pattern with the following high
 ### Core Components
 
 1. **Frontend Application**
-   - React.js-based single-page application
-   - Responsive design for desktop and mobile devices
-   - Real-time data visualization
+    - React.js-based single-page application
+    - Responsive design for desktop and mobile devices
+    - Real-time data visualization
 
 2. **Backend API Services**
-   - RESTful API endpoints for client communication
-   - Authentication and authorization
-   - Business logic implementation
-   - Data validation and processing
+    - RESTful API endpoints for client communication
+    - Authentication and authorization
+    - Business logic implementation
+    - Data validation and processing
 
 3. **AI Prediction Engine**
-   - Time series forecasting models
-   - Portfolio optimization algorithms
-   - Sentiment analysis models
-   - Model training and evaluation pipeline
+    - Time series forecasting models
+    - Portfolio optimization algorithms
+    - Sentiment analysis models
+    - Model training and evaluation pipeline
 
 4. **Blockchain Integration Layer**
-   - Smart contract interaction
-   - On-chain data retrieval and analysis
-   - Transaction tracking and verification
+    - Smart contract interaction
+    - On-chain data retrieval and analysis
+    - Transaction tracking and verification
 
 5. **Data Storage Layer**
-   - Relational database for structured data
-   - Time-series database for market data
-   - Distributed cache for performance optimization
+    - Relational database for structured data
+    - Time-series database for market data
+    - Distributed cache for performance optimization
 
 6. **Message Queue System**
-   - Asynchronous processing of long-running tasks
-   - Event-driven architecture components
-   - Real-time notifications
+    - Asynchronous processing of long-running tasks
+    - Event-driven architecture components
+    - Real-time notifications
 
 ## Component Details
 
@@ -370,26 +370,26 @@ infrastructure/
 ## Future Enhancements
 
 1. **Enhanced AI Models**
-   - Integration of transformer-based models for improved predictions
-   - Reinforcement learning for portfolio optimization
-   - Explainable AI features for transparency
+    - Integration of transformer-based models for improved predictions
+    - Reinforcement learning for portfolio optimization
+    - Explainable AI features for transparency
 
 2. **Expanded Blockchain Integration**
-   - Support for additional blockchain networks
-   - DeFi protocol integration
-   - On-chain analytics for market sentiment
+    - Support for additional blockchain networks
+    - DeFi protocol integration
+    - On-chain analytics for market sentiment
 
 3. **Advanced Visualization**
-   - Interactive 3D visualizations
-   - AR/VR interfaces for data exploration
-   - Natural language querying of financial data
+    - Interactive 3D visualizations
+    - AR/VR interfaces for data exploration
+    - Natural language querying of financial data
 
 4. **Mobile Applications**
-   - Native iOS and Android applications
-   - Push notifications for critical alerts
-   - Biometric authentication
+    - Native iOS and Android applications
+    - Push notifications for critical alerts
+    - Biometric authentication
 
 5. **API Ecosystem**
-   - Partner API integrations
-   - Developer platform for third-party extensions
-   - Marketplace for custom prediction models
+    - Partner API integrations
+    - Developer platform for third-party extensions
+    - Marketplace for custom prediction models

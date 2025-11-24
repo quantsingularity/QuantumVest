@@ -144,36 +144,36 @@ This backend implementation provides a comprehensive investment analytics platfo
 
 1. **Install Dependencies**
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 2. **Set Environment Variables**
 
-   ```bash
-   export FLASK_ENV=development
-   export SECRET_KEY=your-secret-key
-   export DATABASE_URL=postgresql://user:pass@localhost/quantumvest
-   export REDIS_URL=redis://localhost:6379/0
-   ```
+    ```bash
+    export FLASK_ENV=development
+    export SECRET_KEY=your-secret-key
+    export DATABASE_URL=postgresql://user:pass@localhost/quantumvest
+    export REDIS_URL=redis://localhost:6379/0
+    ```
 
 3. **Initialize Database**
 
-   ```bash
-   python migrate_db.py init
-   python migrate_db.py sample
-   ```
+    ```bash
+    python migrate_db.py init
+    python migrate_db.py sample
+    ```
 
 4. **Run the Application**
 
-   ```bash
-   python app.py
-   ```
+    ```bash
+    python app.py
+    ```
 
 5. **Run Tests**
-   ```bash
-   pytest test_backend.py -v
-   ```
+    ```bash
+    pytest test_backend.py -v
+    ```
 
 ## Configuration
 

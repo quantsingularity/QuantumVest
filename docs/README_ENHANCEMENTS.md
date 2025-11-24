@@ -59,26 +59,26 @@ code/
 #### Data Endpoints
 
 - `GET /api/v1/data/stocks/<symbol>` - Get stock data
-  - Query parameters:
-    - `interval` (optional): Data interval (default: '1d')
-    - `use_cache` (optional): Whether to use cached data (default: true)
+    - Query parameters:
+        - `interval` (optional): Data interval (default: '1d')
+        - `use_cache` (optional): Whether to use cached data (default: true)
 
 - `GET /api/v1/data/crypto/<symbol>` - Get cryptocurrency data
-  - Query parameters:
-    - `interval` (optional): Data interval (default: 'daily')
-    - `use_cache` (optional): Whether to use cached data (default: true)
+    - Query parameters:
+        - `interval` (optional): Data interval (default: 'daily')
+        - `use_cache` (optional): Whether to use cached data (default: true)
 
 #### Prediction Endpoints
 
 - `GET /api/v1/predictions/stocks/<symbol>` - Get stock price predictions
-  - Query parameters:
-    - `days_ahead` (optional): Number of days to predict ahead (default: 7)
-    - `use_cache` (optional): Whether to use cached data (default: true)
+    - Query parameters:
+        - `days_ahead` (optional): Number of days to predict ahead (default: 7)
+        - `use_cache` (optional): Whether to use cached data (default: true)
 
 - `GET /api/v1/predictions/crypto/<symbol>` - Get cryptocurrency price predictions
-  - Query parameters:
-    - `days_ahead` (optional): Number of days to predict ahead (default: 7)
-    - `use_cache` (optional): Whether to use cached data (default: true)
+    - Query parameters:
+        - `days_ahead` (optional): Number of days to predict ahead (default: 7)
+        - `use_cache` (optional): Whether to use cached data (default: true)
 
 #### Model Status Endpoint
 

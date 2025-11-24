@@ -19,21 +19,21 @@ The `.github` directory is organized as follows:
 The CI/CD pipeline is configured to run automatically on push events to the main, master, and develop branches, as well as on pull requests targeting these branches. The workflow consists of three main jobs:
 
 1. **Backend Testing**: This job runs on an Ubuntu environment and performs the following steps:
-   - Sets up Python 3.10
-   - Installs dependencies from the backend requirements file
-   - Executes the backend test suite using pytest
+    - Sets up Python 3.10
+    - Installs dependencies from the backend requirements file
+    - Executes the backend test suite using pytest
 
 2. **Frontend Testing**: This job also runs on an Ubuntu environment and performs the following steps:
-   - Sets up Node.js 18
-   - Installs frontend dependencies using npm
-   - Runs the frontend test suite
+    - Sets up Node.js 18
+    - Installs frontend dependencies using npm
+    - Runs the frontend test suite
 
 3. **Build and Deploy**: This job only executes when code is pushed to the main or master branches (not on pull requests). It depends on the successful completion of both testing jobs and performs the following steps:
-   - Sets up Node.js 18
-   - Builds the frontend application
-   - Sets up Python 3.10
-   - Installs backend dependencies
-   - Prepares for deployment (actual deployment steps would be customized based on your deployment strategy)
+    - Sets up Node.js 18
+    - Builds the frontend application
+    - Sets up Python 3.10
+    - Installs backend dependencies
+    - Prepares for deployment (actual deployment steps would be customized based on your deployment strategy)
 
 ## Usage
 

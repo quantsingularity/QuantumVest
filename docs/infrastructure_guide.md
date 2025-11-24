@@ -15,63 +15,63 @@ QuantumVest uses a cloud-native architecture deployed across multiple environmen
 The platform is deployed across three environments:
 
 1. **Development Environment**
-   - Purpose: Feature development and testing
-   - Scale: Minimal resources for cost efficiency
-   - Data: Synthetic test data
-   - Access: Internal team only
+    - Purpose: Feature development and testing
+    - Scale: Minimal resources for cost efficiency
+    - Data: Synthetic test data
+    - Access: Internal team only
 
 2. **Staging Environment**
-   - Purpose: Pre-production testing and QA
-   - Scale: Similar to production but smaller
-   - Data: Anonymized production data
-   - Access: Internal team and selected beta testers
+    - Purpose: Pre-production testing and QA
+    - Scale: Similar to production but smaller
+    - Data: Anonymized production data
+    - Access: Internal team and selected beta testers
 
 3. **Production Environment**
-   - Purpose: Live application serving end users
-   - Scale: Full scale with auto-scaling enabled
-   - Data: Real user and market data
-   - Access: Public users and administrators
+    - Purpose: Live application serving end users
+    - Scale: Full scale with auto-scaling enabled
+    - Data: Real user and market data
+    - Access: Public users and administrators
 
 ### Component Architecture
 
 The infrastructure consists of the following main components:
 
 1. **Compute Layer**
-   - Kubernetes clusters for container orchestration
-   - Managed node groups with auto-scaling
-   - Spot instances for cost optimization (non-critical workloads)
+    - Kubernetes clusters for container orchestration
+    - Managed node groups with auto-scaling
+    - Spot instances for cost optimization (non-critical workloads)
 
 2. **Database Layer**
-   - Primary PostgreSQL database for transactional data
-   - Read replicas for scaling read operations
-   - Automated backups and point-in-time recovery
+    - Primary PostgreSQL database for transactional data
+    - Read replicas for scaling read operations
+    - Automated backups and point-in-time recovery
 
 3. **Caching Layer**
-   - Redis clusters for caching and session management
-   - Multi-AZ deployment for high availability
+    - Redis clusters for caching and session management
+    - Multi-AZ deployment for high availability
 
 4. **Storage Layer**
-   - Object storage for static assets and backups
-   - Block storage for persistent volumes
-   - File storage for shared data
+    - Object storage for static assets and backups
+    - Block storage for persistent volumes
+    - File storage for shared data
 
 5. **Networking Layer**
-   - Virtual private cloud with public and private subnets
-   - Load balancers for traffic distribution
-   - Content delivery network for static assets
-   - VPN for secure administrative access
+    - Virtual private cloud with public and private subnets
+    - Load balancers for traffic distribution
+    - Content delivery network for static assets
+    - VPN for secure administrative access
 
 6. **Security Layer**
-   - Web application firewall
-   - DDoS protection
-   - Network ACLs and security groups
-   - Encryption for data at rest and in transit
+    - Web application firewall
+    - DDoS protection
+    - Network ACLs and security groups
+    - Encryption for data at rest and in transit
 
 7. **Monitoring Layer**
-   - Metrics collection and visualization
-   - Log aggregation and analysis
-   - Alerting and notification system
-   - Performance monitoring
+    - Metrics collection and visualization
+    - Log aggregation and analysis
+    - Alerting and notification system
+    - Performance monitoring
 
 ## Kubernetes Configuration
 
@@ -109,47 +109,47 @@ infrastructure/kubernetes/
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+    name: backend
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      containers:
-        - name: backend
-          image: quantumvest/backend:latest
-          ports:
-            - containerPort: 5000
-          env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: app-secrets
-                  key: database-url
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 5000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 5000
-            initialDelaySeconds: 5
-            periodSeconds: 5
+    replicas: 3
+    selector:
+        matchLabels:
+            app: backend
+    template:
+        metadata:
+            labels:
+                app: backend
+        spec:
+            containers:
+                - name: backend
+                  image: quantumvest/backend:latest
+                  ports:
+                      - containerPort: 5000
+                  env:
+                      - name: DATABASE_URL
+                        valueFrom:
+                            secretKeyRef:
+                                name: app-secrets
+                                key: database-url
+                  resources:
+                      requests:
+                          memory: '256Mi'
+                          cpu: '100m'
+                      limits:
+                          memory: '512Mi'
+                          cpu: '500m'
+                  livenessProbe:
+                      httpGet:
+                          path: /health
+                          port: 5000
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /ready
+                          port: 5000
+                      initialDelaySeconds: 5
+                      periodSeconds: 5
 ```
 
 #### Frontend Deployment
@@ -158,47 +158,47 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+    name: frontend
 spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: frontend
-  template:
-    metadata:
-      labels:
-        app: frontend
-    spec:
-      containers:
-        - name: frontend
-          image: quantumvest/frontend:latest
-          ports:
-            - containerPort: 80
-          env:
-            - name: API_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: app-configmap
-                  key: api-url
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
-              memory: "256Mi"
-              cpu: "300m"
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 5
+    replicas: 3
+    selector:
+        matchLabels:
+            app: frontend
+    template:
+        metadata:
+            labels:
+                app: frontend
+        spec:
+            containers:
+                - name: frontend
+                  image: quantumvest/frontend:latest
+                  ports:
+                      - containerPort: 80
+                  env:
+                      - name: API_URL
+                        valueFrom:
+                            configMapKeyRef:
+                                name: app-configmap
+                                key: api-url
+                  resources:
+                      requests:
+                          memory: '128Mi'
+                          cpu: '100m'
+                      limits:
+                          memory: '256Mi'
+                          cpu: '300m'
+                  livenessProbe:
+                      httpGet:
+                          path: /
+                          port: 80
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /
+                          port: 80
+                      initialDelaySeconds: 5
+                      periodSeconds: 5
 ```
 
 #### Ingress Configuration
@@ -207,37 +207,37 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: quantumvest-ingress
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    name: quantumvest-ingress
+    annotations:
+        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  tls:
-    - hosts:
-        - api.quantumvest.com
-        - www.quantumvest.com
-      secretName: quantumvest-tls
-  rules:
-    - host: api.quantumvest.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: backend
-                port:
-                  number: 5000
-    - host: www.quantumvest.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend
-                port:
-                  number: 80
+    tls:
+        - hosts:
+              - api.quantumvest.com
+              - www.quantumvest.com
+          secretName: quantumvest-tls
+    rules:
+        - host: api.quantumvest.com
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: backend
+                            port:
+                                number: 5000
+        - host: www.quantumvest.com
+          http:
+              paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: frontend
+                            port:
+                                number: 80
 ```
 
 ### Deploying to Kubernetes
@@ -591,43 +591,43 @@ infrastructure/ansible/
 
 - name: Update apt cache
   apt:
-    update_cache: yes
-    cache_valid_time: 3600
+      update_cache: yes
+      cache_valid_time: 3600
   become: yes
 
 - name: Install common packages
   apt:
-    name:
-      - curl
-      - vim
-      - git
-      - htop
-      - unzip
-      - python3-pip
-      - python3-venv
-      - ntp
-    state: present
+      name:
+          - curl
+          - vim
+          - git
+          - htop
+          - unzip
+          - python3-pip
+          - python3-venv
+          - ntp
+      state: present
   become: yes
 
 - name: Set timezone
   timezone:
-    name: UTC
+      name: UTC
   become: yes
 
 - name: Configure NTP
   service:
-    name: ntp
-    state: started
-    enabled: yes
+      name: ntp
+      state: started
+      enabled: yes
   become: yes
 
 - name: Create application directory
   file:
-    path: /opt/quantumvest
-    state: directory
-    owner: "{{ app_user }}"
-    group: "{{ app_group }}"
-    mode: "0755"
+      path: /opt/quantumvest
+      state: directory
+      owner: '{{ app_user }}'
+      group: '{{ app_group }}'
+      mode: '0755'
   become: yes
 ```
 
@@ -638,43 +638,43 @@ infrastructure/ansible/
 
 - name: Install Nginx
   apt:
-    name: nginx
-    state: present
+      name: nginx
+      state: present
   become: yes
   notify: restart nginx
 
 - name: Configure Nginx
   template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/nginx.conf
-    owner: root
-    group: root
-    mode: "0644"
+      src: nginx.conf.j2
+      dest: /etc/nginx/nginx.conf
+      owner: root
+      group: root
+      mode: '0644'
   become: yes
   notify: restart nginx
 
 - name: Create Nginx server block
   template:
-    src: vhost.conf.j2
-    dest: /etc/nginx/sites-available/quantumvest
-    owner: root
-    group: root
-    mode: "0644"
+      src: vhost.conf.j2
+      dest: /etc/nginx/sites-available/quantumvest
+      owner: root
+      group: root
+      mode: '0644'
   become: yes
   notify: restart nginx
 
 - name: Enable Nginx server block
   file:
-    src: /etc/nginx/sites-available/quantumvest
-    dest: /etc/nginx/sites-enabled/quantumvest
-    state: link
+      src: /etc/nginx/sites-available/quantumvest
+      dest: /etc/nginx/sites-enabled/quantumvest
+      state: link
   become: yes
   notify: restart nginx
 
 - name: Remove default Nginx server block
   file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
+      path: /etc/nginx/sites-enabled/default
+      state: absent
   become: yes
   notify: restart nginx
 ```
@@ -686,64 +686,64 @@ infrastructure/ansible/
 
 - name: Install PostgreSQL
   apt:
-    name:
-      - postgresql
-      - postgresql-contrib
-      - python3-psycopg2
-    state: present
+      name:
+          - postgresql
+          - postgresql-contrib
+          - python3-psycopg2
+      state: present
   become: yes
 
 - name: Configure PostgreSQL
   template:
-    src: postgresql.conf.j2
-    dest: /etc/postgresql/13/main/postgresql.conf
-    owner: postgres
-    group: postgres
-    mode: "0644"
+      src: postgresql.conf.j2
+      dest: /etc/postgresql/13/main/postgresql.conf
+      owner: postgres
+      group: postgres
+      mode: '0644'
   become: yes
   notify: restart postgresql
 
 - name: Configure PostgreSQL client authentication
   template:
-    src: pg_hba.conf.j2
-    dest: /etc/postgresql/13/main/pg_hba.conf
-    owner: postgres
-    group: postgres
-    mode: "0640"
+      src: pg_hba.conf.j2
+      dest: /etc/postgresql/13/main/pg_hba.conf
+      owner: postgres
+      group: postgres
+      mode: '0640'
   become: yes
   notify: restart postgresql
 
 - name: Ensure PostgreSQL is running
   service:
-    name: postgresql
-    state: started
-    enabled: yes
+      name: postgresql
+      state: started
+      enabled: yes
   become: yes
 
 - name: Create PostgreSQL database
   postgresql_db:
-    name: "{{ db_name }}"
-    encoding: UTF-8
-    lc_collate: en_US.UTF-8
-    lc_ctype: en_US.UTF-8
-    template: template0
+      name: '{{ db_name }}'
+      encoding: UTF-8
+      lc_collate: en_US.UTF-8
+      lc_ctype: en_US.UTF-8
+      template: template0
   become: yes
   become_user: postgres
 
 - name: Create PostgreSQL user
   postgresql_user:
-    name: "{{ db_user }}"
-    password: "{{ db_password }}"
-    role_attr_flags: CREATEDB,NOSUPERUSER
+      name: '{{ db_user }}'
+      password: '{{ db_password }}'
+      role_attr_flags: CREATEDB,NOSUPERUSER
   become: yes
   become_user: postgres
 
 - name: Grant privileges on database
   postgresql_privs:
-    db: "{{ db_name }}"
-    role: "{{ db_user }}"
-    type: database
-    privs: ALL
+      db: '{{ db_name }}'
+      role: '{{ db_user }}'
+      type: database
+      privs: ALL
   become: yes
   become_user: postgres
 ```
@@ -790,28 +790,28 @@ QuantumVest uses a comprehensive monitoring and logging stack:
 ### Key Metrics to Monitor
 
 1. **System Metrics**
-   - CPU usage
-   - Memory usage
-   - Disk space
-   - Network traffic
+    - CPU usage
+    - Memory usage
+    - Disk space
+    - Network traffic
 
 2. **Application Metrics**
-   - Request rate
-   - Error rate
-   - Response time
-   - Active users
+    - Request rate
+    - Error rate
+    - Response time
+    - Active users
 
 3. **Database Metrics**
-   - Query performance
-   - Connection count
-   - Transaction rate
-   - Cache hit ratio
+    - Query performance
+    - Connection count
+    - Transaction rate
+    - Cache hit ratio
 
 4. **Kubernetes Metrics**
-   - Pod status
-   - Node health
-   - Resource utilization
-   - Deployment status
+    - Pod status
+    - Node health
+    - Resource utilization
+    - Deployment status
 
 ### Alerting Rules
 
@@ -819,34 +819,34 @@ Configure alerting rules in Prometheus for critical conditions:
 
 ```yaml
 groups:
-  - name: example
-    rules:
-      - alert: HighCPUUsage
-        expr: avg(node_cpu_seconds_total{mode="idle"}) by (instance) < 0.2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: High CPU usage on {{ $labels.instance }}
-          description: CPU usage is above 80% for more than 5 minutes.
+    - name: example
+      rules:
+          - alert: HighCPUUsage
+            expr: avg(node_cpu_seconds_total{mode="idle"}) by (instance) < 0.2
+            for: 5m
+            labels:
+                severity: warning
+            annotations:
+                summary: High CPU usage on {{ $labels.instance }}
+                description: CPU usage is above 80% for more than 5 minutes.
 
-      - alert: HighMemoryUsage
-        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: High memory usage on {{ $labels.instance }}
-          description: Memory available is less than 10% for more than 5 minutes.
+          - alert: HighMemoryUsage
+            expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+            for: 5m
+            labels:
+                severity: warning
+            annotations:
+                summary: High memory usage on {{ $labels.instance }}
+                description: Memory available is less than 10% for more than 5 minutes.
 
-      - alert: HighAPIErrorRate
-        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: High API error rate
-          description: API error rate is above 5% for more than 5 minutes.
+          - alert: HighAPIErrorRate
+            expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
+            for: 5m
+            labels:
+                severity: critical
+            annotations:
+                summary: High API error rate
+                description: API error rate is above 5% for more than 5 minutes.
 ```
 
 ## Backup and Disaster Recovery
@@ -870,9 +870,9 @@ QuantumVest implements a comprehensive backup and disaster recovery strategy:
 1. **RTO (Recovery Time Objective)**: 1 hour for critical systems
 2. **RPO (Recovery Point Objective)**: 15 minutes for database
 3. **Failover procedure**:
-   - Activate standby database in secondary region
-   - Redirect traffic to backup infrastructure
-   - Restore application state from backups
+    - Activate standby database in secondary region
+    - Redirect traffic to backup infrastructure
+    - Restore application state from backups
 4. **Regular testing**: Monthly DR drills to validate procedures
 
 ## Security Considerations
