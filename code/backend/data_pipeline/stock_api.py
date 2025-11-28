@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 
 # Add path for data_api access
-sys.path.append("/opt/.manus/.sandbox-runtime")
+sys.path.append("")
 import json  # Added based on the issue description's hint about json_data and requests
 
 from data_api import ApiClient
