@@ -1,5 +1,5 @@
 """
-Enhanced API Routes for QuantumVest
+API Routes for QuantumVest
 Comprehensive REST API with authentication, portfolio management, and advanced features
 """
 

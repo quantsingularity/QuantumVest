@@ -1,5 +1,5 @@
 """
-Enhanced Configuration for QuantumVest Backend
+Configuration for QuantumVest Backend
 Comprehensive configuration management with environment-specific settings
 """
 
