@@ -10,6 +10,10 @@ from flask import Flask
 from flask_migrate import init, migrate, upgrade
 from models import db
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 
 def create_app():
     """Create Flask app for migration"""
@@ -33,23 +37,21 @@ def init_database():
         # Initialize migration repository
         try:
             init()
-            print("Migration repository initialized successfully")
+            logger.info("Migration repository initialized successfully")
         except Exception as e:
-            print(f"Migration repository already exists or error: {e}")
-
+            logger.info(f"Migration repository already exists or error: {e}")
         # Create initial migration
         try:
             migrate(message="Initial migration")
-            print("Initial migration created successfully")
+            logger.info("Initial migration created successfully")
         except Exception as e:
-            print(f"Error creating migration: {e}")
-
+            logger.info(f"Error creating migration: {e}")
         # Apply migrations
         try:
             upgrade()
-            print("Database upgraded successfully")
+            logger.info("Database upgraded successfully")
         except Exception as e:
-            print(f"Error upgrading database: {e}")
+            logger.info(f"Error upgrading database: {e}")
 
 
 def create_sample_data():
@@ -120,11 +122,10 @@ def create_sample_data():
                     db.session.add(asset)
 
             db.session.commit()
-            print("Sample data created successfully")
-
+            logger.info("Sample data created successfully")
         except Exception as e:
             db.session.rollback()
-            print(f"Error creating sample data: {e}")
+            logger.info(f"Error creating sample data: {e}")
 
 
 def reset_database():
@@ -135,18 +136,17 @@ def reset_database():
         try:
             db.drop_all()
             db.create_all()
-            print("Database reset successfully")
-
+            logger.info("Database reset successfully")
             # Recreate sample data
             create_sample_data()
 
         except Exception as e:
-            print(f"Error resetting database: {e}")
+            logger.info(f"Error resetting database: {e}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python migrate_db.py [init|sample|reset]")
+        logger.info("Usage: python migrate_db.py [init|sample|reset]")
         sys.exit(1)
 
     command = sys.argv[1]
@@ -160,6 +160,6 @@ if __name__ == "__main__":
         if confirm.lower() == "yes":
             reset_database()
         else:
-            print("Operation cancelled")
+            logger.info("Operation cancelled")
     else:
-        print("Unknown command. Use: init, sample, or reset")
+        logger.info("Unknown command. Use: init, sample, or reset")

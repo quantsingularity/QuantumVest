@@ -22,6 +22,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from advanced_ai_models import AdvancedTimeSeriesPredictor, ModelFactory
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 # Set up logging
 logging.basicConfig(
     level=logging.INFO,
@@ -812,35 +816,30 @@ def main():
         logger.info(f"Training completed successfully. Results saved to {results_path}")
 
         # Print summary
-        print("\n" + "=" * 80)
-        print("TRAINING SUMMARY")
-        print("=" * 80)
-
-        print(f"Assets trained: {len(featured_data)}")
-        print(
+        logger.info("\n" + "=" * 80)
+        logger.info("TRAINING SUMMARY")
+        logger.info("=" * 80)
+        logger.info(f"Assets trained: {len(featured_data)}")
+        logger.info(
             f"Models trained: {sum(len(models) for models in prediction_results.values())}"
         )
-
-        print("\nPrediction Model Performance:")
+        logger.info("\nPrediction Model Performance:")
         for asset, models in validation_results.items():
-            print(f"\n{asset}:")
+            logger.info(f"\n{asset}:")
             for model_type, metrics in models.items():
-                print(
+                logger.info(
                     f"  {model_type}: R² = {metrics['r2']:.4f}, "
                     f"Direction Accuracy = {metrics['direction_accuracy']:.4f}"
                 )
-
         if "total_return" in portfolio_validation:
-            print(f"\nPortfolio Optimization Backtest:")
-            print(f"  Total Return: {portfolio_validation['total_return']:.2%}")
-            print(
+            logger.info(f"\nPortfolio Optimization Backtest:")
+            logger.info(f"  Total Return: {portfolio_validation['total_return']:.2%}")
+            logger.info(
                 f"  Annualized Return: {portfolio_validation['annualized_return']:.2%}"
             )
-            print(f"  Sharpe Ratio: {portfolio_validation['sharpe_ratio']:.4f}")
-            print(f"  Max Drawdown: {portfolio_validation['max_drawdown']:.2%}")
-
-        print("\n" + "=" * 80)
-
+            logger.info(f"  Sharpe Ratio: {portfolio_validation['sharpe_ratio']:.4f}")
+            logger.info(f"  Max Drawdown: {portfolio_validation['max_drawdown']:.2%}")
+        logger.info("\n" + "=" * 80)
     except Exception as e:
         logger.error(f"Training pipeline failed: {e}")
         raise

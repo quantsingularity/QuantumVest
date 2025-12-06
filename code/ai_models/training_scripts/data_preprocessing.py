@@ -4,6 +4,10 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 # --- Configuration ---
 # Assuming the target variable is 'Close' price for prediction
 TARGET_COLUMN = "Close"
@@ -34,13 +38,13 @@ def load_data(file_path: str) -> pd.DataFrame:
         if "Date" in df.columns:
             df["Date"] = pd.to_datetime(df["Date"])
             df.set_index("Date", inplace=True)
-        print(f"Data loaded successfully from {file_path}. Shape: {df.shape}")
+        logger.info(f"Data loaded successfully from {file_path}. Shape: {df.shape}")
         return df
     except FileNotFoundError:
-        print(f"Error: File not found at {file_path}")
+        logger.info(f"Error: File not found at {file_path}")
         return pd.DataFrame()
     except Exception as e:
-        print(f"An error occurred during data loading: {e}")
+        logger.info(f"An error occurred during data loading: {e}")
         return pd.DataFrame()
 
 
@@ -51,8 +55,7 @@ def feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return df
 
-    print("Starting feature engineering...")
-
+    logger.info("Starting feature engineering...")
     # 1. Simple Moving Average (SMA)
     df["SMA_10"] = df[TARGET_COLUMN].rolling(window=10).mean()
     df["SMA_30"] = df[TARGET_COLUMN].rolling(window=30).mean()
@@ -80,7 +83,7 @@ def feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
     df["Volatility"] = df["Log_Return"].rolling(window=20).std()
     df.drop(columns=["Log_Return"], inplace=True)
 
-    print("Feature engineering complete.")
+    logger.info("Feature engineering complete.")
     return df
 
 
@@ -92,16 +95,15 @@ def handle_missing_values(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return df
 
-    print(f"Initial NaN count: {df.isnull().sum().sum()}")
-
+    logger.info(f"Initial NaN count: {df.isnull().sum().sum()}")
     # Forward-fill missing values
     df.fillna(method="ffill", inplace=True)
 
     # Drop any remaining NaNs (e.g., those at the very beginning due to rolling windows)
     df.dropna(inplace=True)
 
-    print(f"Final NaN count after processing: {df.isnull().sum().sum()}")
-    print(f"Data shape after handling NaNs: {df.shape}")
+    logger.info(f"Final NaN count after processing: {df.isnull().sum().sum()}")
+    logger.info(f"Data shape after handling NaNs: {df.shape}")
     return df
 
 
@@ -120,17 +122,17 @@ def scale_data(
     features_to_scale = [col for col in FEATURE_COLUMNS if col in df.columns]
 
     if not features_to_scale:
-        print("Warning: No valid feature columns found for scaling.")
+        logger.info("Warning: No valid feature columns found for scaling.")
         return df, MinMaxScaler()
 
     data_to_scale = df[features_to_scale].values
 
     if scaler is None:
-        print("Fitting and transforming data with new MinMaxScaler...")
+        logger.info("Fitting and transforming data with new MinMaxScaler...")
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(data_to_scale)
     else:
-        print("Transforming data with provided MinMaxScaler...")
+        logger.info("Transforming data with provided MinMaxScaler...")
         scaled_data = scaler.transform(data_to_scale)
 
     scaled_df = pd.DataFrame(scaled_data, columns=features_to_scale, index=df.index)
@@ -158,7 +160,7 @@ def create_sequences(
     feature_cols = [col for col in FEATURE_COLUMNS if col in data.columns]
 
     if not feature_cols or target_column not in data.columns:
-        print(
+        logger.info(
             "Error: Missing required feature or target columns for sequence creation."
         )
         return np.array([]), np.array([])
@@ -172,7 +174,7 @@ def create_sequences(
         # Target is the value immediately following the sequence (y)
         y.append(target_data[i + sequence_length])
 
-    print(f"Created {len(X)} sequences of length {sequence_length}.")
+    logger.info(f"Created {len(X)} sequences of length {sequence_length}.")
     return np.array(X), np.array(y)
 
 
@@ -184,8 +186,7 @@ def preprocess_data(
     """
     Main function to orchestrate the entire data preprocessing pipeline.
     """
-    print(f"--- Starting Preprocessing for {file_path} ---")
-
+    logger.info(f"--- Starting Preprocessing for {file_path} ---")
     # 1. Load Data
     df = load_data(file_path)
     if df.empty:
@@ -203,7 +204,7 @@ def preprocess_data(
     # 5. Create Sequences
     X, y = create_sequences(scaled_df, sequence_length, TARGET_COLUMN)
 
-    print("--- Preprocessing Complete ---")
+    logger.info("--- Preprocessing Complete ---")
     return X, y, fitted_scaler
 
 
@@ -214,7 +215,7 @@ if __name__ == "__main__":
     # data_path = '../../../../resources/datasets/market_data.csv'
 
     # Create a dummy DataFrame for testing the script's logic
-    print("Running self-test with dummy data...")
+    logger.info("Running self-test with dummy data...")
     dates = pd.to_datetime(pd.date_range(start="2020-01-01", periods=200))
     dummy_data = {
         "Date": dates,
@@ -233,14 +234,13 @@ if __name__ == "__main__":
     )
 
     if X_train.size > 0:
-        print("\n--- Preprocessing Results Summary ---")
-        print(f"X_train shape: {X_train.shape}")
-        print(f"y_train shape: {y_train.shape}")
-        print(f"Number of features scaled: {scaler.n_features_in_}")
-
+        logger.info("\n--- Preprocessing Results Summary ---")
+        logger.info(f"X_train shape: {X_train.shape}")
+        logger.info(f"y_train shape: {y_train.shape}")
+        logger.info(f"Number of features scaled: {scaler.n_features_in_}")
         # Clean up dummy file
         import os
 
         os.remove("dummy_market_data.csv")
     else:
-        print("\nPreprocessing failed to produce output.")
+        logger.info("\nPreprocessing failed to produce output.")

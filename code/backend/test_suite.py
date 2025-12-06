@@ -12,6 +12,10 @@ from unittest.mock import Mock
 import numpy as np
 import pandas as pd
 
+from core.logging import get_logger
+
+logger = get_logger(__name__)
+
 # Add the backend directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,7 +44,7 @@ try:
         RiskManagementService,
     )
 except ImportError as e:
-    print(f"Warning: Could not import some modules: {e}")
+    logger.info(f"Warning: Could not import some modules: {e}")
 
 
 class TestDatabaseModels(unittest.TestCase):
@@ -566,8 +570,7 @@ class TestIntegration(unittest.TestCase):
 
 def run_security_tests():
     """Run security-specific tests"""
-    print("Running security tests...")
-
+    logger.info("Running security tests...")
     # Test password policies
     auth_service = AuthenticationService()
 
@@ -584,8 +587,7 @@ def run_security_tests():
         is_strong, errors = auth_service.validate_password_strength(password)
         assert is_strong == should_be_strong, f"Password {password} validation failed"
 
-    print("✓ Password policy tests passed")
-
+    logger.info("✓ Password policy tests passed")
     # Test encryption
     encryption_service = EncryptionService()
     test_data = "Sensitive financial data"
@@ -595,8 +597,7 @@ def run_security_tests():
     assert decrypted == test_data, "Encryption/decryption failed"
     assert encrypted != test_data, "Data not properly encrypted"
 
-    print("✓ Encryption tests passed")
-
+    logger.info("✓ Encryption tests passed")
     # Test authorization
     auth_service = AuthorizationService()
 
@@ -608,13 +609,12 @@ def run_security_tests():
     assert auth_service.has_permission(UserRole.CLIENT, "portfolio:read")
     assert not auth_service.has_permission(UserRole.CLIENT, "user:create")
 
-    print("✓ Authorization tests passed")
+    logger.info("✓ Authorization tests passed")
 
 
 def run_performance_tests():
     """Run performance tests"""
-    print("Running performance tests...")
-
+    logger.info("Running performance tests...")
     import time
 
     # Test large data processing
@@ -628,8 +628,7 @@ def run_performance_tests():
     processing_time = end_time - start_time
 
     assert processing_time < 1.0, f"Large data processing too slow: {processing_time}s"
-    print(f"✓ Large data processing test passed ({processing_time:.3f}s)")
-
+    logger.info(f"✓ Large data processing test passed ({processing_time:.3f}s)")
     # Test concurrent operations
     import threading
 
@@ -653,38 +652,35 @@ def run_performance_tests():
 
     # Should complete in less than 0.5 seconds (much faster than sequential)
     assert concurrent_time < 0.5, f"Concurrent operations too slow: {concurrent_time}s"
-    print(f"✓ Concurrent operations test passed ({concurrent_time:.3f}s)")
+    logger.info(f"✓ Concurrent operations test passed ({concurrent_time:.3f}s)")
 
 
 def run_all_tests():
     """Run all test suites"""
-    print("=" * 80)
-    print("QUANTUMVEST ENHANCED BACKEND TEST SUITE")
-    print("=" * 80)
-
+    logger.info("=" * 80)
+    logger.info("QUANTUMVEST ENHANCED BACKEND TEST SUITE")
+    logger.info("=" * 80)
     # Run unit tests
-    print("\n1. Running Unit Tests...")
+    logger.info("\n1. Running Unit Tests...")
     unittest.main(argv=[""], exit=False, verbosity=2)
 
     # Run security tests
-    print("\n2. Running Security Tests...")
+    logger.info("\n2. Running Security Tests...")
     try:
         run_security_tests()
-        print("✓ All security tests passed")
+        logger.info("✓ All security tests passed")
     except Exception as e:
-        print(f"✗ Security tests failed: {e}")
-
+        logger.info(f"✗ Security tests failed: {e}")
     # Run performance tests
-    print("\n3. Running Performance Tests...")
+    logger.info("\n3. Running Performance Tests...")
     try:
         run_performance_tests()
-        print("✓ All performance tests passed")
+        logger.info("✓ All performance tests passed")
     except Exception as e:
-        print(f"✗ Performance tests failed: {e}")
-
-    print("\n" + "=" * 80)
-    print("TEST SUITE COMPLETED")
-    print("=" * 80)
+        logger.info(f"✗ Performance tests failed: {e}")
+    logger.info("\n" + "=" * 80)
+    logger.info("TEST SUITE COMPLETED")
+    logger.info("=" * 80)
 
 
 if __name__ == "__main__":
