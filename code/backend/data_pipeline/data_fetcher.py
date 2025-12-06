@@ -3,7 +3,6 @@ Data Fetcher Module
 Core module for fetching financial data from various sources
 """
 
-import json
 import logging
 import os
 import time

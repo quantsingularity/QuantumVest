@@ -10,7 +10,6 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 
 sys.path.append("")
-import json
 from data_api import ApiClient
 from .data_fetcher import DataFetcher, DataValidator
 
