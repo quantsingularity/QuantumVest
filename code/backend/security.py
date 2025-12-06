@@ -12,7 +12,6 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from typing import Any, Dict, List, Optional, Tuple
-
 import bcrypt
 import jwt
 from cryptography.fernet import Fernet
@@ -39,18 +38,16 @@ class SecurityEvent:
 class EncryptionService:
     """Advanced encryption service for sensitive data"""
 
-    def __init__(self, master_key: Optional[str] = None):
+    def __init__(self, master_key: Optional[str] = None) -> Any:
         """Initialize encryption service with master key"""
         if master_key:
             self.master_key = master_key.encode()
         else:
             self.master_key = secrets.token_bytes(32)
-
-        # Derive encryption key from master key
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
-            salt=b"quantumvest_salt",  # In production, use random salt per encryption
+            salt=b"quantumvest_salt",
             iterations=100000,
         )
         key = base64.urlsafe_b64encode(kdf.derive(self.master_key))
@@ -79,13 +76,11 @@ class EncryptionService:
         """Encrypt personally identifiable information"""
         encrypted_pii = {}
         sensitive_fields = ["ssn", "tax_id", "bank_account", "credit_card", "passport"]
-
         for field, value in pii_data.items():
             if field.lower() in sensitive_fields and value:
                 encrypted_pii[field] = self.encrypt(str(value))
             else:
                 encrypted_pii[field] = value
-
         return encrypted_pii
 
 
@@ -113,37 +108,25 @@ class AuthenticationService:
     def validate_password_strength(password: str) -> Tuple[bool, List[str]]:
         """Validate password strength according to financial industry standards"""
         errors = []
-
-        # Minimum length
         if len(password) < 12:
             errors.append("Password must be at least 12 characters long")
-
-        # Character requirements
-        if not re.search(r"[A-Z]", password):
+        if not re.search("[A-Z]", password):
             errors.append("Password must contain at least one uppercase letter")
-
-        if not re.search(r"[a-z]", password):
+        if not re.search("[a-z]", password):
             errors.append("Password must contain at least one lowercase letter")
-
-        if not re.search(r"\d", password):
+        if not re.search("\\d", password):
             errors.append("Password must contain at least one digit")
-
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        if not re.search('[!@#$%^&*(),.?":{}|<>]', password):
             errors.append("Password must contain at least one special character")
-
-        # Common password patterns
         common_patterns = [
-            r"(.)\1{2,}",  # Repeated characters
-            r"(012|123|234|345|456|567|678|789|890)",  # Sequential numbers
-            r"(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)",  # Sequential letters
+            "(.)\\1{2,}",
+            "(012|123|234|345|456|567|678|789|890)",
+            "(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)",
         ]
-
         for pattern in common_patterns:
             if re.search(pattern, password.lower()):
                 errors.append("Password contains common patterns and is not secure")
                 break
-
-        # Dictionary words (simplified check)
         common_words = [
             "password",
             "admin",
@@ -157,8 +140,7 @@ class AuthenticationService:
             if word in password.lower():
                 errors.append("Password contains common dictionary words")
                 break
-
-        return len(errors) == 0, errors
+        return (len(errors) == 0, errors)
 
     @staticmethod
     def generate_jwt_token(user: User, expires_in: int = 3600) -> str:
@@ -173,11 +155,9 @@ class AuthenticationService:
                 "iss": "quantumvest",
                 "aud": "quantumvest-api",
             }
-
             token = jwt.encode(
                 payload, current_app.config["SECRET_KEY"], algorithm="HS256"
             )
-
             return token
         except Exception as e:
             logger.error(f"JWT token generation error: {e}")
@@ -226,7 +206,6 @@ class AuthenticationService:
 class AuthorizationService:
     """Role-based access control and authorization"""
 
-    # Define permissions for each role
     ROLE_PERMISSIONS = {
         UserRole.ADMIN: [
             "user:create",
@@ -274,18 +253,13 @@ class AuthorizationService:
     @staticmethod
     def check_resource_access(user: User, resource_type: str, resource_id: str) -> bool:
         """Check if user can access specific resource"""
-        # Admin can access everything
         if user.role == UserRole.ADMIN:
             return True
-
-        # Portfolio managers can access portfolios they manage
         if resource_type == "portfolio" and user.role == UserRole.PORTFOLIO_MANAGER:
             from enhanced_models import Portfolio
 
             portfolio = Portfolio.query.get(resource_id)
             return portfolio and portfolio.user_id == user.id
-
-        # Clients can only access their own resources
         if user.role == UserRole.CLIENT:
             if resource_type == "portfolio":
                 from enhanced_models import Portfolio
@@ -297,21 +271,20 @@ class AuthorizationService:
 
                 transaction = Transaction.query.get(resource_id)
                 return transaction and transaction.user_id == user.id
-
         return False
 
 
 class SecurityMiddleware:
     """Security middleware for request processing"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.rate_limits = {}
         self.blocked_ips = set()
         self.suspicious_patterns = [
-            r"<script.*?>.*?</script>",  # XSS attempts
-            r"union.*select",  # SQL injection
-            r"drop.*table",  # SQL injection
-            r"exec.*\(",  # Command injection
+            "<script.*?>.*?</script>",
+            "union.*select",
+            "drop.*table",
+            "exec.*\\(",
         ]
 
     def check_rate_limit(
@@ -320,55 +293,37 @@ class SecurityMiddleware:
         """Check rate limiting for IP and endpoint"""
         current_time = datetime.now(timezone.utc)
         key = f"{ip_address}:{endpoint}"
-
         if key not in self.rate_limits:
             self.rate_limits[key] = []
-
-        # Remove old requests outside the window
         self.rate_limits[key] = [
             timestamp
             for timestamp in self.rate_limits[key]
             if current_time - timestamp < timedelta(seconds=window)
         ]
-
-        # Check if limit exceeded
         if len(self.rate_limits[key]) >= limit:
             return False
-
-        # Add current request
         self.rate_limits[key].append(current_time)
         return True
 
     def detect_suspicious_activity(self, request_data: str) -> List[str]:
         """Detect suspicious patterns in request data"""
         threats = []
-
         for pattern in self.suspicious_patterns:
             if re.search(pattern, request_data, re.IGNORECASE):
                 threats.append(f"Suspicious pattern detected: {pattern}")
-
         return threats
 
     def validate_ip_address(self, ip_address: str) -> bool:
         """Validate and check IP address"""
         try:
-            # Check if IP is blocked
             if ip_address in self.blocked_ips:
                 return False
-
-            # Validate IP format
             ipaddress.ip_address(ip_address)
-
-            # Check against known malicious IP ranges (simplified)
             ip_obj = ipaddress.ip_address(ip_address)
-
-            # Block private networks in production (except for development)
             if current_app.config.get("ENV") == "production":
-                if ip_obj.is_private and not ip_obj.is_loopback:
+                if ip_obj.is_private and (not ip_obj.is_loopback):
                     return False
-
             return True
-
         except ValueError:
             return False
 
@@ -377,7 +332,7 @@ class AuditService:
     """Comprehensive audit logging service"""
 
     @staticmethod
-    def log_security_event(event: SecurityEvent):
+    def log_security_event(event: SecurityEvent) -> Any:
         """Log security event to audit trail"""
         try:
             audit_log = AuditLog(
@@ -394,11 +349,8 @@ class AuditService:
                     **(event.metadata or {}),
                 },
             )
-
             db.session.add(audit_log)
             db.session.commit()
-
-            # Log to application logger based on severity
             log_message = f"Security Event: {event.event_type} - {event.description}"
             if event.severity == "critical":
                 logger.critical(log_message)
@@ -408,7 +360,6 @@ class AuditService:
                 logger.warning(log_message)
             else:
                 logger.info(log_message)
-
         except Exception as e:
             logger.error(f"Error logging security event: {e}")
             db.session.rollback()
@@ -420,7 +371,7 @@ class AuditService:
         resource_type: str,
         resource_id: str,
         details: Optional[Dict] = None,
-    ):
+    ) -> Any:
         """Log user action for audit trail"""
         try:
             event = SecurityEvent(
@@ -436,9 +387,7 @@ class AuditService:
                     "details": details or {},
                 },
             )
-
             AuditService.log_security_event(event)
-
         except Exception as e:
             logger.error(f"Error logging user action: {e}")
 
@@ -448,14 +397,13 @@ class AuditService:
         event_type: str,
         success: bool,
         details: Optional[Dict] = None,
-    ):
+    ) -> Any:
         """Log authentication events"""
         try:
             severity = "info" if success else "warning"
             description = (
-                f"Authentication {event_type}: {'Success' if success else 'Failed'}"
+                f"Authentication {event_type}: {('Success' if success else 'Failed')}"
             )
-
             event = SecurityEvent(
                 event_type=f"auth_{event_type}",
                 severity=severity,
@@ -468,9 +416,7 @@ class AuditService:
                     "details": details or {},
                 },
             )
-
             AuditService.log_security_event(event)
-
         except Exception as e:
             logger.error(f"Error logging authentication event: {e}")
 
@@ -478,7 +424,7 @@ class AuditService:
 class ThreatDetectionService:
     """Advanced threat detection and prevention"""
 
-    def __init__(self):
+    def __init__(self) -> Any:
         self.failed_login_threshold = 5
         self.suspicious_activity_threshold = 10
         self.monitoring_window = timedelta(hours=1)
@@ -487,16 +433,13 @@ class ThreatDetectionService:
         """Detect brute force login attempts"""
         try:
             cutoff_time = datetime.now(timezone.utc) - self.monitoring_window
-
             failed_attempts = AuditLog.query.filter(
                 AuditLog.ip_address == ip_address,
                 AuditLog.event_type == "auth_login",
                 AuditLog.created_at >= cutoff_time,
                 AuditLog.metadata["success"].astext == "false",
             ).count()
-
             return failed_attempts >= self.failed_login_threshold
-
         except Exception as e:
             logger.error(f"Error detecting brute force attack: {e}")
             return False
@@ -505,8 +448,6 @@ class ThreatDetectionService:
         """Detect potential account takeover attempts"""
         try:
             cutoff_time = datetime.now(timezone.utc) - self.monitoring_window
-
-            # Check for logins from multiple IPs
             login_ips = (
                 db.session.query(AuditLog.ip_address)
                 .filter(
@@ -518,17 +459,13 @@ class ThreatDetectionService:
                 .distinct()
                 .all()
             )
-
-            # Check for unusual activity patterns
             activity_count = AuditLog.query.filter(
                 AuditLog.user_id == user_id, AuditLog.created_at >= cutoff_time
             ).count()
-
             return (
                 len(login_ips) > 3
                 or activity_count > self.suspicious_activity_threshold
             )
-
         except Exception as e:
             logger.error(f"Error detecting account takeover: {e}")
             return False
@@ -538,27 +475,20 @@ class ThreatDetectionService:
         try:
             from enhanced_models import Transaction
 
-            # Get recent transactions
             cutoff_time = datetime.now(timezone.utc) - timedelta(days=30)
             transactions = Transaction.query.filter(
                 Transaction.user_id == user_id, Transaction.executed_at >= cutoff_time
             ).all()
-
             if not transactions:
                 return {"anomalies": [], "risk_score": 0}
-
-            # Calculate transaction statistics
             amounts = [float(t.total_amount) for t in transactions]
             avg_amount = sum(amounts) / len(amounts)
             max_amount = max(amounts)
-
             anomalies = []
             risk_score = 0
-
-            # Check for unusually large transactions
             for transaction in transactions:
                 amount = float(transaction.total_amount)
-                if amount > avg_amount * 5:  # 5x average
+                if amount > avg_amount * 5:
                     anomalies.append(
                         {
                             "type": "large_transaction",
@@ -568,15 +498,12 @@ class ThreatDetectionService:
                         }
                     )
                     risk_score += 10
-
-            # Check for high frequency trading
             transaction_dates = [t.executed_at.date() for t in transactions]
             daily_counts = {}
             for date in transaction_dates:
                 daily_counts[date] = daily_counts.get(date, 0) + 1
-
             max_daily_transactions = max(daily_counts.values()) if daily_counts else 0
-            if max_daily_transactions > 20:  # More than 20 transactions per day
+            if max_daily_transactions > 20:
                 anomalies.append(
                     {
                         "type": "high_frequency_trading",
@@ -585,10 +512,9 @@ class ThreatDetectionService:
                     }
                 )
                 risk_score += 15
-
             return {
                 "anomalies": anomalies,
-                "risk_score": min(risk_score, 100),  # Cap at 100
+                "risk_score": min(risk_score, 100),
                 "statistics": {
                     "transaction_count": len(transactions),
                     "avg_amount": avg_amount,
@@ -596,59 +522,47 @@ class ThreatDetectionService:
                     "max_daily_transactions": max_daily_transactions,
                 },
             }
-
         except Exception as e:
             logger.error(f"Error analyzing transaction patterns: {e}")
             return {"anomalies": [], "risk_score": 0}
 
 
-# Security decorators
-def require_auth(f):
+def require_auth(f: Any) -> Any:
     """Decorator to require authentication"""
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
         token = request.headers.get("Authorization")
         if not token:
-            return jsonify({"error": "Authentication required"}), 401
-
+            return (jsonify({"error": "Authentication required"}), 401)
         if token.startswith("Bearer "):
             token = token[7:]
-
         payload = AuthenticationService.verify_jwt_token(token)
         if not payload:
-            return jsonify({"error": "Invalid or expired token"}), 401
-
-        # Get user
+            return (jsonify({"error": "Invalid or expired token"}), 401)
         user = User.query.get(payload["user_id"])
         if not user or not user.is_active:
-            return jsonify({"error": "User not found or inactive"}), 401
-
-        # Store user in request context
+            return (jsonify({"error": "User not found or inactive"}), 401)
         g.current_user = user
-
-        # Log authentication event
         AuditService.log_authentication_event(
             user_id=str(user.id), event_type="token_validation", success=True
         )
-
         return f(*args, **kwargs)
 
     return decorated_function
 
 
-def require_permission(permission: str):
+def require_permission(permission: str) -> Any:
     """Decorator to require specific permission"""
 
     def decorator(f):
+
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if not hasattr(g, "current_user"):
-                return jsonify({"error": "Authentication required"}), 401
-
+                return (jsonify({"error": "Authentication required"}), 401)
             if not AuthorizationService.has_permission(g.current_user.role, permission):
-                return jsonify({"error": "Insufficient permissions"}), 403
-
+                return (jsonify({"error": "Insufficient permissions"}), 403)
             return f(*args, **kwargs)
 
         return decorated_function
@@ -656,31 +570,23 @@ def require_permission(permission: str):
     return decorator
 
 
-def require_2fa(f):
+def require_2fa(f: Any) -> Any:
     """Decorator to require 2FA verification"""
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not hasattr(g, "current_user"):
-            return jsonify({"error": "Authentication required"}), 401
-
+            return (jsonify({"error": "Authentication required"}), 401)
         if not g.current_user.two_factor_enabled:
-            return jsonify({"error": "2FA required for this operation"}), 403
-
-        # Check for 2FA token in headers
+            return (jsonify({"error": "2FA required for this operation"}), 403)
         totp_token = request.headers.get("X-TOTP-Token")
         if not totp_token:
-            return jsonify({"error": "2FA token required"}), 403
-
-        # Verify 2FA token (implementation depends on 2FA setup)
-        # This is a simplified check - in production, verify against user's 2FA secret
-
+            return (jsonify({"error": "2FA token required"}), 403)
         return f(*args, **kwargs)
 
     return decorated_function
 
 
-# Initialize security services
 encryption_service = EncryptionService()
 security_middleware = SecurityMiddleware()
 threat_detection_service = ThreatDetectionService()

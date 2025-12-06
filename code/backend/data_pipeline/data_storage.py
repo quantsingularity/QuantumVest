@@ -6,10 +6,8 @@ Handles storage and retrieval of financial data
 import logging
 import os
 from typing import List, Optional
-
 import pandas as pd
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
@@ -19,7 +17,7 @@ logger = logging.getLogger(__name__)
 class DataStorage:
     """Handles storage and retrieval of financial data"""
 
-    def __init__(self, data_dir: str = "../../resources/data"):
+    def __init__(self, data_dir: str = "../../resources/data") -> Any:
         """
         Initialize the data storage
 
@@ -28,8 +26,6 @@ class DataStorage:
         """
         self.data_dir = data_dir
         os.makedirs(data_dir, exist_ok=True)
-
-        # Create subdirectories for different data types
         self.stock_dir = os.path.join(data_dir, "stocks")
         self.crypto_dir = os.path.join(data_dir, "crypto")
         os.makedirs(self.stock_dir, exist_ok=True)
@@ -49,7 +45,6 @@ class DataStorage:
         if df is None or df.empty:
             logger.warning(f"Empty dataframe for {symbol}, not saving")
             return ""
-
         file_path = os.path.join(self.stock_dir, f"{symbol.lower()}.csv")
         try:
             df.to_csv(file_path, index=False)
@@ -73,7 +68,6 @@ class DataStorage:
         if df is None or df.empty:
             logger.warning(f"Empty dataframe for {symbol}, not saving")
             return ""
-
         file_path = os.path.join(self.crypto_dir, f"{symbol.lower()}.csv")
         try:
             df.to_csv(file_path, index=False)

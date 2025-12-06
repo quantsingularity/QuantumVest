@@ -6,12 +6,10 @@ Evaluates model performance and generates performance metrics
 import logging
 import os
 from typing import Dict, List
-
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
@@ -21,7 +19,7 @@ logger = logging.getLogger(__name__)
 class ModelEvaluator:
     """Evaluates model performance and generates metrics"""
 
-    def __init__(self, reports_dir: str = "../../resources/model_reports"):
+    def __init__(self, reports_dir: str = "../../resources/model_reports") -> Any:
         """
         Initialize the model evaluator
 
@@ -45,20 +43,14 @@ class ModelEvaluator:
             Dictionary with performance metrics
         """
         try:
-            # Calculate metrics
             mse = mean_squared_error(y_true, y_pred)
             rmse = np.sqrt(mse)
             mae = mean_absolute_error(y_true, y_pred)
             r2 = r2_score(y_true, y_pred)
-
-            # Calculate MAPE (Mean Absolute Percentage Error)
             mape = np.mean(np.abs((y_true - y_pred) / y_true)) * 100
-
-            # Calculate directional accuracy
             direction_true = np.diff(y_true) > 0
             direction_pred = np.diff(y_pred) > 0
             directional_accuracy = np.mean(direction_true == direction_pred) * 100
-
             return {
                 "mse": mse,
                 "rmse": rmse,
@@ -67,7 +59,6 @@ class ModelEvaluator:
                 "mape": mape,
                 "directional_accuracy": directional_accuracy,
             }
-
         except Exception as e:
             logger.error(f"Error calculating performance metrics: {e}")
             return {
@@ -101,19 +92,12 @@ class ModelEvaluator:
             Path to the saved report
         """
         try:
-            # Calculate metrics
             metrics = self.evaluate_predictions(y_true, y_pred)
-
-            # Create report directory
             report_dir = os.path.join(
                 self.reports_dir, f"{asset_type}_{symbol.lower()}"
             )
             os.makedirs(report_dir, exist_ok=True)
-
-            # Generate plots
             self._generate_plots(y_true, y_pred, dates, report_dir, symbol)
-
-            # Generate metrics report
             report_path = os.path.join(report_dir, "metrics.txt")
             with open(report_path, "w") as f:
                 f.write(f"Model Evaluation Report for {symbol} ({asset_type})\n")
@@ -128,10 +112,8 @@ class ModelEvaluator:
                 f.write(
                     f"Directional Accuracy: {metrics['directional_accuracy']:.2f}%\n"
                 )
-
             logger.info(f"Evaluation report generated for {symbol} at {report_path}")
             return report_path
-
         except Exception as e:
             logger.error(f"Error generating evaluation report: {e}")
             return ""
@@ -155,14 +137,11 @@ class ModelEvaluator:
             symbol: Asset symbol
         """
         try:
-            # Create x-axis values
             x = range(len(y_true))
             if dates is not None and len(dates) == len(y_true):
                 x_labels = dates
             else:
                 x_labels = [str(i) for i in x]
-
-            # Plot actual vs predicted values
             plt.figure(figsize=(12, 6))
             plt.plot(x, y_true, label="Actual", marker="o")
             plt.plot(x, y_pred, label="Predicted", marker="x")
@@ -179,8 +158,6 @@ class ModelEvaluator:
             plt.tight_layout()
             plt.savefig(os.path.join(report_dir, "actual_vs_predicted.png"))
             plt.close()
-
-            # Plot prediction error
             error = y_true - y_pred
             plt.figure(figsize=(12, 6))
             plt.bar(x, error)
@@ -196,8 +173,6 @@ class ModelEvaluator:
             plt.tight_layout()
             plt.savefig(os.path.join(report_dir, "prediction_error.png"))
             plt.close()
-
-            # Plot error distribution
             plt.figure(figsize=(10, 6))
             plt.hist(error, bins=20)
             plt.title(f"Error Distribution for {symbol}")
@@ -207,6 +182,5 @@ class ModelEvaluator:
             plt.tight_layout()
             plt.savefig(os.path.join(report_dir, "error_distribution.png"))
             plt.close()
-
         except Exception as e:
             logger.error(f"Error generating plots: {e}")

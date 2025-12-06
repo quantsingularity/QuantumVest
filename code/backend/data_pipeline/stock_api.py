@@ -7,18 +7,13 @@ import logging
 import sys
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
-
 import pandas as pd
 
-# Add path for data_api access
 sys.path.append("")
-import json  # Added based on the issue description's hint about json_data and requests
-
+import json
 from data_api import ApiClient
-
 from .data_fetcher import DataFetcher, DataValidator
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
@@ -28,7 +23,7 @@ logger = logging.getLogger(__name__)
 class StockDataFetcher(DataFetcher):
     """Fetches stock market data from Yahoo Finance API"""
 
-    def __init__(self, cache_dir: str = "../../resources/data_cache"):
+    def __init__(self, cache_dir: str = "../../resources/data_cache") -> Any:
         """
         Initialize the stock data fetcher
 
@@ -57,23 +52,16 @@ class StockDataFetcher(DataFetcher):
         Returns:
             DataFrame with the fetched stock data
         """
-        # Check cache first
         cached_data = self._load_from_cache(symbol, interval)
         if cached_data is not None:
             logger.info(f"Loaded cached data for {symbol}")
             return cached_data
-
-        # Set default dates if not provided
         if end_date is None:
             end_date = datetime.now().strftime("%Y-%m-%d")
         if start_date is None:
-            # Default to 1 year of data
             start_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
-
         logger.info(f"Fetching stock data for {symbol} from {start_date} to {end_date}")
-
         try:
-            # Map interval to Yahoo Finance format
             yf_interval = interval
             if interval == "1d":
                 range_param = "1y"
@@ -83,8 +71,6 @@ class StockDataFetcher(DataFetcher):
                 range_param = "max"
             else:
                 range_param = "1mo"
-
-            # Call Yahoo Finance API
             response = self.api_client.call_api(
                 "YahooFinance/get_stock_chart",
                 query={
@@ -94,21 +80,13 @@ class StockDataFetcher(DataFetcher):
                     "includeAdjustedClose": True,
                 },
             )
-
-            # Process the response
-            if response and "chart" in response and "result" in response["chart"]:
+            if response and "chart" in response and ("result" in response["chart"]):
                 result = response["chart"]["result"][0]
-
-                # Extract timestamp and price data
                 timestamps = result["timestamp"]
                 quotes = result["indicators"]["quote"][0]
-
-                # Check for None values in quotes before creating DataFrame
                 if not all(quotes.values()):
                     logger.error(f"Missing data points in response for {symbol}")
                     return pd.DataFrame()
-
-                # Create DataFrame
                 df = pd.DataFrame(
                     {
                         "timestamp": pd.to_datetime(timestamps, unit="s"),
@@ -119,25 +97,15 @@ class StockDataFetcher(DataFetcher):
                         "volume": quotes["volume"],
                     }
                 )
-
-                # Add adjusted close if available
                 if "adjclose" in result["indicators"]:
                     df["adjclose"] = result["indicators"]["adjclose"][0]["adjclose"]
-
-                # Add symbol column
                 df["symbol"] = symbol
-
-                # Validate and clean data
                 df = DataValidator.validate_dataframe(df, symbol)
-
-                # Cache the result
                 self._save_to_cache(df, symbol, interval)
-
                 return df
             else:
                 logger.error(f"Invalid response format for {symbol}")
                 return pd.DataFrame()
-
         except Exception as e:
             logger.error(f"Error fetching stock data for {symbol}: {e}")
             return pd.DataFrame()
@@ -156,13 +124,11 @@ class StockDataFetcher(DataFetcher):
             response = self.api_client.call_api(
                 "YahooFinance/get_stock_insights", query={"symbol": symbol}
             )
-
-            if response and "finance" in response and "result" in response["finance"]:
+            if response and "finance" in response and ("result" in response["finance"]):
                 return response["finance"]["result"]
             else:
                 logger.error(f"Invalid insights response format for {symbol}")
                 return {}
-
         except Exception as e:
             logger.error(f"Error fetching stock insights for {symbol}: {e}")
             return {}

@@ -4,49 +4,38 @@ Initialize and migrate database schema
 """
 
 import sys
-
 from enhanced_config import get_config
 from flask import Flask
 from flask_migrate import init, migrate, upgrade
 from models import db
-
 from core.logging import get_logger
 
 logger = get_logger(__name__)
 
 
-def create_app():
+def create_app() -> Any:
     """Create Flask app for migration"""
     app = Flask(__name__)
-
-    # Load configuration
     config_class = get_config()
     app.config.from_object(config_class)
-
-    # Initialize database
     db.init_app(app)
-
     return app
 
 
-def init_database():
+def init_database() -> Any:
     """Initialize database and migration repository"""
     app = create_app()
-
     with app.app_context():
-        # Initialize migration repository
         try:
             init()
             logger.info("Migration repository initialized successfully")
         except Exception as e:
             logger.info(f"Migration repository already exists or error: {e}")
-        # Create initial migration
         try:
             migrate(message="Initial migration")
             logger.info("Initial migration created successfully")
         except Exception as e:
             logger.info(f"Error creating migration: {e}")
-        # Apply migrations
         try:
             upgrade()
             logger.info("Database upgraded successfully")
@@ -54,15 +43,13 @@ def init_database():
             logger.info(f"Error upgrading database: {e}")
 
 
-def create_sample_data():
+def create_sample_data() -> Any:
     """Create sample data for development"""
     app = create_app()
-
     with app.app_context():
         from models import Asset, User
 
         try:
-            # Create sample user
             if not User.query.filter_by(username="admin").first():
                 admin_user = User(
                     username="admin",
@@ -74,8 +61,6 @@ def create_sample_data():
                 )
                 admin_user.set_password("AdminPassword123")
                 db.session.add(admin_user)
-
-            # Create sample assets (if not already created by app initialization)
             sample_assets = [
                 {
                     "symbol": "SPY",
@@ -108,7 +93,6 @@ def create_sample_data():
                     "exchange": "NYSE",
                 },
             ]
-
             for asset_data in sample_assets:
                 if not Asset.query.filter_by(symbol=asset_data["symbol"]).first():
                     asset = Asset(
@@ -120,7 +104,6 @@ def create_sample_data():
                         is_tradeable=True,
                     )
                     db.session.add(asset)
-
             db.session.commit()
             logger.info("Sample data created successfully")
         except Exception as e:
@@ -128,18 +111,15 @@ def create_sample_data():
             logger.info(f"Error creating sample data: {e}")
 
 
-def reset_database():
+def reset_database() -> Any:
     """Reset database (WARNING: This will delete all data)"""
     app = create_app()
-
     with app.app_context():
         try:
             db.drop_all()
             db.create_all()
             logger.info("Database reset successfully")
-            # Recreate sample data
             create_sample_data()
-
         except Exception as e:
             logger.info(f"Error resetting database: {e}")
 
@@ -148,9 +128,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         logger.info("Usage: python migrate_db.py [init|sample|reset]")
         sys.exit(1)
-
     command = sys.argv[1]
-
     if command == "init":
         init_database()
     elif command == "sample":

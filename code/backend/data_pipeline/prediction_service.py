@@ -7,13 +7,11 @@ import logging
 import os
 from datetime import datetime
 from typing import Any, Dict, List
-
 from .crypto_api import CryptoDataFetcher
 from .data_storage import DataStorage
 from .lstm_model import LSTMModel
 from .stock_api import StockDataFetcher
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
@@ -27,7 +25,7 @@ class PredictionService:
         self,
         model_dir: str = "../../resources/models",
         data_dir: str = "../../resources/data",
-    ):
+    ) -> Any:
         """
         Initialize the prediction service
 
@@ -37,12 +35,8 @@ class PredictionService:
         """
         self.model_dir = model_dir
         self.data_dir = data_dir
-
-        # Create directories if they don't exist
         os.makedirs(model_dir, exist_ok=True)
         os.makedirs(data_dir, exist_ok=True)
-
-        # Initialize components
         self.lstm_model = LSTMModel(model_dir)
         self.data_storage = DataStorage(data_dir)
         self.stock_fetcher = StockDataFetcher()
@@ -63,7 +57,6 @@ class PredictionService:
             Dictionary with prediction results
         """
         try:
-            # Fetch latest data
             if use_cached:
                 df = self.data_storage.load_stock_data(symbol)
                 if df is None or df.empty:
@@ -74,14 +67,11 @@ class PredictionService:
                 df = self.stock_fetcher.fetch_data(symbol)
                 if not df.empty:
                     self.data_storage.save_stock_data(df, symbol)
-
             if df is None or df.empty:
                 return {
                     "success": False,
                     "error": f"No data available for stock {symbol}",
                 }
-
-            # Load or train model
             model_loaded = self.lstm_model.load("stock", symbol)
             if not model_loaded:
                 logger.info(f"Model not found for {symbol}, training new model")
@@ -89,26 +79,17 @@ class PredictionService:
                 if not training_result["success"]:
                     return {
                         "success": False,
-                        "error": f'Failed to train model for {symbol}: {training_result.get("error", "Unknown error")}',
+                        "error": f"Failed to train model for {symbol}: {training_result.get('error', 'Unknown error')}",
                     }
-
-            # Generate prediction
             prediction_result = self.lstm_model.predict(df, days_ahead=days_ahead)
-
-            # Add additional information
             if prediction_result["success"]:
                 prediction_result["symbol"] = symbol
                 prediction_result["asset_type"] = "stock"
                 prediction_result["generated_at"] = datetime.now().strftime(
                     "%Y-%m-%d %H:%M:%S"
                 )
-
-                # Calculate confidence based on model performance
-                # This is a simplified approach - in production, would use proper confidence intervals
                 prediction_result["confidence"] = 0.85
-
             return prediction_result
-
         except Exception as e:
             logger.error(f"Error getting stock prediction for {symbol}: {e}")
             return {"success": False, "error": str(e)}
@@ -128,7 +109,6 @@ class PredictionService:
             Dictionary with prediction results
         """
         try:
-            # Fetch latest data
             if use_cached:
                 df = self.data_storage.load_crypto_data(symbol)
                 if df is None or df.empty:
@@ -139,14 +119,11 @@ class PredictionService:
                 df = self.crypto_fetcher.fetch_data(symbol)
                 if not df.empty:
                     self.data_storage.save_crypto_data(df, symbol)
-
             if df is None or df.empty:
                 return {
                     "success": False,
                     "error": f"No data available for cryptocurrency {symbol}",
                 }
-
-            # Load or train model
             model_loaded = self.lstm_model.load("crypto", symbol)
             if not model_loaded:
                 logger.info(f"Model not found for {symbol}, training new model")
@@ -154,26 +131,17 @@ class PredictionService:
                 if not training_result["success"]:
                     return {
                         "success": False,
-                        "error": f'Failed to train model for {symbol}: {training_result.get("error", "Unknown error")}',
+                        "error": f"Failed to train model for {symbol}: {training_result.get('error', 'Unknown error')}",
                     }
-
-            # Generate prediction
             prediction_result = self.lstm_model.predict(df, days_ahead=days_ahead)
-
-            # Add additional information
             if prediction_result["success"]:
                 prediction_result["symbol"] = symbol
                 prediction_result["asset_type"] = "crypto"
                 prediction_result["generated_at"] = datetime.now().strftime(
                     "%Y-%m-%d %H:%M:%S"
                 )
-
-                # Calculate confidence based on model performance
-                # This is a simplified approach - in production, would use proper confidence intervals
-                prediction_result["confidence"] = 0.80
-
+                prediction_result["confidence"] = 0.8
             return prediction_result
-
         except Exception as e:
             logger.error(f"Error getting crypto prediction for {symbol}: {e}")
             return {"success": False, "error": str(e)}
@@ -187,26 +155,19 @@ class PredictionService:
         """
         try:
             available_models = {"stocks": [], "crypto": []}
-
-            # Check model directory for trained models
             if os.path.exists(self.model_dir):
                 files = os.listdir(self.model_dir)
-
-                # Extract model names from filenames
                 for file in files:
                     if file.endswith("_model.h5"):
                         parts = file.split("_")
                         if len(parts) >= 2:
                             asset_type = parts[0]
                             symbol = "_".join(parts[1:-1])
-
                             if asset_type == "stock":
                                 available_models["stocks"].append(symbol)
                             elif asset_type == "crypto":
                                 available_models["crypto"].append(symbol)
-
             return available_models
-
         except Exception as e:
             logger.error(f"Error getting available models: {e}")
             return {"stocks": [], "crypto": []}

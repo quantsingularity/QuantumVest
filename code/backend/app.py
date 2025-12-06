@@ -5,10 +5,7 @@ Comprehensive investment analytics platform with authentication, portfolio manag
 
 import logging
 import os
-
 from api_routes import api_bp
-
-# Import configurations and models
 from config import get_config
 from flask import Flask, jsonify, send_from_directory
 from flask_caching import Cache
@@ -16,48 +13,32 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from models import Asset, db
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 
-def create_app(config_name=None):
+def create_app(config_name: Any = None) -> Any:
     """Application factory pattern"""
     app = Flask(__name__, static_folder="../web-frontend/build")
-
-    # Load configuration
     if config_name is None:
         config_name = os.environ.get("FLASK_ENV", "development")
-
     config_class = get_config()
     app.config.from_object(config_class)
-
-    # Initialize extensions
     db.init_app(app)
     Migrate(app, db)
     Cache(app)
-
-    # Configure CORS
     CORS(app, origins=app.config.get("CORS_ORIGINS", ["*"]))
-
-    # Register blueprints
     app.register_blueprint(api_bp)
-
-    # Create database tables
     with app.app_context():
         try:
             db.create_all()
             logger.info("Database tables created successfully")
-
-            # Create default assets if they don't exist
             create_default_assets()
-
         except Exception as e:
             logger.error(f"Error creating database tables: {e}")
 
-    # Serve static files from React build
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve_static(path):
@@ -67,7 +48,6 @@ def create_app(config_name=None):
         else:
             return send_from_directory(app.static_folder, "index.html")
 
-    # Error handlers
     @app.errorhandler(404)
     def not_found(error):
         return (
@@ -111,10 +91,9 @@ def create_app(config_name=None):
     return app
 
 
-def create_default_assets():
+def create_default_assets() -> Any:
     """Create default assets in the database"""
     try:
-        # Popular cryptocurrencies
         crypto_assets = [
             {"symbol": "BTC", "name": "Bitcoin", "asset_type": "crypto"},
             {"symbol": "ETH", "name": "Ethereum", "asset_type": "crypto"},
@@ -127,8 +106,6 @@ def create_default_assets():
             {"symbol": "XLM", "name": "Stellar", "asset_type": "crypto"},
             {"symbol": "DOGE", "name": "Dogecoin", "asset_type": "crypto"},
         ]
-
-        # Popular stocks
         stock_assets = [
             {
                 "symbol": "AAPL",
@@ -191,9 +168,7 @@ def create_default_assets():
                 "exchange": "NYSE",
             },
         ]
-
         all_assets = crypto_assets + stock_assets
-
         for asset_data in all_assets:
             existing_asset = Asset.query.filter_by(symbol=asset_data["symbol"]).first()
             if not existing_asset:
@@ -206,20 +181,15 @@ def create_default_assets():
                     is_tradeable=True,
                 )
                 db.session.add(asset)
-
         db.session.commit()
         logger.info("Default assets created successfully")
-
     except Exception as e:
         db.session.rollback()
         logger.error(f"Error creating default assets: {e}")
 
 
-# Create the Flask application
 app = create_app()
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     debug = os.environ.get("FLASK_ENV") == "development"
-
     app.run(host="0.0.0.0", port=port, debug=debug)

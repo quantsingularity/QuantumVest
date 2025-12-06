@@ -3,17 +3,15 @@ Data Fetcher Module
 Core module for fetching financial data from various sources
 """
 
-import json  # Added based on the issue description's hint about json_data and requests
+import json
 import logging
 import os
 import time
 from abc import ABC, abstractmethod
 from typing import Optional
-
 import pandas as pd
 import requests
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
@@ -23,7 +21,7 @@ logger = logging.getLogger(__name__)
 class DataFetcher(ABC):
     """Abstract base class for data fetchers"""
 
-    def __init__(self, cache_dir: str = "../../resources/data_cache"):
+    def __init__(self, cache_dir: str = "../../resources/data_cache") -> Any:
         """
         Initialize the data fetcher
 
@@ -63,7 +61,6 @@ class DataFetcher(ABC):
         """Load data from cache if available and recent"""
         cache_path = self._get_cache_path(symbol, interval)
         if os.path.exists(cache_path):
-            # Check if cache is recent (less than 1 hour old)
             if time.time() - os.path.getmtime(cache_path) < 3600:
                 try:
                     return pd.read_csv(cache_path, parse_dates=["timestamp"])
@@ -73,7 +70,7 @@ class DataFetcher(ABC):
 
     def _save_to_cache(self, df: pd.DataFrame, symbol: str, interval: str) -> None:
         """Save data to cache"""
-        if df is not None and not df.empty:
+        if df is not None and (not df.empty):
             cache_path = self._get_cache_path(symbol, interval)
             try:
                 df.to_csv(cache_path, index=False)
@@ -88,7 +85,7 @@ class DataFetcher(ABC):
             logger.error(f"HTTP error fetching data for {symbol}: {e}")
             if response.status_code == 429:
                 logger.warning("Rate limit exceeded. Implementing backoff.")
-                time.sleep(60)  # Simple backoff strategy
+                time.sleep(60)
             raise
         except Exception as e:
             logger.error(f"Error fetching data for {symbol}: {e}")
@@ -113,20 +110,15 @@ class DataValidator:
         if df is None or df.empty:
             logger.warning(f"Empty dataframe for {symbol}")
             return pd.DataFrame()
-
-        # Check for required columns
         required_columns = ["timestamp", "open", "high", "low", "close", "volume"]
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
             logger.warning(f"Missing columns for {symbol}: {missing_columns}")
-            # Try to adapt column names if possible
             for col in missing_columns:
                 if col == "timestamp" and "date" in df.columns:
                     df["timestamp"] = df["date"]
                 elif col == "close" and "adjclose" in df.columns:
                     df["close"] = df["adjclose"]
-
-        # Ensure timestamp is datetime
         if "timestamp" in df.columns:
             if not pd.api.types.is_datetime64_any_dtype(df["timestamp"]):
                 try:
@@ -136,17 +128,9 @@ class DataValidator:
                         df["timestamp"] = pd.to_datetime(df["timestamp"])
                 except Exception as e:
                     logger.error(f"Failed to convert timestamp for {symbol}: {e}")
-
-        # Remove duplicates
         df = df.drop_duplicates(subset=["timestamp"])
-
-        # Sort by timestamp
         df = df.sort_values("timestamp")
-
-        # Check for missing values
         if df.isnull().sum().sum() > 0:
             logger.warning(f"Missing values in {symbol} data")
-            # Forward fill missing values
             df = df.ffill()
-
         return df

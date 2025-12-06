@@ -6,7 +6,6 @@ Web3 integration for on-chain data analysis and DeFi features
 import logging
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
-
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
@@ -15,23 +14,21 @@ logger = logging.getLogger(__name__)
 class BlockchainService:
     """Service for blockchain integration and on-chain analysis"""
 
-    def __init__(self, provider_url: str = None):
+    def __init__(self, provider_url: str = None) -> Any:
         self.provider_url = (
             provider_url or "https://mainnet.infura.io/v3/your-project-id"
         )
         self.w3 = None
         self.initialize_web3()
 
-    def initialize_web3(self):
+    def initialize_web3(self) -> Any:
         """Initialize Web3 connection"""
         try:
             self.w3 = Web3(Web3.HTTPProvider(self.provider_url))
-
             if self.w3.is_connected():
                 logger.info("Successfully connected to Ethereum network")
             else:
                 logger.warning("Failed to connect to Ethereum network")
-
         except Exception as e:
             logger.error(f"Error initializing Web3: {e}")
             self.w3 = None
@@ -43,13 +40,9 @@ class BlockchainService:
         try:
             if not self.w3 or not self.w3.is_connected():
                 return {"success": False, "error": "Web3 not connected"}
-
             if not Web3.is_address(address):
                 return {"success": False, "error": "Invalid Ethereum address"}
-
             balances = {}
-
-            # Get ETH balance
             eth_balance_wei = self.w3.eth.get_balance(address)
             eth_balance = self.w3.from_wei(eth_balance_wei, "ether")
             balances["ETH"] = {
@@ -58,8 +51,6 @@ class BlockchainService:
                 "name": "Ethereum",
                 "decimals": 18,
             }
-
-            # Get ERC-20 token balances
             if token_contracts:
                 for contract_address in token_contracts:
                     try:
@@ -70,14 +61,12 @@ class BlockchainService:
                         logger.warning(
                             f"Error getting balance for token {contract_address}: {e}"
                         )
-
             return {
                 "success": True,
                 "address": address,
                 "balances": balances,
                 "total_tokens": len(balances),
             }
-
         except Exception as e:
             logger.error(f"Error getting wallet balance: {e}")
             return {"success": False, "error": str(e)}
@@ -87,23 +76,16 @@ class BlockchainService:
         try:
             if not self.w3 or not self.w3.is_connected():
                 return {"success": False, "error": "Web3 not connected"}
-
             if not Web3.is_address(address):
                 return {"success": False, "error": "Invalid Ethereum address"}
-
-            # Get latest block number
             latest_block = self.w3.eth.block_number
-
             transactions = []
-            blocks_to_check = min(1000, latest_block)  # Limit search scope
-
+            blocks_to_check = min(1000, latest_block)
             for block_num in range(latest_block, latest_block - blocks_to_check, -1):
                 if len(transactions) >= limit:
                     break
-
                 try:
                     block = self.w3.eth.get_block(block_num, full_transactions=True)
-
                     for tx in block.transactions:
                         if tx["from"] == address or tx["to"] == address:
                             tx_info = {
@@ -122,21 +104,17 @@ class BlockchainService:
                                 "type": "sent" if tx["from"] == address else "received",
                             }
                             transactions.append(tx_info)
-
                             if len(transactions) >= limit:
                                 break
-
                 except Exception as e:
                     logger.warning(f"Error processing block {block_num}: {e}")
                     continue
-
             return {
                 "success": True,
                 "address": address,
                 "transactions": transactions,
                 "count": len(transactions),
             }
-
         except Exception as e:
             logger.error(f"Error getting transaction history: {e}")
             return {"success": False, "error": str(e)}
@@ -146,18 +124,13 @@ class BlockchainService:
         try:
             if not self.w3 or not self.w3.is_connected():
                 return {"success": False, "error": "Web3 not connected"}
-
             latest_block = self.w3.eth.block_number
             whale_transactions = []
-
-            # Check last 10 blocks for large transactions
             for block_num in range(latest_block, latest_block - 10, -1):
                 try:
                     block = self.w3.eth.get_block(block_num, full_transactions=True)
-
                     for tx in block.transactions:
                         value_eth = float(self.w3.from_wei(tx["value"], "ether"))
-
                         if value_eth >= min_value_eth:
                             whale_tx = {
                                 "hash": tx["hash"].hex(),
@@ -173,21 +146,16 @@ class BlockchainService:
                                 ),
                             }
                             whale_transactions.append(whale_tx)
-
                 except Exception as e:
                     logger.warning(f"Error analyzing block {block_num}: {e}")
                     continue
-
-            # Sort by value
             whale_transactions.sort(key=lambda x: x["value_eth"], reverse=True)
-
             return {
                 "success": True,
                 "whale_transactions": whale_transactions,
                 "count": len(whale_transactions),
                 "min_value_threshold": min_value_eth,
             }
-
         except Exception as e:
             logger.error(f"Error analyzing whale movements: {e}")
             return {"success": False, "error": str(e)}
@@ -195,15 +163,12 @@ class BlockchainService:
     def get_defi_protocol_data(self, protocol: str) -> Dict:
         """Get DeFi protocol data (TVL, yields, etc.)"""
         try:
-            # This would typically integrate with DeFi APIs like DeFiPulse, DeBank, etc.
-            # For now, return mock data
-
             protocols_data = {
                 "uniswap": {
                     "name": "Uniswap V3",
-                    "tvl": 4500000000,  # $4.5B
-                    "volume_24h": 1200000000,  # $1.2B
-                    "fees_24h": 3600000,  # $3.6M
+                    "tvl": 4500000000,
+                    "volume_24h": 1200000000,
+                    "fees_24h": 3600000,
                     "pools_count": 8500,
                     "top_pools": [
                         {"pair": "USDC/ETH", "tvl": 450000000, "apy": 12.5},
@@ -213,9 +178,9 @@ class BlockchainService:
                 },
                 "aave": {
                     "name": "Aave V3",
-                    "tvl": 6200000000,  # $6.2B
-                    "total_borrowed": 4100000000,  # $4.1B
-                    "available_liquidity": 2100000000,  # $2.1B
+                    "tvl": 6200000000,
+                    "total_borrowed": 4100000000,
+                    "available_liquidity": 2100000000,
                     "markets_count": 25,
                     "top_markets": [
                         {
@@ -240,9 +205,9 @@ class BlockchainService:
                 },
                 "compound": {
                     "name": "Compound V3",
-                    "tvl": 2800000000,  # $2.8B
-                    "total_borrowed": 1900000000,  # $1.9B
-                    "total_reserves": 45000000,  # $45M
+                    "tvl": 2800000000,
+                    "total_borrowed": 1900000000,
+                    "total_reserves": 45000000,
                     "markets_count": 18,
                     "top_markets": [
                         {
@@ -266,17 +231,12 @@ class BlockchainService:
                     ],
                 },
             }
-
             protocol_lower = protocol.lower()
-
             if protocol_lower not in protocols_data:
                 return {"success": False, "error": f"Protocol {protocol} not supported"}
-
             data = protocols_data[protocol_lower]
             data["last_updated"] = datetime.now(timezone.utc).isoformat()
-
             return {"success": True, "protocol": protocol, "data": data}
-
         except Exception as e:
             logger.error(f"Error getting DeFi protocol data: {e}")
             return {"success": False, "error": str(e)}
@@ -286,32 +246,22 @@ class BlockchainService:
         try:
             if not self.w3 or not self.w3.is_connected():
                 return {"success": False, "error": "Web3 not connected"}
-
-            # Get current gas price
             gas_price_wei = self.w3.eth.gas_price
             gas_price_gwei = self.w3.from_wei(gas_price_wei, "gwei")
-
-            # Get latest block to analyze congestion
             latest_block = self.w3.eth.get_block("latest")
-
-            # Calculate network congestion (simplified)
             gas_used_ratio = latest_block.gasUsed / latest_block.gasLimit
-
             if gas_used_ratio > 0.9:
                 congestion_level = "High"
             elif gas_used_ratio > 0.7:
                 congestion_level = "Medium"
             else:
                 congestion_level = "Low"
-
-            # Estimate transaction costs for common operations
             transaction_costs = {
-                "simple_transfer": float(gas_price_gwei) * 21000 / 1e9,  # ETH
-                "erc20_transfer": float(gas_price_gwei) * 65000 / 1e9,  # ETH
-                "uniswap_swap": float(gas_price_gwei) * 150000 / 1e9,  # ETH
-                "defi_interaction": float(gas_price_gwei) * 200000 / 1e9,  # ETH
+                "simple_transfer": float(gas_price_gwei) * 21000 / 1000000000.0,
+                "erc20_transfer": float(gas_price_gwei) * 65000 / 1000000000.0,
+                "uniswap_swap": float(gas_price_gwei) * 150000 / 1000000000.0,
+                "defi_interaction": float(gas_price_gwei) * 200000 / 1000000000.0,
             }
-
             return {
                 "success": True,
                 "gas_price_gwei": float(gas_price_gwei),
@@ -321,7 +271,6 @@ class BlockchainService:
                 "transaction_costs_eth": transaction_costs,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }
-
         except Exception as e:
             logger.error(f"Error getting gas tracker data: {e}")
             return {"success": False, "error": str(e)}
@@ -331,7 +280,6 @@ class BlockchainService:
     ) -> Optional[Dict]:
         """Get ERC-20 token balance"""
         try:
-            # Standard ERC-20 ABI for balance and metadata functions
             erc20_abi = [
                 {
                     "constant": True,
@@ -362,23 +310,16 @@ class BlockchainService:
                     "type": "function",
                 },
             ]
-
             contract = self.w3.eth.contract(
                 address=Web3.to_checksum_address(contract_address), abi=erc20_abi
             )
-
-            # Get token metadata
             symbol = contract.functions.symbol().call()
             name = contract.functions.name().call()
             decimals = contract.functions.decimals().call()
-
-            # Get balance
             balance_raw = contract.functions.balanceOf(
                 Web3.to_checksum_address(wallet_address)
             ).call()
-
-            balance = balance_raw / (10**decimals)
-
+            balance = balance_raw / 10**decimals
             return {
                 "balance": float(balance),
                 "symbol": symbol,
@@ -386,7 +327,6 @@ class BlockchainService:
                 "decimals": decimals,
                 "contract_address": contract_address,
             }
-
         except Exception as e:
             logger.warning(f"Error getting ERC-20 balance for {contract_address}: {e}")
             return None
