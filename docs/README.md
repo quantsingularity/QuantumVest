@@ -90,7 +90,3 @@ Contributions to improve the documentation are welcome. When contributing:
 2. Ensure technical accuracy and clarity
 3. Include examples and use cases where appropriate
 4. Update the table of contents and cross-references as needed
-
-## Additional Resources
-
-For more information about specific components of the QuantumVest platform, refer to the README files in the respective code directories and the external references cited throughout the documentation.
