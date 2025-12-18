@@ -34,3 +34,9 @@ variable "security_group_ids" {
   description = "List of security group IDs"
   type        = list(string)
 }
+
+variable "public_subnet_ids" {
+  description = "IDs of the public subnets for load balancer"
+  type        = list(string)
+  default     = []
+}

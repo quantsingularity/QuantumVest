@@ -18,13 +18,13 @@
   systemd:
       name: mariadb
       state: started
-      enabled: yes
+      enabled: true
 
 - name: Set root password
   mysql_user:
       name: root
       password: '{{ db_root_password }}'
-      host_all: yes
+      host_all: true
       state: present
   no_log: true
 

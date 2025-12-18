@@ -15,10 +15,28 @@ spec:
             labels:
                 app: '{{ .Values.appName }}-database'
         spec:
+            securityContext:
+                runAsNonRoot: true
+                runAsUser: 999
+                runAsGroup: 999
+                fsGroup: 999
+                seccompProfile:
+                    type: RuntimeDefault
             containers:
                 - name: '{{ .Values.appName }}-database'
                   image: '{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}'
                   imagePullPolicy: '{{ .Values.database.image.pullPolicy }}'
+                  securityContext:
+                      allowPrivilegeEscalation: false
+                      readOnlyRootFilesystem: false
+                      runAsNonRoot: true
+                      runAsUser: 999
+                      runAsGroup: 999
+                      capabilities:
+                          drop:
+                              - ALL
+                          add:
+                              - NET_BIND_SERVICE
                   ports:
                       - containerPort: { { .Values.database.containerPort } }
                   resources:

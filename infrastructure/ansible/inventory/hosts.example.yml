@@ -1,0 +1,49 @@
+---
+# QuantumVest Ansible Inventory Example
+# Copy this file to hosts.yml and fill in your server IPs
+# DO NOT commit hosts.yml with real IPs to version control
+
+all:
+    children:
+        webservers:
+            hosts:
+                web1:
+                    ansible_host: '10.0.1.10' # Replace with actual IP
+                web2:
+                    ansible_host: '10.0.1.11' # Replace with actual IP
+        databases:
+            hosts:
+                db1:
+                    ansible_host: '10.0.2.10' # Replace with actual IP
+    vars:
+        # SSH Configuration
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: '~/.ssh/quantumvest-key.pem' # Path to your SSH key
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+        # Python interpreter
+        ansible_python_interpreter: /usr/bin/python3
+
+        # Connection timeout
+        ansible_connection_timeout: 30
+
+        # Become settings
+        ansible_become: true
+        ansible_become_method: sudo
+        ansible_become_user: root
+# How to set up:
+# 1. Copy this file: cp hosts.example.yml hosts.yml
+# 2. Replace IP addresses with your actual server IPs
+# 3. Update SSH key path to point to your private key
+# 4. Ensure your SSH key has correct permissions: chmod 600 ~/.ssh/quantumvest-key.pem
+# 5. Test connection: ansible all -m ping -i inventory/hosts.yml
+
+# Alternative: Use environment variables
+# web1_ip: "{{ lookup('env', 'WEB1_IP') }}"
+# db1_ip: "{{ lookup('env', 'DB1_IP') }}"
+# ssh_key_path: "{{ lookup('env', 'SSH_KEY_PATH') }}"
+#
+# Then set before running:
+# export WEB1_IP=10.0.1.10
+# export DB1_IP=10.0.2.10
+# export SSH_KEY_PATH=~/.ssh/quantumvest-key.pem

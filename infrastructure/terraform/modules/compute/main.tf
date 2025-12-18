@@ -68,7 +68,7 @@ resource "aws_lb" "app" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = var.security_group_ids
-  subnets            = var.private_subnet_ids
+  subnets            = length(var.public_subnet_ids) > 0 ? var.public_subnet_ids : var.private_subnet_ids
 
   tags = {
     Name        = "${var.app_name}-${var.environment}-lb"

@@ -4,7 +4,7 @@
   yum:
       name: '*'
       state: latest
-      update_only: yes
+      update_only: true
 
 - name: Install common packages
   yum:
@@ -26,7 +26,7 @@
 - name: Configure firewall
   firewalld:
       service: '{{ item }}'
-      permanent: yes
+      permanent: true
       state: enabled
   loop:
       - http
@@ -38,5 +38,5 @@
   systemd:
       name: firewalld
       state: started
-      enabled: yes
+      enabled: true
   when: ansible_os_family == "RedHat"

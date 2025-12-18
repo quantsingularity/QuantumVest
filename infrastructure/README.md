@@ -285,35 +285,6 @@ Comprehensive monitoring covers:
 - **Incident response** procedures and training
 - **Security awareness** and training programs
 
-## 📚 Documentation
-
-### Additional Resources
-
-- [Architecture Design Document](design_document.pdf)
-- [Security Policies](security/security-policies.yaml)
-- [Monitoring Guide](monitoring/README.md)
-- [Deployment Guide](cicd/README.md)
-- [Operational Runbooks](automation/runbooks/)
-
-## 🤝 Contributing
-
-### Development Workflow
-
-1. Create feature branch from `develop`
-2. Make changes and test locally
-3. Run security and quality checks
-4. Submit pull request with detailed description
-5. Code review and approval process
-6. Automated testing and deployment
-
-### Code Standards
-
-- **Infrastructure as Code** best practices
-- **Security-first** approach to all changes
-- **Comprehensive testing** for all modifications
-- **Documentation** updates for new features
-- **Compliance validation** for all changes
-
 ## 📄 License
 
 This infrastructure code is proprietary to QuantumVest and subject to the terms and conditions outlined in the software license agreement.
