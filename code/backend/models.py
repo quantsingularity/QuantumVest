@@ -6,6 +6,7 @@ Financial industry-grade models with comprehensive features
 import enum
 import uuid
 from datetime import datetime, timezone
+from typing import Any, Dict
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import CheckConstraint, Index, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -111,15 +112,15 @@ class User(db.Model):
     )
     audit_logs = db.relationship("AuditLog", backref="user", lazy="dynamic")
 
-    def set_password(self, password: Any) -> Any:
+    def set_password(self, password: str) -> None:
         """Set password hash"""
         self.password_hash = generate_password_hash(password)
 
-    def check_password(self, password: Any) -> Any:
+    def check_password(self, password: str) -> bool:
         """Check password"""
         return check_password_hash(self.password_hash, password)
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
             "id": str(self.id),
@@ -160,7 +161,7 @@ class Asset(db.Model):
     sharpe_ratio = db.Column(db.Float)
     description = db.Column(db.Text)
     website = db.Column(db.String(255))
-    metadata = db.Column(JSONB)
+    meta_data = db.Column(JSONB)
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -177,7 +178,7 @@ class Asset(db.Model):
     )
     transactions = db.relationship("Transaction", backref="asset", lazy="dynamic")
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
             "id": str(self.id),
@@ -246,7 +247,7 @@ class Portfolio(db.Model):
         cascade="all, delete-orphan",
     )
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
             "id": str(self.id),
@@ -302,7 +303,7 @@ class PortfolioHolding(db.Model):
         CheckConstraint("average_cost >= 0", name="positive_average_cost"),
     )
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
             "id": str(self.id),
@@ -342,7 +343,7 @@ class Transaction(db.Model):
     order_id = db.Column(db.String(100))
     execution_venue = db.Column(db.String(100))
     notes = db.Column(db.Text)
-    metadata = db.Column(JSONB)
+    meta_data = db.Column(JSONB)
     executed_at = db.Column(
         db.DateTime(timezone=True), nullable=False, default=datetime.now(timezone.utc)
     )
@@ -357,7 +358,7 @@ class Transaction(db.Model):
         CheckConstraint("fees >= 0", name="non_negative_fees"),
     )
 
-    def to_dict(self) -> Any:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
             "id": str(self.id),
@@ -443,7 +444,7 @@ class Alert(db.Model):
     severity = db.Column(db.String(20), default="info")
     is_read = db.Column(db.Boolean, default=False, nullable=False)
     is_dismissed = db.Column(db.Boolean, default=False, nullable=False)
-    metadata = db.Column(JSONB)
+    meta_data = db.Column(JSONB)
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc)
     )
@@ -467,7 +468,7 @@ class AuditLog(db.Model):
     endpoint = db.Column(db.String(255))
     method = db.Column(db.String(10))
     status_code = db.Column(db.Integer)
-    metadata = db.Column(JSONB)
+    meta_data = db.Column(JSONB)
     created_at = db.Column(
         db.DateTime(timezone=True), default=datetime.now(timezone.utc), index=True
     )
@@ -524,4 +525,93 @@ class ComplianceCheck(db.Model):
     __table_args__ = (
         Index("idx_compliance_user_checked", "user_id", "checked_at"),
         Index("idx_compliance_type_status", "check_type", "status"),
+    )
+
+
+class Watchlist(db.Model):
+    """User watchlists for tracking assets"""
+
+    __tablename__ = "watchlists"
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=False, index=True
+    )
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text)
+    is_default = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(
+        db.DateTime(timezone=True), default=datetime.now(timezone.utc)
+    )
+    updated_at = db.Column(
+        db.DateTime(timezone=True),
+        default=datetime.now(timezone.utc),
+        onupdate=datetime.now(timezone.utc),
+    )
+    items = db.relationship(
+        "WatchlistItem",
+        backref="watchlist",
+        lazy="dynamic",
+        cascade="all, delete-orphan",
+    )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary"""
+        return {
+            "id": str(self.id),
+            "user_id": str(self.user_id),
+            "name": self.name,
+            "description": self.description,
+            "is_default": self.is_default,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class WatchlistItem(db.Model):
+    """Items in user watchlists"""
+
+    __tablename__ = "watchlist_items"
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    watchlist_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey("watchlists.id"), nullable=False, index=True
+    )
+    asset_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey("assets.id"), nullable=False, index=True
+    )
+    notes = db.Column(db.Text)
+    created_at = db.Column(
+        db.DateTime(timezone=True), default=datetime.now(timezone.utc)
+    )
+    __table_args__ = (
+        UniqueConstraint("watchlist_id", "asset_id", name="unique_watchlist_asset"),
+    )
+
+
+class PriceData(db.Model):
+    """Real-time and historical price data for assets"""
+
+    __tablename__ = "price_data"
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    asset_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey("assets.id"), nullable=False, index=True
+    )
+    timestamp = db.Column(db.DateTime(timezone=True), nullable=False, index=True)
+    interval = db.Column(db.String(10), nullable=False, default="1d")
+    open_price = db.Column(db.Numeric(15, 8), nullable=False)
+    high_price = db.Column(db.Numeric(15, 8), nullable=False)
+    low_price = db.Column(db.Numeric(15, 8), nullable=False)
+    close_price = db.Column(db.Numeric(15, 8), nullable=False)
+    volume = db.Column(db.Numeric(20, 2))
+    source = db.Column(db.String(50), default="api")
+    created_at = db.Column(
+        db.DateTime(timezone=True), default=datetime.now(timezone.utc)
+    )
+    __table_args__ = (
+        UniqueConstraint(
+            "asset_id", "timestamp", "interval", name="unique_asset_timestamp_interval"
+        ),
+        Index("idx_price_data_timestamp", "timestamp"),
+        CheckConstraint("open_price > 0", name="positive_open"),
+        CheckConstraint("high_price > 0", name="positive_high"),
+        CheckConstraint("low_price > 0", name="positive_low"),
+        CheckConstraint("close_price > 0", name="positive_close"),
     )

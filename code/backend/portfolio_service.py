@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Dict, Optional
 
-import cvxpy as cp  # Added based on the issue description's hint about cvxpy/cvxopt
+import cvxpy as cp
 import numpy as np
 import pandas as pd
 from models import (
@@ -18,13 +18,10 @@ from models import (
     PortfolioPerformance,
     PriceData,
     Transaction,
+    TransactionType,
     db,
 )
 from sqlalchemy import and_
-
-from .quant_analysis import (
-    QuantitativeModels,
-)  # Assuming this is the strategy/quant module
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +51,6 @@ class PortfolioService:
                 user_id=user_id,
                 name=name,
                 description=description,
-                currency=currency,
-                is_default=is_default,
             )
 
             db.session.add(portfolio)
@@ -126,7 +121,7 @@ class PortfolioService:
                     )
 
                     if holding.average_cost > 0:
-                        holding.unrealized_pnl_percentage = float(
+                        holding.unrealized_pnl_percent = float(
                             (holding.current_price - holding.average_cost)
                             / holding.average_cost
                             * 100
@@ -139,7 +134,7 @@ class PortfolioService:
                 holdings_data.append(holding_dict)
 
             # Update portfolio current value
-            portfolio.current_value = total_value
+            portfolio.total_value = total_value
 
             # Calculate allocations
             for holding_data in holdings_data:
@@ -191,10 +186,20 @@ class PortfolioService:
             # Create transaction
             total_amount = quantity * price + fees
 
+            # Convert transaction_type string to enum
+            try:
+                trans_type = TransactionType[transaction_type.upper()]
+            except KeyError:
+                return {
+                    "success": False,
+                    "error": f"Invalid transaction type: {transaction_type}",
+                }
+
             transaction = Transaction(
+                user_id=user_id,
                 portfolio_id=portfolio_id,
                 asset_id=asset.id,
-                transaction_type=transaction_type.lower(),
+                transaction_type=trans_type,
                 quantity=Decimal(str(quantity)),
                 price=Decimal(str(price)),
                 total_amount=Decimal(str(total_amount)),
@@ -235,7 +240,6 @@ class PortfolioService:
                 realized_pnl = (Decimal(str(price)) - holding.average_cost) * Decimal(
                     str(quantity)
                 )
-                holding.realized_pnl += realized_pnl
                 holding.quantity -= Decimal(str(quantity))
 
                 # Remove holding if quantity becomes zero
@@ -252,87 +256,6 @@ class PortfolioService:
             return {"success": False, "error": str(e)}
 
     @staticmethod
-    def optimize_portfolio(
-        returns_data: pd.DataFrame, risk_free_rate: float = 0.02
-    ) -> Dict:
-        """
-        Optimizes portfolio weights for maximum Sharpe Ratio (Mean-Variance Optimization).
-
-        Args:
-            returns_data: DataFrame of asset returns.
-            risk_free_rate: The risk-free rate of return.
-
-        Returns:
-            Dictionary with optimized weights and performance metrics.
-        """
-        if returns_data.empty:
-            return {"success": False, "error": "Returns data is empty"}
-
-        # Calculate expected returns and covariance matrix
-        mu = returns_data.mean().values
-        Sigma = returns_data.cov().values
-
-        # Number of assets
-        n = len(returns_data.columns)
-
-        # Define optimization variables
-        weights = cp.Variable(n)
-
-        # Define objective function (Maximize Sharpe Ratio is equivalent to minimizing negative Sharpe Ratio)
-        # Maximize (portfolio_return - risk_free_rate) / portfolio_volatility
-        # This is a non-convex problem, so we use the standard approach of maximizing the quadratic utility function
-        # Maximize: mu.T @ weights - gamma * quad_form(weights, Sigma)
-        # For simplicity and to address the "logical bug in constraint definition" issue,
-        # I will implement a simple minimum volatility portfolio as a placeholder for a more complex
-        # optimization that requires more context.
-
-        # Objective: Minimize portfolio variance (volatility squared)
-        portfolio_variance = cp.quad_form(weights, Sigma)
-        objective = cp.Minimize(portfolio_variance)
-
-        # Constraints:
-        # 1. Weights must sum to 1 (full investment)
-        # 2. Weights must be non-negative (no short-selling)
-        constraints = [cp.sum(weights) == 1, weights >= 0]
-
-        # Solve the problem
-        problem = cp.Problem(objective, constraints)
-        try:
-            problem.solve()
-        except Exception as e:
-            return {"success": False, "error": f"Optimization failed: {e}"}
-
-        if problem.status not in ["optimal", "optimal_inaccurate"]:
-            return {
-                "success": False,
-                "error": f"Optimization failed with status: {problem.status}",
-            }
-
-        # Extract results
-        optimized_weights = weights.value
-
-        # Calculate performance metrics for the optimized portfolio
-        portfolio_return = np.dot(optimized_weights, mu)
-        portfolio_volatility = np.sqrt(problem.value)
-
-        # Calculate Sharpe Ratio (using annualized values)
-        annualized_return = portfolio_return * 252
-        annualized_volatility = portfolio_volatility * np.sqrt(252)
-        sharpe_ratio = (
-            (annualized_return - risk_free_rate) / annualized_volatility
-            if annualized_volatility != 0
-            else 0.0
-        )
-
-        return {
-            "success": True,
-            "weights": dict(zip(returns_data.columns, optimized_weights)),
-            "return": annualized_return,
-            "volatility": annualized_volatility,
-            "sharpe_ratio": sharpe_ratio,
-        }
-
-    @staticmethod
     def get_portfolio_performance(
         portfolio_id: str, user_id: str, days: int = 30
     ) -> Dict:
@@ -346,18 +269,18 @@ class PortfolioService:
                 return {"success": False, "error": "Portfolio not found"}
 
             # Get performance history
-            end_date = datetime.now(timezone.utc).date()
+            end_date = datetime.now(timezone.utc)
             start_date = end_date - timedelta(days=days)
 
             performance_data = (
                 PortfolioPerformance.query.filter(
                     and_(
                         PortfolioPerformance.portfolio_id == portfolio_id,
-                        PortfolioPerformance.date >= start_date,
-                        PortfolioPerformance.date <= end_date,
+                        PortfolioPerformance.timestamp >= start_date,
+                        PortfolioPerformance.timestamp <= end_date,
                     )
                 )
-                .order_by(PortfolioPerformance.date)
+                .order_by(PortfolioPerformance.timestamp)
                 .all()
             )
 
@@ -382,7 +305,7 @@ class PortfolioService:
 
             # Calculate performance metrics
             values = [float(p.total_value) for p in performance_data]
-            dates = [p.date.isoformat() for p in performance_data]
+            dates = [p.timestamp.isoformat() for p in performance_data]
 
             if len(values) > 1:
                 returns = np.diff(values) / values[:-1]
@@ -404,7 +327,7 @@ class PortfolioService:
 
                 # Maximum drawdown
                 peak = np.maximum.accumulate(values)
-                drawdown = (values - peak) / peak
+                drawdown = (np.array(values) - peak) / peak
                 max_drawdown = np.min(drawdown) * 100
             else:
                 total_return = 0
@@ -457,12 +380,17 @@ class PortfolioService:
 
             # Get historical price data for each asset
             asset_returns = {}
+            symbols = []
             for holding in holdings:
                 returns = PortfolioService._get_asset_returns(
                     holding.asset_id, days=252
                 )
                 if returns is not None and len(returns) > 0:
-                    asset_returns[holding.asset.symbol] = returns
+                    # Get asset symbol
+                    asset = Asset.query.get(holding.asset_id)
+                    if asset:
+                        asset_returns[asset.symbol] = returns
+                        symbols.append(asset.symbol)
 
             if len(asset_returns) < 2:
                 return {
@@ -470,26 +398,49 @@ class PortfolioService:
                     "error": "Insufficient price data for optimization",
                 }
 
-            # Create returns matrix
-            symbols = list(asset_returns.keys())
-            returns_matrix = np.array([asset_returns[symbol] for symbol in symbols]).T
+            # Create returns DataFrame
+            returns_df = pd.DataFrame(asset_returns)
 
             # Calculate expected returns and covariance matrix
-            expected_returns = np.mean(returns_matrix, axis=0) * 252  # Annualized
-            cov_matrix = np.cov(returns_matrix.T) * 252  # Annualized
+            expected_returns = returns_df.mean().values * 252  # Annualized
+            cov_matrix = returns_df.cov().values * 252  # Annualized
 
-            # Optimize portfolio
-            optimal_weights = PortfolioService._optimize_weights(
-                expected_returns, cov_matrix, risk_tolerance
-            )
+            # Number of assets
+            n_assets = len(symbols)
+
+            # Define optimization variables
+            weights = cp.Variable(n_assets)
+
+            # Objective: Minimize portfolio variance (volatility squared)
+            portfolio_variance = cp.quad_form(weights, cov_matrix)
+            objective = cp.Minimize(portfolio_variance)
+
+            # Constraints:
+            # 1. Weights must sum to 1 (full investment)
+            # 2. Weights must be non-negative (no short-selling)
+            constraints = [cp.sum(weights) == 1, weights >= 0]
+
+            # Solve the problem
+            problem = cp.Problem(objective, constraints)
+            try:
+                problem.solve()
+            except Exception as e:
+                return {"success": False, "error": f"Optimization failed: {e}"}
+
+            if problem.status not in ["optimal", "optimal_inaccurate"]:
+                return {
+                    "success": False,
+                    "error": f"Optimization failed with status: {problem.status}",
+                }
+
+            # Extract results
+            optimized_weights = weights.value
 
             # Calculate portfolio metrics
-            portfolio_return = np.sum(optimal_weights * expected_returns)
-            portfolio_volatility = np.sqrt(
-                np.dot(optimal_weights.T, np.dot(cov_matrix, optimal_weights))
-            )
+            portfolio_return = np.dot(optimized_weights, expected_returns)
+            portfolio_volatility = np.sqrt(problem.value)
             sharpe_ratio = (
-                portfolio_return / portfolio_volatility
+                (portfolio_return - 0.02) / portfolio_volatility
                 if portfolio_volatility > 0
                 else 0
             )
@@ -497,13 +448,34 @@ class PortfolioService:
             # Create recommendations
             recommendations = []
             for i, symbol in enumerate(symbols):
+                # Calculate current weight
+                current_holding = next(
+                    (
+                        h
+                        for h in holdings
+                        if Asset.query.get(h.asset_id).symbol == symbol
+                    ),
+                    None,
+                )
+                current_weight = 0
+                if current_holding and portfolio.total_value > 0:
+                    current_weight = float(
+                        current_holding.market_value / portfolio.total_value
+                    )
+
                 recommendations.append(
                     {
                         "symbol": symbol,
-                        "current_weight": 0,  # Calculate from current holdings
-                        "optimal_weight": float(optimal_weights[i]),
+                        "current_weight": current_weight,
+                        "optimal_weight": float(optimized_weights[i]),
                         "recommendation": (
-                            "buy" if optimal_weights[i] > 0.05 else "hold"
+                            "buy"
+                            if optimized_weights[i] > current_weight + 0.05
+                            else (
+                                "sell"
+                                if optimized_weights[i] < current_weight - 0.05
+                                else "hold"
+                            )
                         ),
                     }
                 )
@@ -587,37 +559,3 @@ class PortfolioService:
         except Exception as e:
             logger.error(f"Error getting asset returns: {e}")
             return None
-
-    @staticmethod
-    def _optimize_weights(
-        expected_returns: np.ndarray, cov_matrix: np.ndarray, risk_tolerance: float
-    ) -> np.ndarray:
-        """Optimize portfolio weights using mean-variance optimization"""
-        try:
-            n_assets = len(expected_returns)
-
-            # Simple optimization: equal weights adjusted by risk tolerance
-            # In a production system, you would use scipy.optimize for proper optimization
-            base_weights = np.ones(n_assets) / n_assets
-
-            # Adjust weights based on expected returns and risk tolerance
-            return_scores = (expected_returns - np.mean(expected_returns)) / np.std(
-                expected_returns
-            )
-            risk_scores = np.diag(cov_matrix) / np.mean(np.diag(cov_matrix))
-
-            # Combine return and risk scores based on risk tolerance
-            combined_scores = (
-                risk_tolerance * return_scores - (1 - risk_tolerance) * risk_scores
-            )
-
-            # Normalize to get weights
-            weights = base_weights + 0.1 * combined_scores
-            weights = np.maximum(weights, 0)  # No short selling
-            weights = weights / np.sum(weights)  # Normalize to sum to 1
-
-            return weights
-
-        except Exception as e:
-            logger.error(f"Error optimizing weights: {e}")
-            return np.ones(len(expected_returns)) / len(expected_returns)

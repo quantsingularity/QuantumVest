@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class DataStorage:
     """Handles storage and retrieval of financial data"""
 
-    def __init__(self, data_dir: str = "../../resources/data") -> Any:
+    def __init__(self, data_dir: str = "../../resources/data") -> None:
         """
         Initialize the data storage
 

@@ -6,16 +6,17 @@ JWT-based authentication with role-based access control
 import re
 from datetime import datetime, timedelta, timezone
 from functools import wraps
+from typing import Any, Callable, Dict, Tuple
 import jwt
 from flask import current_app, jsonify, request
-from models import User, db
+from models import User, UserRole, db
 
 
 class AuthService:
     """Authentication service for user management"""
 
     @staticmethod
-    def generate_token(user_id: Any, expires_in: Any = 24) -> Any:
+    def generate_token(user_id: Any, expires_in: int = 24) -> str:
         """Generate JWT token for user"""
         payload = {
             "user_id": str(user_id),
@@ -26,7 +27,7 @@ class AuthService:
         return jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
 
     @staticmethod
-    def generate_refresh_token(user_id: Any, expires_in: Any = 168) -> Any:
+    def generate_refresh_token(user_id: Any, expires_in: int = 168) -> str:
         """Generate refresh token for user"""
         payload = {
             "user_id": str(user_id),
@@ -37,7 +38,7 @@ class AuthService:
         return jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
 
     @staticmethod
-    def verify_token(token: Any) -> Any:
+    def verify_token(token: str) -> Any:
         """Verify JWT token and return user_id"""
         try:
             payload = jwt.decode(
@@ -50,13 +51,13 @@ class AuthService:
             return None
 
     @staticmethod
-    def validate_email(email: Any) -> Any:
+    def validate_email(email: str) -> bool:
         """Validate email format"""
         pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
         return re.match(pattern, email) is not None
 
     @staticmethod
-    def validate_password(password: Any) -> Any:
+    def validate_password(password: str) -> Tuple[bool, str]:
         """Validate password strength"""
         if len(password) < 8:
             return (False, "Password must be at least 8 characters long")
@@ -70,12 +71,12 @@ class AuthService:
 
     @staticmethod
     def register_user(
-        username: Any,
-        email: Any,
-        password: Any,
-        first_name: Any = None,
-        last_name: Any = None,
-    ) -> Any:
+        username: str,
+        email: str,
+        password: str,
+        first_name: str = None,
+        last_name: str = None,
+    ) -> Dict[str, Any]:
         """Register a new user"""
         try:
             if not username or len(username) < 3:
@@ -114,7 +115,7 @@ class AuthService:
             return {"success": False, "error": str(e)}
 
     @staticmethod
-    def login_user(username_or_email: Any, password: Any) -> Any:
+    def login_user(username_or_email: str, password: str) -> Dict[str, Any]:
         """Authenticate user login"""
         try:
             user = User.query.filter(
@@ -140,7 +141,7 @@ class AuthService:
             return {"success": False, "error": str(e)}
 
     @staticmethod
-    def refresh_access_token(refresh_token: Any) -> Any:
+    def refresh_access_token(refresh_token: str) -> Dict[str, Any]:
         """Refresh access token using refresh token"""
         try:
             payload = jwt.decode(
@@ -162,7 +163,7 @@ class AuthService:
             return {"success": False, "error": str(e)}
 
 
-def token_required(f: Any) -> Any:
+def token_required(f: Callable) -> Callable:
     """Decorator to require valid JWT token"""
 
     @wraps(f)
@@ -190,24 +191,24 @@ def token_required(f: Any) -> Any:
     return decorated
 
 
-def admin_required(f: Any) -> Any:
+def admin_required(f: Callable) -> Callable:
     """Decorator to require admin privileges"""
 
     @wraps(f)
     def decorated(current_user, *args, **kwargs):
-        if current_user.subscription_tier != "admin":
+        if current_user.role != UserRole.ADMIN:
             return (jsonify({"error": "Admin privileges required"}), 403)
         return f(current_user, *args, **kwargs)
 
     return decorated
 
 
-def premium_required(f: Any) -> Any:
+def premium_required(f: Callable) -> Callable:
     """Decorator to require premium subscription"""
 
     @wraps(f)
     def decorated(current_user, *args, **kwargs):
-        if current_user.subscription_tier not in ["premium", "professional", "admin"]:
+        if current_user.role not in [UserRole.ADMIN, UserRole.PORTFOLIO_MANAGER]:
             return (jsonify({"error": "Premium subscription required"}), 403)
         return f(current_user, *args, **kwargs)
 
@@ -217,10 +218,10 @@ def premium_required(f: Any) -> Any:
 class RateLimiter:
     """Simple in-memory rate limiter"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.requests = {}
 
-    def is_allowed(self, key: Any, limit: Any, window: Any) -> Any:
+    def is_allowed(self, key: str, limit: int, window: int) -> bool:
         """Check if request is allowed based on rate limit"""
         now = datetime.now(timezone.utc)
         if key not in self.requests:
@@ -239,7 +240,7 @@ class RateLimiter:
 rate_limiter = RateLimiter()
 
 
-def rate_limit(limit: Any = 100, window: Any = 3600) -> Any:
+def rate_limit(limit: int = 100, window: int = 3600) -> Callable:
     """Decorator for rate limiting"""
 
     def decorator(f):

@@ -5,12 +5,13 @@ Comprehensive REST API with authentication, portfolio management, and advanced f
 
 import logging
 from datetime import datetime, timezone
+from typing import Any, Tuple
 from auth import AuthService, premium_required, rate_limit, token_required
 from data_pipeline.crypto_api import CryptoDataFetcher
 from data_pipeline.data_storage import DataStorage
 from data_pipeline.prediction_service import PredictionService
 from data_pipeline.stock_api import StockDataFetcher
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Response, jsonify, request
 from models import Asset, Watchlist, db
 from portfolio_service import PortfolioService
 
@@ -28,7 +29,7 @@ portfolio_service = PortfolioService()
 
 @api_bp.route("/auth/register", methods=["POST"])
 @rate_limit(limit=5, window=300)
-def register() -> Any:
+def register() -> Tuple[Response, int]:
     """User registration endpoint"""
     try:
         data = request.get_json()
@@ -67,7 +68,7 @@ def register() -> Any:
 
 @api_bp.route("/auth/login", methods=["POST"])
 @rate_limit(limit=10, window=300)
-def login() -> Any:
+def login() -> Tuple[Response, int]:
     """User login endpoint"""
     try:
         data = request.get_json()
@@ -96,7 +97,7 @@ def login() -> Any:
 
 
 @api_bp.route("/auth/refresh", methods=["POST"])
-def refresh_token() -> Any:
+def refresh_token() -> Tuple[Response, int]:
     """Refresh access token endpoint"""
     try:
         data = request.get_json()
@@ -114,7 +115,7 @@ def refresh_token() -> Any:
 
 @api_bp.route("/auth/profile", methods=["GET"])
 @token_required
-def get_profile(current_user: Any) -> Any:
+def get_profile(current_user: Any) -> Tuple[Response, int]:
     """Get user profile endpoint"""
     try:
         return (jsonify({"success": True, "user": current_user.to_dict()}), 200)
@@ -125,7 +126,7 @@ def get_profile(current_user: Any) -> Any:
 
 @api_bp.route("/auth/profile", methods=["PUT"])
 @token_required
-def update_profile(current_user: Any) -> Any:
+def update_profile(current_user: Any) -> Tuple[Response, int]:
     """Update user profile endpoint"""
     try:
         data = request.get_json()
@@ -153,7 +154,7 @@ def update_profile(current_user: Any) -> Any:
 
 @api_bp.route("/portfolios", methods=["GET"])
 @token_required
-def get_portfolios(current_user: Any) -> Any:
+def get_portfolios(current_user: Any) -> Tuple[Response, int]:
     """Get user portfolios endpoint"""
     try:
         result = portfolio_service.get_user_portfolios(str(current_user.id))
@@ -168,7 +169,7 @@ def get_portfolios(current_user: Any) -> Any:
 
 @api_bp.route("/portfolios", methods=["POST"])
 @token_required
-def create_portfolio(current_user: Any) -> Any:
+def create_portfolio(current_user: Any) -> Tuple[Response, int]:
     """Create portfolio endpoint"""
     try:
         data = request.get_json()
@@ -195,7 +196,7 @@ def create_portfolio(current_user: Any) -> Any:
 
 @api_bp.route("/portfolios/<portfolio_id>", methods=["GET"])
 @token_required
-def get_portfolio_details(current_user: Any, portfolio_id: Any) -> Any:
+def get_portfolio_details(current_user: Any, portfolio_id: str) -> Tuple[Response, int]:
     """Get portfolio details endpoint"""
     try:
         result = portfolio_service.get_portfolio_details(
@@ -215,7 +216,7 @@ def get_portfolio_details(current_user: Any, portfolio_id: Any) -> Any:
 
 @api_bp.route("/portfolios/<portfolio_id>/transactions", methods=["POST"])
 @token_required
-def add_transaction(current_user: Any, portfolio_id: Any) -> Any:
+def add_transaction(current_user: Any, portfolio_id: str) -> Tuple[Response, int]:
     """Add transaction endpoint"""
     try:
         data = request.get_json()
@@ -251,7 +252,9 @@ def add_transaction(current_user: Any, portfolio_id: Any) -> Any:
 
 @api_bp.route("/portfolios/<portfolio_id>/performance", methods=["GET"])
 @token_required
-def get_portfolio_performance(current_user: Any, portfolio_id: Any) -> Any:
+def get_portfolio_performance(
+    current_user: Any, portfolio_id: str
+) -> Tuple[Response, int]:
     """Get portfolio performance endpoint"""
     try:
         days = int(request.args.get("days", 30))
@@ -273,7 +276,7 @@ def get_portfolio_performance(current_user: Any, portfolio_id: Any) -> Any:
 @api_bp.route("/portfolios/<portfolio_id>/optimize", methods=["POST"])
 @token_required
 @premium_required
-def optimize_portfolio(current_user: Any, portfolio_id: Any) -> Any:
+def optimize_portfolio(current_user: Any, portfolio_id: str) -> Tuple[Response, int]:
     """Optimize portfolio endpoint (Premium feature)"""
     try:
         data = request.get_json() or {}
@@ -297,7 +300,7 @@ def optimize_portfolio(current_user: Any, portfolio_id: Any) -> Any:
 
 @api_bp.route("/assets/search", methods=["GET"])
 @token_required
-def search_assets(current_user: Any) -> Any:
+def search_assets(current_user: Any) -> Tuple[Response, int]:
     """Search assets endpoint"""
     try:
         query = request.args.get("q", "").strip()
@@ -326,7 +329,7 @@ def search_assets(current_user: Any) -> Any:
 
 @api_bp.route("/data/stocks/<symbol>", methods=["GET"])
 @token_required
-def get_stock_data(current_user: Any, symbol: Any) -> Any:
+def get_stock_data(current_user: Any, symbol: str) -> Tuple[Response, int]:
     """Get stock data endpoint"""
     try:
         interval = request.args.get("interval", "1d")
@@ -368,7 +371,7 @@ def get_stock_data(current_user: Any, symbol: Any) -> Any:
 
 @api_bp.route("/data/crypto/<symbol>", methods=["GET"])
 @token_required
-def get_crypto_data(current_user: Any, symbol: Any) -> Any:
+def get_crypto_data(current_user: Any, symbol: str) -> Tuple[Response, int]:
     """Get cryptocurrency data endpoint"""
     try:
         interval = request.args.get("interval", "daily")
@@ -413,7 +416,7 @@ def get_crypto_data(current_user: Any, symbol: Any) -> Any:
 
 @api_bp.route("/predictions/stocks/<symbol>", methods=["GET"])
 @token_required
-def get_stock_prediction(current_user: Any, symbol: Any) -> Any:
+def get_stock_prediction(current_user: Any, symbol: str) -> Tuple[Response, int]:
     """Get stock prediction endpoint"""
     try:
         days_ahead = int(request.args.get("days_ahead", "7"))
@@ -431,7 +434,7 @@ def get_stock_prediction(current_user: Any, symbol: Any) -> Any:
 
 @api_bp.route("/predictions/crypto/<symbol>", methods=["GET"])
 @token_required
-def get_crypto_prediction(current_user: Any, symbol: Any) -> Any:
+def get_crypto_prediction(current_user: Any, symbol: str) -> Tuple[Response, int]:
     """Get cryptocurrency prediction endpoint"""
     try:
         days_ahead = int(request.args.get("days_ahead", "7"))
@@ -449,7 +452,7 @@ def get_crypto_prediction(current_user: Any, symbol: Any) -> Any:
 
 @api_bp.route("/watchlists", methods=["GET"])
 @token_required
-def get_watchlists(current_user: Any) -> Any:
+def get_watchlists(current_user: Any) -> Tuple[Response, int]:
     """Get user watchlists endpoint"""
     try:
         watchlists = Watchlist.query.filter_by(user_id=current_user.id).all()
@@ -474,7 +477,7 @@ def get_watchlists(current_user: Any) -> Any:
 
 @api_bp.route("/watchlists", methods=["POST"])
 @token_required
-def create_watchlist(current_user: Any) -> Any:
+def create_watchlist(current_user: Any) -> Tuple[Response, int]:
     """Create watchlist endpoint"""
     try:
         data = request.get_json()
@@ -512,7 +515,7 @@ def create_watchlist(current_user: Any) -> Any:
 
 
 @api_bp.route("/health", methods=["GET"])
-def health_check() -> Any:
+def health_check() -> Response:
     """Health check endpoint"""
     return jsonify(
         {
@@ -531,7 +534,7 @@ def health_check() -> Any:
 
 @api_bp.route("/models/status", methods=["GET"])
 @token_required
-def get_model_status(current_user: Any) -> Any:
+def get_model_status(current_user: Any) -> Tuple[Response, int]:
     """Get model status endpoint"""
     try:
         available_models = prediction_service.get_available_models()

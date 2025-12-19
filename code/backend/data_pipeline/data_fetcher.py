@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class DataFetcher(ABC):
     """Abstract base class for data fetchers"""
 
-    def __init__(self, cache_dir: str = "../../resources/data_cache") -> Any:
+    def __init__(self, cache_dir: str = "../../resources/data_cache") -> None:
         """
         Initialize the data fetcher
 

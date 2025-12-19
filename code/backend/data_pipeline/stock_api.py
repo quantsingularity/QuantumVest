@@ -5,13 +5,15 @@ Fetches stock market data from Yahoo Finance API
 
 import logging
 import sys
+import os
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 import pandas as pd
 
-sys.path.append("")
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data_api import ApiClient
-from .data_fetcher import DataFetcher, DataValidator
+from data_pipeline.data_fetcher import DataFetcher, DataValidator
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -22,7 +24,7 @@ logger = logging.getLogger(__name__)
 class StockDataFetcher(DataFetcher):
     """Fetches stock market data from Yahoo Finance API"""
 
-    def __init__(self, cache_dir: str = "../../resources/data_cache") -> Any:
+    def __init__(self, cache_dir: str = "../../resources/data_cache") -> None:
         """
         Initialize the stock data fetcher
 

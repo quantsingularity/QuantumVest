@@ -5,6 +5,7 @@ Comprehensive configuration management with environment-specific settings
 
 import os
 from datetime import timedelta
+from typing import Any
 
 
 class Config:
@@ -103,7 +104,7 @@ class ProductionConfig(Config):
     TESTING = False
 
     @classmethod
-    def init_app(cls: Any, app: Any) -> Any:
+    def init_app(cls, app: Any) -> None:
         Config.init_app(app)
         import logging
         from logging.handlers import SysLogHandler
@@ -117,7 +118,7 @@ class DockerConfig(ProductionConfig):
     """Docker-specific configuration"""
 
     @classmethod
-    def init_app(cls: Any, app: Any) -> Any:
+    def init_app(cls, app: Any) -> None:
         ProductionConfig.init_app(app)
         import logging
         import sys
@@ -136,7 +137,7 @@ config = {
 }
 
 
-def get_config() -> Any:
+def get_config() -> type:
     """Get configuration based on environment"""
     env = os.environ.get("FLASK_ENV", "development")
     return config.get(env, config["default"])

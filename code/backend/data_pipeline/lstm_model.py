@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class LSTMModel:
     """LSTM model for time-series prediction"""
 
-    def __init__(self, model_dir: str = "../../resources/models") -> Any:
+    def __init__(self, model_dir: str = "../../resources/models") -> None:
         """
         Initialize the LSTM model
 

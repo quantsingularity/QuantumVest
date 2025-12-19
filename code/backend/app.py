@@ -11,7 +11,7 @@ from flask import Flask, jsonify, send_from_directory
 from flask_caching import Cache
 from flask_cors import CORS
 from flask_migrate import Migrate
-from models import Asset, db
+from models import Asset, AssetType, db
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def create_app(config_name: Any = None) -> Any:
+def create_app(config_name: str = None) -> Flask:
     """Application factory pattern"""
     app = Flask(__name__, static_folder="../web-frontend/build")
     if config_name is None:
@@ -91,80 +91,80 @@ def create_app(config_name: Any = None) -> Any:
     return app
 
 
-def create_default_assets() -> Any:
+def create_default_assets() -> None:
     """Create default assets in the database"""
     try:
         crypto_assets = [
-            {"symbol": "BTC", "name": "Bitcoin", "asset_type": "crypto"},
-            {"symbol": "ETH", "name": "Ethereum", "asset_type": "crypto"},
-            {"symbol": "XRP", "name": "XRP", "asset_type": "crypto"},
-            {"symbol": "LTC", "name": "Litecoin", "asset_type": "crypto"},
-            {"symbol": "BCH", "name": "Bitcoin Cash", "asset_type": "crypto"},
-            {"symbol": "ADA", "name": "Cardano", "asset_type": "crypto"},
-            {"symbol": "DOT", "name": "Polkadot", "asset_type": "crypto"},
-            {"symbol": "LINK", "name": "Chainlink", "asset_type": "crypto"},
-            {"symbol": "XLM", "name": "Stellar", "asset_type": "crypto"},
-            {"symbol": "DOGE", "name": "Dogecoin", "asset_type": "crypto"},
+            {"symbol": "BTC", "name": "Bitcoin", "asset_type": AssetType.CRYPTO},
+            {"symbol": "ETH", "name": "Ethereum", "asset_type": AssetType.CRYPTO},
+            {"symbol": "XRP", "name": "XRP", "asset_type": AssetType.CRYPTO},
+            {"symbol": "LTC", "name": "Litecoin", "asset_type": AssetType.CRYPTO},
+            {"symbol": "BCH", "name": "Bitcoin Cash", "asset_type": AssetType.CRYPTO},
+            {"symbol": "ADA", "name": "Cardano", "asset_type": AssetType.CRYPTO},
+            {"symbol": "DOT", "name": "Polkadot", "asset_type": AssetType.CRYPTO},
+            {"symbol": "LINK", "name": "Chainlink", "asset_type": AssetType.CRYPTO},
+            {"symbol": "XLM", "name": "Stellar", "asset_type": AssetType.CRYPTO},
+            {"symbol": "DOGE", "name": "Dogecoin", "asset_type": AssetType.CRYPTO},
         ]
         stock_assets = [
             {
                 "symbol": "AAPL",
                 "name": "Apple Inc.",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NASDAQ",
             },
             {
                 "symbol": "GOOGL",
                 "name": "Alphabet Inc.",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NASDAQ",
             },
             {
                 "symbol": "MSFT",
                 "name": "Microsoft Corporation",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NASDAQ",
             },
             {
                 "symbol": "AMZN",
                 "name": "Amazon.com Inc.",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NASDAQ",
             },
             {
                 "symbol": "TSLA",
                 "name": "Tesla Inc.",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NASDAQ",
             },
             {
                 "symbol": "META",
                 "name": "Meta Platforms Inc.",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NASDAQ",
             },
             {
                 "symbol": "NVDA",
                 "name": "NVIDIA Corporation",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NASDAQ",
             },
             {
                 "symbol": "JPM",
                 "name": "JPMorgan Chase & Co.",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NYSE",
             },
             {
                 "symbol": "JNJ",
                 "name": "Johnson & Johnson",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NYSE",
             },
             {
                 "symbol": "V",
                 "name": "Visa Inc.",
-                "asset_type": "stock",
+                "asset_type": AssetType.STOCK,
                 "exchange": "NYSE",
             },
         ]

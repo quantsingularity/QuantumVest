@@ -7,10 +7,10 @@ import logging
 import os
 from datetime import datetime
 from typing import Any, Dict, List
-from .crypto_api import CryptoDataFetcher
-from .data_storage import DataStorage
-from .lstm_model import LSTMModel
-from .stock_api import StockDataFetcher
+from data_pipeline.crypto_api import CryptoDataFetcher
+from data_pipeline.data_storage import DataStorage
+from data_pipeline.lstm_model import LSTMModel
+from data_pipeline.stock_api import StockDataFetcher
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -25,7 +25,7 @@ class PredictionService:
         self,
         model_dir: str = "../../resources/models",
         data_dir: str = "../../resources/data",
-    ) -> Any:
+    ) -> None:
         """
         Initialize the prediction service
 

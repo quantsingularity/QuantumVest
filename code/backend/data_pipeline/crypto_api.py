@@ -7,7 +7,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import pandas as pd
-from .data_fetcher import DataFetcher, DataValidator
+from data_pipeline.data_fetcher import DataFetcher, DataValidator
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class CryptoDataFetcher(DataFetcher):
     """Fetches cryptocurrency data from CoinGecko API"""
 
-    def __init__(self, cache_dir: str = "../../resources/data_cache") -> Any:
+    def __init__(self, cache_dir: str = "../../resources/data_cache") -> None:
         """
         Initialize the crypto data fetcher
 
