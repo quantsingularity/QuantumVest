@@ -1,162 +1,370 @@
-# Mobile Frontend Directory
+# QuantumVest Mobile Frontend
 
-The `mobile-frontend` directory contains the React Native mobile application for QuantumVest, providing users with a responsive and feature-rich mobile experience. This mobile application allows users to access QuantumVest's investment platform, portfolio management tools, and financial analytics on iOS and Android devices.
+AI-Powered Predictive Investment Analytics Platform - Mobile Application
 
-## Directory Structure
+## Overview
 
-The mobile-frontend directory is organized as follows:
+The QuantumVest Mobile application provides users with a comprehensive mobile experience for investment analytics, portfolio management, and market predictions. Built with React Native and Expo, it offers cross-platform support for both iOS and Android devices.
 
-```
-mobile-frontend/
-├── .expo/
-├── App.js
-├── app.json
-├── assets/
-├── index.js
-├── package.json
-├── src/
-└── yarn.lock
-```
+## Features
 
-## Components
+- **Authentication**: Secure user registration and login with JWT tokens
+- **Dashboard**: Real-time market data visualization with Bitcoin and Ethereum price trends
+- **Portfolio Optimization**: AI-powered portfolio optimization with risk analysis
+- **Market Predictions**: Get price predictions for cryptocurrencies and stocks
+- **Watchlist**: Track your favorite assets with live price updates
+- **News Feed**: Stay updated with the latest cryptocurrency news
+- **Settings**: Customize app preferences and API configurations
+- **Offline Support**: Fallback to mock data when APIs are unavailable
 
-### Core Files
+## Technology Stack
 
-- **App.js**: The main entry point for the React Native application. This file initializes the app, sets up navigation, and configures global state management.
+- **Framework**: React Native 0.76.9 with Expo 52
+- **Navigation**: React Navigation 7
+- **UI Library**: React Native Paper 5
+- **State Management**: React Context API
+- **Charts**: React Native Chart Kit
+- **Storage**: AsyncStorage
+- **Testing**: Jest, React Native Testing Library, Detox (E2E)
+- **API**: Axios for HTTP requests
 
-- **index.js**: The JavaScript entry point that registers the application with the React Native runtime.
+## Prerequisites
 
-- **app.json**: Contains configuration for the Expo build system, including app name, version, orientation settings, and other metadata required for building and publishing the mobile application.
+Before you begin, ensure you have the following installed:
 
-- **package.json**: Defines the project dependencies, scripts, and metadata for the Node.js ecosystem. This file is essential for managing the project's npm/yarn packages.
-
-- **yarn.lock**: Ensures consistent installations across different environments by locking dependency versions.
-
-### Directories
-
-- **.expo/**: Contains Expo-specific configuration files and caches. This directory is managed by the Expo CLI and should not be manually edited.
-
-- **assets/**: Stores static resources used by the mobile application, including images, fonts, and other media files. These assets are bundled with the application during the build process.
-
-- **src/**: Contains the source code for the mobile application, organized into several subdirectories:
-    - **components/**: Reusable UI components
-    - **screens/**: Individual application screens
-    - **navigation/**: Navigation configuration and routing
-    - **services/**: API integration and business logic
-    - **utils/**: Utility functions and helpers
-    - **styles/**: Global styling and theme definitions
-    - **store/**: State management (Redux/Context API)
-
-## Development Environment
-
-### Prerequisites
-
-To work on the mobile frontend, you'll need:
-
-- Node.js (version 14 or higher)
-- Yarn or npm package manager
+- Node.js (v14 or higher)
+- npm or yarn package manager
 - Expo CLI (`npm install -g expo-cli`)
-- iOS Simulator (for Mac users) or Android Emulator
-- Expo Go app on a physical device (optional for testing)
+- For iOS: Xcode (Mac only)
+- For Android: Android Studio with Android SDK
+- For E2E testing: Detox CLI (`npm install -g detox-cli`)
 
-### Getting Started
+## Installation
 
-1. Install dependencies:
+1. **Clone the repository** (if not already done):
 
-    ```
+    ```bash
     cd mobile-frontend
+    ```
+
+2. **Install dependencies**:
+
+    ```bash
+    npm install
+    # or
     yarn install
     ```
 
-2. Start the development server:
+3. **Configure environment variables**:
 
+    ```bash
+    cp .env.example .env
+    # Edit .env and update the values as needed
     ```
+
+4. **Start the backend API** (required for full functionality):
+    ```bash
+    # In a separate terminal, navigate to the backend directory
+    cd ../code/backend
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    python app.py
+    ```
+
+## Running the Application
+
+### Development Mode
+
+1. **Start the Expo development server**:
+
+    ```bash
+    npm start
+    # or
     yarn start
     ```
 
-3. Run on a specific platform:
-    ```
-    yarn ios     # For iOS simulator
-    yarn android # For Android emulator
-    ```
+2. **Run on specific platform**:
 
-The Expo development server provides a QR code that can be scanned with the Expo Go app on a physical device for testing on real hardware.
+    ```bash
+    # iOS (Mac only)
+    npm run ios
+    # or
+    yarn ios
 
-## Key Features
+    # Android
+    npm run android
+    # or
+    yarn android
 
-The mobile application provides several key features:
-
-- **User Authentication**: Secure login, registration, and account management
-- **Portfolio Dashboard**: Real-time overview of investment portfolios
-- **Market Data**: Current market trends and financial instrument data
-- **Investment Tools**: AI-powered investment recommendations
-- **Transaction History**: Record of past investment activities
-- **Notifications**: Alerts for market changes and portfolio updates
-- **Settings**: User preferences and application configuration
-
-## Integration Points
-
-The mobile frontend integrates with several backend services:
-
-- **REST API**: Communicates with the QuantumVest backend services for data retrieval and updates
-- **WebSocket**: Establishes real-time connections for market data updates
-- **Authentication Service**: Manages user sessions and security
-- **Analytics**: Tracks user behavior and application performance
-
-## Building for Production
-
-To create a production build:
-
-1. Update the version in app.json
-2. Configure the appropriate build settings for each platform
-3. Run the build command:
-    ```
-    expo build:ios
-    expo build:android
+    # Web
+    npm run web
+    # or
+    yarn web
     ```
 
-The build process can be customized through the Expo configuration in app.json or by ejecting to a bare React Native project for more control.
+3. **Scan QR code** with Expo Go app on your physical device for quick testing.
+
+### Production Build
+
+#### iOS
+
+```bash
+expo build:ios
+```
+
+#### Android
+
+```bash
+expo build:android
+```
 
 ## Testing
 
-The mobile application includes several types of tests:
+### Unit and Integration Tests
 
-- **Unit Tests**: Verify individual component functionality
-- **Integration Tests**: Ensure components work together correctly
-- **End-to-End Tests**: Validate complete user flows
+Run all tests with coverage:
 
-Run tests using:
-
-```
+```bash
+npm test
+# or
 yarn test
 ```
 
-## Design System
+Run tests in watch mode:
 
-The mobile application follows a consistent design system defined in the styles directory. This includes:
+```bash
+npm run test:watch
+# or
+yarn test:watch
+```
 
-- Typography scales
-- Color palettes
-- Spacing constants
-- Component themes
-- Responsive layout utilities
+### End-to-End Tests (Detox)
 
-Adhering to this design system ensures a consistent user experience across the application.
+1. **Build the app for testing**:
 
-## Performance Considerations
+    ```bash
+    # iOS
+    npm run test:e2e:build -- --configuration ios.sim.debug
 
-Mobile performance is critical for user satisfaction. The application implements several optimizations:
+    # Android
+    npm run test:e2e:build -- --configuration android.emu.debug
+    ```
 
-- Efficient list rendering with virtualization
-- Lazy loading of screens and components
-- Image optimization and caching
-- Minimized network requests
-- Memory management best practices
+2. **Run E2E tests**:
 
-## Additional Resources
+    ```bash
+    # iOS
+    npm run test:e2e -- --configuration ios.sim.debug
 
-For more information about the mobile frontend:
+    # Android
+    npm run test:e2e -- --configuration android.emu.debug
+    ```
 
-- Refer to the UI design documentation in the docs directory
-- Check the developer guide for coding standards and best practices
-- Review the API documentation for backend integration details
+## Project Structure
+
+```
+mobile-frontend/
+├── __mocks__/              # Jest mocks
+├── assets/                 # Images, fonts, and static resources
+├── e2e/                    # End-to-end tests
+│   ├── app.test.js        # E2E test scenarios
+│   └── jest.config.js     # E2E Jest configuration
+├── src/
+│   ├── components/        # Reusable UI components
+│   │   ├── ErrorBoundary.js
+│   │   └── LoadingSpinner.js
+│   ├── context/           # React Context providers
+│   │   ├── AppContext.js  # Global app state
+│   │   └── AuthContext.js # Authentication state
+│   ├── navigation/        # Navigation configuration
+│   │   ├── AppNavigator.js
+│   │   └── RootNavigator.js
+│   ├── screens/           # Application screens
+│   │   ├── __tests__/     # Screen tests
+│   │   ├── DashboardScreen.js
+│   │   ├── LoginScreen.js
+│   │   ├── RegisterScreen.js
+│   │   ├── NewsScreen.js
+│   │   ├── PredictionScreen.js
+│   │   ├── PortfolioScreen.js
+│   │   ├── WatchlistScreen.js
+│   │   └── SettingsScreen.js
+│   ├── services/          # API and external services
+│   │   └── api.js
+│   └── utils/             # Utility functions
+│       └── errorHandler.js
+├── .detoxrc.js            # Detox configuration
+├── .env.example           # Environment variables template
+├── App.js                 # Root component
+├── app.json               # Expo configuration
+├── babel.config.js        # Babel configuration
+├── index.js               # Entry point
+├── jest.config.js         # Jest configuration
+├── jest.setup.js          # Jest setup file
+├── metro.config.js        # Metro bundler configuration
+├── package.json           # Dependencies and scripts
+└── README.md             # This file
+```
+
+## API Integration
+
+The mobile frontend integrates with the following APIs:
+
+### Backend API (Required for full features)
+
+- **Base URL**: `http://localhost:5000/api/v1`
+- **Endpoints**:
+    - `/auth/login` - User authentication
+    - `/auth/register` - User registration
+    - `/predictions/crypto/{symbol}` - Crypto predictions
+    - `/predictions/stocks/{symbol}` - Stock predictions
+    - `/portfolios/{id}/optimize` - Portfolio optimization
+    - `/health` - API health check
+
+### External APIs (Optional - fallback to mock data)
+
+- **CoinGecko API**: Real-time cryptocurrency market data (no key required)
+- **CryptoNews API**: Cryptocurrency news articles (requires API token)
+
+To use CryptoNews API:
+
+1. Sign up at https://cryptonews-api.com/
+2. Get your free API token
+3. Configure it in the app Settings screen
+
+## Environment Variables
+
+Create a `.env` file based on `.env.example`:
+
+```env
+# Backend API Configuration
+API_BASE_URL=http://localhost:5000/api/v1
+
+# CoinGecko API (No key required)
+COINGECKO_API_URL=https://api.coingecko.com/api/v3
+
+# CryptoNews API Token (Optional)
+CRYPTONEWS_API_TOKEN=your_cryptonews_api_token_here
+
+# Application Configuration
+APP_ENV=development
+ENABLE_MOCK_DATA=false
+```
+
+## Features in Detail
+
+### Authentication
+
+- User registration with validation
+- Secure login with JWT tokens
+- Guest access for quick exploration
+- Token refresh mechanism
+- Persistent authentication state
+
+### Dashboard
+
+- Real-time Bitcoin and Ethereum price charts
+- Backend API health monitoring
+- Quick navigation to all features
+- Responsive chart visualization
+
+### Portfolio Optimization
+
+- Input multiple assets
+- Configure risk tolerance
+- Get optimal portfolio weights
+- View expected returns and volatility
+- Calculate Sharpe ratio
+
+### Market Predictions
+
+- Support for both cryptocurrencies and stocks
+- Configurable timeframes
+- Confidence scoring
+- Historical data integration
+
+### Watchlist
+
+- Add/remove assets
+- Real-time price updates
+- Persistent storage
+- Pull-to-refresh functionality
+
+### News Feed
+
+- Latest cryptocurrency news
+- Sentiment analysis
+- Multiple sources
+- Infinite scroll
+- Article preview and external links
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Metro bundler not starting**:
+
+    ```bash
+    npm start -- --reset-cache
+    ```
+
+2. **iOS build fails**:
+
+    ```bash
+    cd ios && pod install && cd ..
+    ```
+
+3. **Android build fails**:
+    - Ensure Android SDK is properly installed
+    - Check `ANDROID_HOME` environment variable
+    - Clean gradle: `cd android && ./gradlew clean && cd ..`
+
+4. **API connection errors**:
+    - Verify backend is running on `http://localhost:5000`
+    - For Android emulator, use `http://10.0.2.2:5000` instead
+    - For iOS simulator, use `http://localhost:5000` or your machine's IP
+    - Update `API_BASE_URL` in `src/services/api.js` if needed
+
+5. **Test failures**:
+    ```bash
+    npm test -- --clearCache
+    ```
+
+## Development Guidelines
+
+### Code Style
+
+- Use ESLint for code linting
+- Follow React Native best practices
+- Write tests for new features
+- Use TypeScript types where applicable
+- Follow component naming conventions
+
+### Git Workflow
+
+1. Create feature branch from `main`
+2. Make changes and commit with descriptive messages
+3. Write/update tests
+4. Run tests and ensure they pass
+5. Submit pull request for review
+
+### Performance Optimization
+
+- Use `React.memo()` for expensive components
+- Implement proper list virtualization with `FlatList`
+- Lazy load screens with React Navigation
+- Optimize images and assets
+- Monitor bundle size
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

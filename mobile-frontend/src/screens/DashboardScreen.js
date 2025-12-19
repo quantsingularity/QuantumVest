@@ -11,17 +11,16 @@ import {
     useTheme,
 } from 'react-native-paper';
 import { LineChart } from 'react-native-chart-kit';
-// Import the new CoinGecko function and the health check
 import { checkApiHealth, getCoinMarketChart } from '../services/api';
 
 const screenWidth = Dimensions.get('window').width;
 
-// Chart configuration (can be customized further)
+// Chart configuration
 const chartConfig = {
     backgroundColor: '#1E2923',
     backgroundGradientFrom: '#08130D',
     backgroundGradientTo: '#1A2F2B',
-    decimalPlaces: 2, // optional, defaults to 2dp
+    decimalPlaces: 2,
     color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     style: {
@@ -47,14 +46,12 @@ const DashboardScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const theme = useTheme();
 
-    // Updated function to format data from CoinGecko's market_chart endpoint
     const formatCoinGeckoChartData = (apiResponse) => {
         const prices = apiResponse?.data?.prices;
         if (!prices || prices.length === 0) {
             return { labels: [], datasets: [{ data: [] }] };
         }
 
-        // CoinGecko returns [timestamp, price]
         const labels = prices.map((item) =>
             new Date(item[0]).toLocaleDateString('en-US', {
                 month: 'short',
@@ -63,23 +60,16 @@ const DashboardScreen = ({ navigation }) => {
         );
         const data = prices.map((item) => item[1]);
 
-        // Ensure we have at least one data point
         if (data.length === 0) {
             return { labels: [], datasets: [{ data: [] }] };
         }
 
-        // Keep labels concise if there are many points (e.g., show every Nth label)
-        const step = Math.max(1, Math.floor(labels.length / 7)); // Aim for ~7 labels
+        const step = Math.max(1, Math.floor(labels.length / 7));
         const filteredLabels = labels.filter((_, index) => index % step === 0);
-        const filteredData = data; // Keep all data points for the line
 
         return {
             labels: filteredLabels,
-            datasets: [
-                {
-                    data: filteredData,
-                },
-            ],
+            datasets: [{ data }],
         };
     };
 
@@ -88,19 +78,15 @@ const DashboardScreen = ({ navigation }) => {
             setLoading(true);
             let backendHealthy = false;
             try {
-                // Check Backend API Health first
                 const healthResponse = await checkApiHealth();
                 setApiStatus(healthResponse.data.status === 'healthy' ? 'Online' : 'Offline');
                 backendHealthy = healthResponse.data.status === 'healthy';
             } catch (error) {
                 console.error('Error checking backend health:', error);
                 setApiStatus('Error');
-                // Don't alert here, let CoinGecko calls proceed if possible
             }
 
             try {
-                // Fetch Real Data from CoinGecko (e.g., last 7 days)
-                // Use CoinGecko IDs: 'bitcoin', 'ethereum'
                 const btcResponse = await getCoinMarketChart('bitcoin', '7');
                 setBtcChartData(formatCoinGeckoChartData(btcResponse));
 
@@ -108,7 +94,6 @@ const DashboardScreen = ({ navigation }) => {
                 setEthChartData(formatCoinGeckoChartData(ethResponse));
             } catch (error) {
                 console.error('Error fetching CoinGecko data:', error);
-                // Only alert if backend is also down, otherwise maybe CoinGecko is temp unavailable
                 if (!backendHealthy) {
                     Alert.alert(
                         'API Error',
@@ -117,7 +102,6 @@ const DashboardScreen = ({ navigation }) => {
                 } else {
                     Alert.alert('CoinGecko Error', 'Failed to fetch market data from CoinGecko.');
                 }
-                // Set empty data for charts to show 'Not enough data' message
                 setBtcChartData({ labels: [], datasets: [{ data: [] }] });
                 setEthChartData({ labels: [], datasets: [{ data: [] }] });
             }
@@ -145,12 +129,12 @@ const DashboardScreen = ({ navigation }) => {
                 </Text>
                 <LineChart
                     data={chartData}
-                    width={screenWidth - 30} // Adjust width as needed
+                    width={screenWidth - 30}
                     height={220}
                     yAxisLabel="$"
-                    yAxisInterval={1} // Adjust interval based on data range if needed
+                    yAxisInterval={1}
                     chartConfig={chartConfig}
-                    bezier // Use bezier curves for smoother lines
+                    bezier
                     style={styles.chartStyle}
                 />
             </View>
@@ -161,6 +145,7 @@ const DashboardScreen = ({ navigation }) => {
         <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
             <Appbar.Header>
                 <Appbar.Content title="QuantumVest Dashboard" />
+                <Appbar.Action icon="cog" onPress={() => navigation.navigate('Settings')} />
             </Appbar.Header>
 
             <View style={styles.contentContainer}>
@@ -188,7 +173,7 @@ const DashboardScreen = ({ navigation }) => {
                     <ActivityIndicator animating={true} size="large" style={styles.loader} />
                 ) : (
                     <FlatList
-                        data={[{ key: 'btcChart' }, { key: 'ethChart' }]} // Structure data for sections
+                        data={[{ key: 'btcChart' }, { key: 'ethChart' }]}
                         renderItem={({ item }) => {
                             if (item.key === 'btcChart') {
                                 return renderChart(btcChartData, 'Bitcoin (BTC)');
@@ -210,7 +195,7 @@ const DashboardScreen = ({ navigation }) => {
                             <View style={styles.buttonContainer}>
                                 <Button
                                     mode="contained"
-                                    icon="newspaper-variant-multiple" // Icon for News
+                                    icon="newspaper-variant-multiple"
                                     onPress={() => navigation.navigate('News')}
                                     style={styles.button}
                                 >
@@ -218,7 +203,7 @@ const DashboardScreen = ({ navigation }) => {
                                 </Button>
                                 <Button
                                     mode="contained"
-                                    icon="playlist-check" // Icon for Watchlist
+                                    icon="playlist-check"
                                     onPress={() => navigation.navigate('Watchlist')}
                                     style={styles.button}
                                 >
@@ -289,17 +274,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     buttonContainer: {
-        paddingVertical: 15, // Use vertical padding
+        paddingVertical: 15,
         flexDirection: 'row',
         justifyContent: 'space-around',
         borderTopWidth: 1,
-        borderTopColor: '#eee', // Consider using theme color theme.colors.outlineVariant
+        borderTopColor: '#eee',
         paddingHorizontal: 15,
         marginTop: 15,
     },
     button: {
-        flex: 1, // Buttons share space equally
-        marginHorizontal: 5, // Add space between buttons
+        flex: 1,
+        marginHorizontal: 5,
     },
 });
 

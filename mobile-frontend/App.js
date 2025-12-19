@@ -1,18 +1,25 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import AppNavigator from './src/navigation/AppNavigator';
-import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Required for React Navigation
-import { SafeAreaProvider } from 'react-native-safe-area-context'; // Required for React Navigation
-import { Provider as PaperProvider } from 'react-native-paper'; // Import PaperProvider
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { AuthProvider } from './src/context/AuthContext';
+import { AppProvider } from './src/context/AppContext';
+import ErrorBoundary from './src/components/ErrorBoundary';
+import RootNavigator from './src/navigation/RootNavigator';
 
 export default function App() {
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView style={styles.container}>
             <SafeAreaProvider>
                 <PaperProvider>
-                    {' '}
-                    {/* Wrap the app with PaperProvider */}
-                    <AppNavigator />
+                    <ErrorBoundary>
+                        <AppProvider>
+                            <AuthProvider>
+                                <RootNavigator />
+                            </AuthProvider>
+                        </AppProvider>
+                    </ErrorBoundary>
                 </PaperProvider>
             </SafeAreaProvider>
         </GestureHandlerRootView>
@@ -22,6 +29,5 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
 });
