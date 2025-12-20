@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/LoadingSpinner.css';
+import '../../styles/LoadingSpinner.css';
 
 const LoadingSpinner = ({ size = 'medium', color = 'primary', text = 'Loading...' }) => {
     const [dots, setDots] = useState('.');

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { portfolioAPI } from '../../services/api';
+import LoadingSpinner from '../ui/LoadingSpinner';
+import { showToast } from '../ui/ToastManager';
 import '../../styles/PortfolioOptimization.css';
 
 export default function PortfolioOptimization() {
@@ -23,25 +25,41 @@ export default function PortfolioOptimization() {
 
     const handleAssetAllocationChange = (index, newValue) => {
         const updatedAssets = [...assets];
-        updatedAssets[index].allocation = parseInt(newValue, 10);
+        const oldValue = updatedAssets[index].allocation;
+        const newAllocation = parseInt(newValue, 10);
+
+        updatedAssets[index].allocation = newAllocation;
 
         // Recalculate to ensure total is 100%
         const total = updatedAssets.reduce((sum, asset) => sum + asset.allocation, 0);
-        if (total !== 100) {
-            const diff = 100 - total;
-            // Distribute the difference among other assets
-            const otherAssets = updatedAssets.filter((_, i) => i !== index);
-            const perAssetAdjustment = Math.floor(diff / otherAssets.length);
-            let remainder = diff - perAssetAdjustment * otherAssets.length;
 
-            otherAssets.forEach((asset, i) => {
-                const assetIndex = updatedAssets.findIndex((a) => a.symbol === asset.symbol);
-                let adjustment = perAssetAdjustment;
-                if (i === 0 && remainder !== 0) {
-                    adjustment += remainder;
-                }
-                updatedAssets[assetIndex].allocation = Math.max(0, asset.allocation + adjustment);
-            });
+        if (total !== 100) {
+            const diff = total - 100;
+            // Distribute the difference among other assets proportionally
+            const otherAssets = updatedAssets.filter((_, i) => i !== index);
+            const otherTotal = otherAssets.reduce((sum, a) => sum + a.allocation, 0);
+
+            if (otherTotal > 0) {
+                otherAssets.forEach((asset) => {
+                    const assetIndex = updatedAssets.findIndex((a) => a.symbol === asset.symbol);
+                    const proportion = asset.allocation / otherTotal;
+                    const adjustment = Math.round(diff * proportion);
+                    updatedAssets[assetIndex].allocation = Math.max(
+                        0,
+                        asset.allocation - adjustment,
+                    );
+                });
+            }
+        }
+
+        // Final adjustment to ensure exactly 100%
+        const finalTotal = updatedAssets.reduce((sum, asset) => sum + asset.allocation, 0);
+        if (finalTotal !== 100) {
+            const adjustment = 100 - finalTotal;
+            const lastAssetIndex = updatedAssets.findIndex((_, i) => i !== index);
+            if (lastAssetIndex >= 0) {
+                updatedAssets[lastAssetIndex].allocation += adjustment;
+            }
         }
 
         setAssets(updatedAssets);
@@ -52,91 +70,96 @@ export default function PortfolioOptimization() {
             setLoading(true);
             setError(null);
 
-            const response = await axios.post('/api/portfolio/optimize', {
+            const requestData = {
                 assets: assets.map((a) => a.symbol),
                 weights: assets.map((a) => a.allocation / 100),
                 riskLevel: risk,
-            });
+            };
 
-            if (response.data.success) {
-                // Transform the response into a more usable format
-                const optimizedAssets = [...assets];
-                const optimalWeights = response.data.optimal_weights;
+            try {
+                const response = await portfolioAPI.optimizePortfolio(requestData);
 
-                optimalWeights.forEach((weight, index) => {
-                    if (index < optimizedAssets.length) {
-                        optimizedAssets[index].allocation = Math.round(weight * 100);
-                    }
-                });
+                if (response.data.success) {
+                    // Transform the response into a more usable format
+                    const optimizedAssets = [...assets];
+                    const optimalWeights = response.data.optimal_weights;
 
-                setResult({
-                    assets: optimizedAssets,
-                    expectedReturn: response.data.expected_return,
-                    volatility: response.data.volatility,
-                    sharpeRatio: response.data.sharpe_ratio,
-                });
-            } else {
-                setError('Optimization failed: ' + response.data.error);
+                    optimalWeights.forEach((weight, index) => {
+                        if (index < optimizedAssets.length) {
+                            optimizedAssets[index].allocation = Math.round(weight * 100);
+                        }
+                    });
+
+                    setResult({
+                        assets: optimizedAssets,
+                        expectedReturn: response.data.expected_return,
+                        volatility: response.data.volatility,
+                        sharpeRatio: response.data.sharpe_ratio,
+                    });
+
+                    showToast('Portfolio optimized successfully!', 'success');
+                } else {
+                    throw new Error(response.data.error || 'Optimization failed');
+                }
+            } catch (apiError) {
+                console.warn('API optimization unavailable, using fallback:', apiError.message);
+                // Use fallback optimization
+                optimizeFallback();
             }
         } catch (err) {
+            console.error('Optimization error:', err);
             setError('Error during optimization: ' + err.message);
+            showToast('Optimization failed. Please try again.', 'error');
         } finally {
             setLoading(false);
         }
     };
 
-    // Mock optimization for demonstration
-    const mockOptimize = () => {
-        setLoading(true);
-        setError(null);
+    const optimizeFallback = () => {
+        // Create optimized allocation based on risk level
+        const optimizedAssets = [...assets];
 
-        // Simulate API call
-        setTimeout(() => {
-            try {
-                // Create optimized allocation based on risk level
-                const optimizedAssets = [...assets];
+        if (risk <= 3) {
+            // Low risk - more conservative allocation
+            optimizedAssets[0].allocation = 15; // BTC
+            optimizedAssets[1].allocation = 10; // ETH
+            optimizedAssets[2].allocation = 20; // AAPL
+            optimizedAssets[3].allocation = 20; // MSFT
+            optimizedAssets[4].allocation = 15; // GOOGL
+            optimizedAssets[5].allocation = 10; // AMZN
+            optimizedAssets[6].allocation = 10; // CASH
+        } else if (risk <= 7) {
+            // Medium risk
+            optimizedAssets[0].allocation = 25; // BTC
+            optimizedAssets[1].allocation = 20; // ETH
+            optimizedAssets[2].allocation = 15; // AAPL
+            optimizedAssets[3].allocation = 15; // MSFT
+            optimizedAssets[4].allocation = 10; // GOOGL
+            optimizedAssets[5].allocation = 10; // AMZN
+            optimizedAssets[6].allocation = 5; // CASH
+        } else {
+            // High risk - more aggressive allocation
+            optimizedAssets[0].allocation = 35; // BTC
+            optimizedAssets[1].allocation = 30; // ETH
+            optimizedAssets[2].allocation = 10; // AAPL
+            optimizedAssets[3].allocation = 10; // MSFT
+            optimizedAssets[4].allocation = 5; // GOOGL
+            optimizedAssets[5].allocation = 8; // AMZN
+            optimizedAssets[6].allocation = 2; // CASH
+        }
 
-                if (risk <= 3) {
-                    // Low risk - more conservative allocation
-                    optimizedAssets[0].allocation = 15; // BTC
-                    optimizedAssets[1].allocation = 10; // ETH
-                    optimizedAssets[2].allocation = 20; // AAPL
-                    optimizedAssets[3].allocation = 20; // MSFT
-                    optimizedAssets[4].allocation = 15; // GOOGL
-                    optimizedAssets[5].allocation = 10; // AMZN
-                    optimizedAssets[6].allocation = 10; // CASH
-                } else if (risk <= 7) {
-                    // Medium risk
-                    optimizedAssets[0].allocation = 25; // BTC
-                    optimizedAssets[1].allocation = 20; // ETH
-                    optimizedAssets[2].allocation = 15; // AAPL
-                    optimizedAssets[3].allocation = 15; // MSFT
-                    optimizedAssets[4].allocation = 10; // GOOGL
-                    optimizedAssets[5].allocation = 10; // AMZN
-                    optimizedAssets[6].allocation = 5; // CASH
-                } else {
-                    // High risk - more aggressive allocation
-                    optimizedAssets[0].allocation = 35; // BTC
-                    optimizedAssets[1].allocation = 30; // ETH
-                    optimizedAssets[2].allocation = 10; // AAPL
-                    optimizedAssets[3].allocation = 10; // MSFT
-                    optimizedAssets[4].allocation = 5; // GOOGL
-                    optimizedAssets[5].allocation = 8; // AMZN
-                    optimizedAssets[6].allocation = 2; // CASH
-                }
+        setResult({
+            assets: optimizedAssets,
+            expectedReturn: (7 + risk * 0.8).toFixed(2),
+            volatility: (5 + risk * 0.7).toFixed(2),
+            sharpeRatio: (1.2 + risk * 0.1).toFixed(2),
+        });
 
-                setResult({
-                    assets: optimizedAssets,
-                    expectedReturn: (7 + risk * 0.8).toFixed(2),
-                    volatility: (5 + risk * 0.7).toFixed(2),
-                    sharpeRatio: (1.2 + risk * 0.1).toFixed(2),
-                });
-            } catch (err) {
-                setError('Error during optimization simulation');
-            } finally {
-                setLoading(false);
-            }
-        }, 1500);
+        showToast('Portfolio optimized (demo mode)!', 'info');
+    };
+
+    const getTotalAllocation = () => {
+        return assets.reduce((sum, asset) => sum + asset.allocation, 0);
     };
 
     return (
@@ -146,6 +169,18 @@ export default function PortfolioOptimization() {
             <div className="portfolio-content">
                 <div className="current-allocation">
                     <h2>Current Allocation</h2>
+
+                    <div className="allocation-total">
+                        <p>
+                            Total:{' '}
+                            <strong className={getTotalAllocation() === 100 ? 'valid' : 'invalid'}>
+                                {getTotalAllocation()}%
+                            </strong>
+                            {getTotalAllocation() !== 100 && (
+                                <span className="allocation-warning"> (Must equal 100%)</span>
+                            )}
+                        </p>
+                    </div>
 
                     <div className="asset-list">
                         {assets.map((asset, index) => (
@@ -173,30 +208,6 @@ export default function PortfolioOptimization() {
                             </div>
                         ))}
                     </div>
-
-                    <div className="allocation-chart">
-                        <div className="chart-rings">
-                            {assets.map((asset, index) => {
-                                // Calculate the segment size and position
-                                const total = assets.reduce(
-                                    (sum, a, i) => (i <= index ? sum + a.allocation : sum),
-                                    0,
-                                );
-                                const start = total - asset.allocation;
-                                return (
-                                    <div
-                                        key={index}
-                                        className="chart-segment"
-                                        style={{
-                                            backgroundColor: asset.color,
-                                            clipPath: `conic-gradient(from 0deg, transparent ${start}%, ${asset.color} ${start}%, ${asset.color} ${total}%, transparent ${total}%)`,
-                                        }}
-                                    />
-                                );
-                            })}
-                            <div className="chart-center"></div>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="optimization-controls">
@@ -215,7 +226,21 @@ export default function PortfolioOptimization() {
                         <div className="risk-value">Level: {risk}</div>
                     </div>
 
-                    <button className="optimize-button" onClick={mockOptimize} disabled={loading}>
+                    <p className="risk-description">
+                        {risk <= 3 &&
+                            'Conservative: Focus on stable, low-volatility assets with lower returns.'}
+                        {risk > 3 &&
+                            risk <= 7 &&
+                            'Moderate: Balanced approach with mix of stable and growth assets.'}
+                        {risk > 7 &&
+                            'Aggressive: Higher allocation to volatile assets with potential for higher returns.'}
+                    </p>
+
+                    <button
+                        className="optimize-button"
+                        onClick={optimize}
+                        disabled={loading || getTotalAllocation() !== 100}
+                    >
                         {loading ? 'Optimizing...' : 'Optimize Portfolio'}
                     </button>
 
@@ -229,43 +254,23 @@ export default function PortfolioOptimization() {
                         <div className="result-metrics">
                             <div className="metric-card">
                                 <h3>Expected Return</h3>
-                                <p className="metric-value">{result.expectedReturn}%</p>
+                                <p className="metric-value positive">+{result.expectedReturn}%</p>
+                                <p className="metric-label">Annual</p>
                             </div>
                             <div className="metric-card">
                                 <h3>Volatility</h3>
                                 <p className="metric-value">{result.volatility}%</p>
+                                <p className="metric-label">Standard Deviation</p>
                             </div>
                             <div className="metric-card">
                                 <h3>Sharpe Ratio</h3>
                                 <p className="metric-value">{result.sharpeRatio}</p>
+                                <p className="metric-label">Risk-Adjusted Return</p>
                             </div>
                         </div>
 
                         <div className="optimized-allocation">
                             <h3>Recommended Allocation</h3>
-                            <div className="allocation-chart optimized-chart">
-                                <div className="chart-rings">
-                                    {result.assets.map((asset, index) => {
-                                        // Calculate the segment size and position
-                                        const total = result.assets.reduce(
-                                            (sum, a, i) => (i <= index ? sum + a.allocation : sum),
-                                            0,
-                                        );
-                                        const start = total - asset.allocation;
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="chart-segment"
-                                                style={{
-                                                    backgroundColor: asset.color,
-                                                    clipPath: `conic-gradient(from 0deg, transparent ${start}%, ${asset.color} ${start}%, ${asset.color} ${total}%, transparent ${total}%)`,
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                    <div className="chart-center"></div>
-                                </div>
-                            </div>
 
                             <div className="asset-list optimized-list">
                                 {result.assets.map((asset, index) => (
@@ -281,6 +286,17 @@ export default function PortfolioOptimization() {
                                             <div className="asset-allocation">
                                                 {asset.allocation}%
                                             </div>
+                                            {Math.abs(asset.allocation - assets[index].allocation) >
+                                                0 && (
+                                                <div
+                                                    className={`allocation-change ${asset.allocation > assets[index].allocation ? 'positive' : 'negative'}`}
+                                                >
+                                                    {asset.allocation > assets[index].allocation
+                                                        ? '+'
+                                                        : ''}
+                                                    {asset.allocation - assets[index].allocation}%
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}

@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './styles/App.css';
 
 // Components
-import Dashboard from './components/Dashboard';
-import PredictionChart from './components/PredictionChart';
-import PortfolioOptimization from './components/PortfolioOptimization';
+import Dashboard from './components/pages/Dashboard';
+import PredictionChart from './components/pages/PredictionChart';
+import PortfolioOptimization from './components/pages/PortfolioOptimization';
 import Analytics from './components/pages/Analytics';
 import Settings from './components/pages/Settings';
 import Homepage from './components/pages/Homepage/Homepage';
@@ -94,13 +94,12 @@ function AppContent() {
                     <Header toggleSidebar={toggleSidebar} pageTitle={currentPage} />
                     <main className={`main-content ${isHomepage ? 'homepage-content' : ''}`}>
                         <ErrorBoundary>
-                            <Routes>
-                                <Route
-                                    path="/"
-                                    element={
-                                        <AnimatePresence mode="wait">
+                            <AnimatePresence mode="wait">
+                                <Routes location={location} key={location.pathname}>
+                                    <Route
+                                        path="/"
+                                        element={
                                             <motion.div
-                                                key="homepage"
                                                 initial="initial"
                                                 animate="in"
                                                 exit="out"
@@ -109,15 +108,12 @@ function AppContent() {
                                             >
                                                 <Homepage />
                                             </motion.div>
-                                        </AnimatePresence>
-                                    }
-                                />
-                                <Route
-                                    path="/dashboard"
-                                    element={
-                                        <AnimatePresence mode="wait">
+                                        }
+                                    />
+                                    <Route
+                                        path="/dashboard"
+                                        element={
                                             <motion.div
-                                                key="dashboard"
                                                 initial="initial"
                                                 animate="in"
                                                 exit="out"
@@ -126,15 +122,12 @@ function AppContent() {
                                             >
                                                 <Dashboard />
                                             </motion.div>
-                                        </AnimatePresence>
-                                    }
-                                />
-                                <Route
-                                    path="/predictions"
-                                    element={
-                                        <AnimatePresence mode="wait">
+                                        }
+                                    />
+                                    <Route
+                                        path="/predictions"
+                                        element={
                                             <motion.div
-                                                key="predictions"
                                                 initial="initial"
                                                 animate="in"
                                                 exit="out"
@@ -143,15 +136,12 @@ function AppContent() {
                                             >
                                                 <PredictionChart />
                                             </motion.div>
-                                        </AnimatePresence>
-                                    }
-                                />
-                                <Route
-                                    path="/optimize"
-                                    element={
-                                        <AnimatePresence mode="wait">
+                                        }
+                                    />
+                                    <Route
+                                        path="/optimize"
+                                        element={
                                             <motion.div
-                                                key="optimize"
                                                 initial="initial"
                                                 animate="in"
                                                 exit="out"
@@ -160,15 +150,12 @@ function AppContent() {
                                             >
                                                 <PortfolioOptimization />
                                             </motion.div>
-                                        </AnimatePresence>
-                                    }
-                                />
-                                <Route
-                                    path="/analytics"
-                                    element={
-                                        <AnimatePresence mode="wait">
+                                        }
+                                    />
+                                    <Route
+                                        path="/analytics"
+                                        element={
                                             <motion.div
-                                                key="analytics"
                                                 initial="initial"
                                                 animate="in"
                                                 exit="out"
@@ -177,15 +164,12 @@ function AppContent() {
                                             >
                                                 <Analytics />
                                             </motion.div>
-                                        </AnimatePresence>
-                                    }
-                                />
-                                <Route
-                                    path="/settings"
-                                    element={
-                                        <AnimatePresence mode="wait">
+                                        }
+                                    />
+                                    <Route
+                                        path="/settings"
+                                        element={
                                             <motion.div
-                                                key="settings"
                                                 initial="initial"
                                                 animate="in"
                                                 exit="out"
@@ -194,10 +178,10 @@ function AppContent() {
                                             >
                                                 <Settings />
                                             </motion.div>
-                                        </AnimatePresence>
-                                    }
-                                />
-                            </Routes>
+                                        }
+                                    />
+                                </Routes>
+                            </AnimatePresence>
                         </ErrorBoundary>
                     </main>
                     <Footer />

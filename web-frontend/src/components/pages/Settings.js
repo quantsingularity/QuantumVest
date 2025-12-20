@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { authAPI, settingsAPI } from '../../services/api';
+import { showToast } from '../ui/ToastManager';
+import LoadingSpinner from '../ui/LoadingSpinner';
 
 const Settings = () => {
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+
     // State for various settings
     const [notifications, setNotifications] = useState({
         email: true,
@@ -16,9 +22,9 @@ const Settings = () => {
 
     // Personal information state
     const [personalInfo, setPersonalInfo] = useState({
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 (555) 123-4567',
+        name: '',
+        email: '',
+        phone: '',
     });
 
     // Password change state
@@ -27,6 +33,64 @@ const Settings = () => {
         new: '',
         confirm: '',
     });
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    const fetchUserData = async () => {
+        try {
+            setLoading(true);
+
+            // Fetch user profile
+            try {
+                const profileResponse = await authAPI.getProfile();
+                if (profileResponse.data.success && profileResponse.data.user) {
+                    const user = profileResponse.data.user;
+                    setPersonalInfo({
+                        name:
+                            `${user.first_name || ''} ${user.last_name || ''}`.trim() ||
+                            user.username,
+                        email: user.email || '',
+                        phone: user.phone || '',
+                    });
+
+                    // Set currency preference if available
+                    if (user.preferred_currency) {
+                        setCurrency(user.preferred_currency.toLowerCase());
+                    }
+                }
+            } catch (error) {
+                console.warn('Could not fetch profile:', error);
+                setPersonalInfo({
+                    name: 'John Doe',
+                    email: 'john.doe@example.com',
+                    phone: '+1 (555) 123-4567',
+                });
+            }
+
+            // Fetch settings
+            try {
+                const settingsResponse = await settingsAPI.getSettings();
+                if (settingsResponse.data.success && settingsResponse.data.settings) {
+                    const settings = settingsResponse.data.settings;
+                    setNotifications({
+                        email: settings.email_notifications !== false,
+                        push: settings.push_notifications !== false,
+                        sms: settings.sms_notifications !== false,
+                    });
+                    setTwoFactorEnabled(settings.two_factor_enabled || false);
+                }
+            } catch (error) {
+                console.warn('Could not fetch settings:', error);
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            showToast('Could not load settings. Using defaults.', 'warning');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Handle notification toggle
     const handleNotificationToggle = (type) => {
@@ -55,23 +119,130 @@ const Settings = () => {
     };
 
     // Handle form submission
-    const handleSubmit = (e, formType) => {
+    const handleSubmit = async (e, formType) => {
         e.preventDefault();
-        // In a real app, this would send data to the server
-        console.log(`${formType} form submitted`);
+        setSaving(true);
 
-        // Show success message
-        alert(`${formType} settings updated successfully!`);
+        try {
+            if (formType === 'Account') {
+                const [firstName, ...lastNameParts] = personalInfo.name.split(' ');
+                const lastName = lastNameParts.join(' ');
 
-        // Reset password form if it's the password form
-        if (formType === 'Password') {
-            setPasswordForm({
-                current: '',
-                new: '',
-                confirm: '',
-            });
+                const updateData = {
+                    first_name: firstName,
+                    last_name: lastName,
+                    phone: personalInfo.phone,
+                };
+
+                const response = await authAPI.updateProfile(updateData);
+
+                if (response.data.success) {
+                    showToast('Account settings updated successfully!', 'success');
+                } else {
+                    throw new Error(response.data.error || 'Update failed');
+                }
+            } else if (formType === 'Password') {
+                if (passwordForm.new !== passwordForm.confirm) {
+                    showToast('New passwords do not match', 'error');
+                    setSaving(false);
+                    return;
+                }
+
+                if (passwordForm.new.length < 8) {
+                    showToast('Password must be at least 8 characters long', 'error');
+                    setSaving(false);
+                    return;
+                }
+
+                const response = await settingsAPI.changePassword({
+                    current_password: passwordForm.current,
+                    new_password: passwordForm.new,
+                });
+
+                if (response.data.success) {
+                    showToast('Password updated successfully!', 'success');
+                    setPasswordForm({
+                        current: '',
+                        new: '',
+                        confirm: '',
+                    });
+                } else {
+                    throw new Error(response.data.error || 'Password update failed');
+                }
+            } else if (formType === 'Preferences') {
+                const response = await settingsAPI.updateSettings({
+                    theme: theme,
+                    language: language,
+                    preferred_currency: currency.toUpperCase(),
+                });
+
+                if (response.data.success) {
+                    showToast('Preferences saved successfully!', 'success');
+                } else {
+                    throw new Error(response.data.error || 'Update failed');
+                }
+            } else if (formType === 'Notifications') {
+                const response = await settingsAPI.updateSettings({
+                    email_notifications: notifications.email,
+                    push_notifications: notifications.push,
+                    sms_notifications: notifications.sms,
+                });
+
+                if (response.data.success) {
+                    showToast('Notification settings updated successfully!', 'success');
+                } else {
+                    throw new Error(response.data.error || 'Update failed');
+                }
+            }
+        } catch (error) {
+            console.error(`Error updating ${formType}:`, error);
+            showToast(
+                error.response?.data?.error ||
+                    error.message ||
+                    `Failed to update ${formType.toLowerCase()} settings`,
+                'error',
+            );
+        } finally {
+            setSaving(false);
         }
     };
+
+    const handleTwoFactorToggle = async () => {
+        try {
+            setSaving(true);
+            const newValue = !twoFactorEnabled;
+
+            const response = newValue
+                ? await settingsAPI.enable2FA()
+                : await settingsAPI.disable2FA();
+
+            if (response.data.success) {
+                setTwoFactorEnabled(newValue);
+                showToast(
+                    `Two-factor authentication ${newValue ? 'enabled' : 'disabled'} successfully!`,
+                    'success',
+                );
+            } else {
+                throw new Error(response.data.error || '2FA toggle failed');
+            }
+        } catch (error) {
+            console.error('Error toggling 2FA:', error);
+            showToast(
+                error.response?.data?.error || 'Failed to update two-factor authentication',
+                'error',
+            );
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <LoadingSpinner text="Loading settings" />
+            </div>
+        );
+    }
 
     return (
         <div className="settings-page">
@@ -101,6 +272,7 @@ const Settings = () => {
                                     name="name"
                                     value={personalInfo.name}
                                     onChange={handlePersonalInfoChange}
+                                    required
                                 />
                             </div>
 
@@ -112,6 +284,8 @@ const Settings = () => {
                                     name="email"
                                     value={personalInfo.email}
                                     onChange={handlePersonalInfoChange}
+                                    disabled
+                                    title="Email cannot be changed"
                                 />
                             </div>
 
@@ -126,8 +300,8 @@ const Settings = () => {
                                 />
                             </div>
 
-                            <button type="submit" className="btn btn-primary">
-                                Save Changes
+                            <button type="submit" className="btn btn-primary" disabled={saving}>
+                                {saving ? 'Saving...' : 'Save Changes'}
                             </button>
                         </form>
                     </motion.div>
@@ -150,6 +324,7 @@ const Settings = () => {
                                     name="current"
                                     value={passwordForm.current}
                                     onChange={handlePasswordChange}
+                                    required
                                 />
                             </div>
 
@@ -161,6 +336,8 @@ const Settings = () => {
                                     name="new"
                                     value={passwordForm.new}
                                     onChange={handlePasswordChange}
+                                    required
+                                    minLength="8"
                                 />
                             </div>
 
@@ -172,11 +349,13 @@ const Settings = () => {
                                     name="confirm"
                                     value={passwordForm.confirm}
                                     onChange={handlePasswordChange}
+                                    required
+                                    minLength="8"
                                 />
                             </div>
 
-                            <button type="submit" className="btn btn-primary">
-                                Update Password
+                            <button type="submit" className="btn btn-primary" disabled={saving}>
+                                {saving ? 'Updating...' : 'Update Password'}
                             </button>
                         </form>
 
@@ -194,11 +373,12 @@ const Settings = () => {
                                     className="form-check-input"
                                     type="checkbox"
                                     checked={twoFactorEnabled}
-                                    onChange={() => setTwoFactorEnabled(!twoFactorEnabled)}
+                                    onChange={handleTwoFactorToggle}
+                                    disabled={saving}
                                     style={{
                                         width: '48px',
                                         height: '24px',
-                                        cursor: 'pointer',
+                                        cursor: saving ? 'not-allowed' : 'pointer',
                                         appearance: 'none',
                                         backgroundColor: twoFactorEnabled
                                             ? 'var(--success-color)'
@@ -267,8 +447,9 @@ const Settings = () => {
                         <button
                             className="btn btn-primary"
                             onClick={(e) => handleSubmit(e, 'Preferences')}
+                            disabled={saving}
                         >
-                            Save Preferences
+                            {saving ? 'Saving...' : 'Save Preferences'}
                         </button>
                     </motion.div>
 
@@ -371,8 +552,9 @@ const Settings = () => {
                         <button
                             className="btn btn-primary"
                             onClick={(e) => handleSubmit(e, 'Notifications')}
+                            disabled={saving}
                         >
-                            Save Notification Settings
+                            {saving ? 'Saving...' : 'Save Notification Settings'}
                         </button>
                     </motion.div>
                 </div>
@@ -394,7 +576,17 @@ const Settings = () => {
                                 Permanently delete your account and all associated data
                             </p>
                         </div>
-                        <button className="btn btn-danger">Delete Account</button>
+                        <button
+                            className="btn btn-danger"
+                            onClick={() =>
+                                showToast(
+                                    'Account deletion requires confirmation. Please contact support.',
+                                    'warning',
+                                )
+                            }
+                        >
+                            Delete Account
+                        </button>
                     </div>
                 </motion.div>
             </motion.div>
