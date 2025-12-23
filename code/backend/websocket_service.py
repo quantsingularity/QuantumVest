@@ -6,7 +6,7 @@ Real-time price updates and portfolio notifications
 import asyncio
 import logging
 from datetime import datetime, timezone
-from typing import Dict, Set
+from typing import Any, Dict, Set
 from auth import AuthService
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from models import Portfolio, User
@@ -17,14 +17,14 @@ logger = logging.getLogger(__name__)
 class WebSocketService:
     """Service for real-time WebSocket communications"""
 
-    def __init__(self, socketio: SocketIO) -> Any:
+    def __init__(self, socketio: SocketIO) -> None:
         self.socketio = socketio
         self.connected_users: Dict[str, str] = {}
         self.user_rooms: Dict[str, Set[str]] = {}
         self.price_subscribers: Dict[str, Set[str]] = {}
         self.register_handlers()
 
-    def register_handlers(self) -> Any:
+    def register_handlers(self) -> None:
         """Register WebSocket event handlers"""
 
         @self.socketio.on("connect")

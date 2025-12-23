@@ -5,7 +5,7 @@ Comprehensive configuration management with environment-specific settings
 
 import os
 from datetime import timedelta
-from typing import Any
+from typing import Any, Optional
 
 
 class Config:
@@ -94,7 +94,7 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     WTF_CSRF_ENABLED = False
     BCRYPT_LOG_ROUNDS = 4
-    API_RATE_LIMIT = None
+    API_RATE_LIMIT: Optional[str] = None
 
 
 class ProductionConfig(Config):
@@ -105,7 +105,7 @@ class ProductionConfig(Config):
 
     @classmethod
     def init_app(cls, app: Any) -> None:
-        Config.init_app(app)
+        # Config base class does not have init_app method
         import logging
         from logging.handlers import SysLogHandler
 

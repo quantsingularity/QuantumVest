@@ -6,7 +6,7 @@ Defines and trains LSTM models for time-series prediction
 import logging
 import os
 from datetime import datetime
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Tuple
 import joblib
 import numpy as np
 import pandas as pd
@@ -58,12 +58,13 @@ class LSTMModel:
         data = df[target_col].values.reshape(-1, 1)
         scaler = MinMaxScaler(feature_range=(0, 1))
         scaled_data = scaler.fit_transform(data)
-        X, y = ([], [])
+        X_list: List[np.ndarray] = []
+        y_list: List[float] = []
         for i in range(sequence_length, len(scaled_data)):
-            X.append(scaled_data[i - sequence_length : i, 0])
-            y.append(scaled_data[i, 0])
-        X = np.array(X)
-        y = np.array(y)
+            X_list.append(scaled_data[i - sequence_length : i, 0])
+            y_list.append(scaled_data[i, 0])
+        X = np.array(X_list)
+        y = np.array(y_list)
         X = np.reshape(X, (X.shape[0], X.shape[1], 1))
         return (X, y, scaler)
 

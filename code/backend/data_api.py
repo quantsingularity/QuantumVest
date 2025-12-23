@@ -66,9 +66,9 @@ class ApiClient:
             import yfinance as yf
 
             if endpoint == "YahooFinance/get_stock_chart":
-                symbol = query.get("symbol")
-                interval = query.get("interval", "1d")
-                range_param = query.get("range", "1y")
+                symbol = query.get("symbol") if query else None
+                interval = query.get("interval", "1d") if query else "1d"
+                range_param = query.get("range", "1y") if query else "1y"
 
                 # Use yfinance to fetch data
                 ticker = yf.Ticker(symbol)

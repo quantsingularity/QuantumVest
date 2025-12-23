@@ -4,11 +4,14 @@ Initialize and migrate database schema
 """
 
 import sys
-from enhanced_config import get_config
-from flask import Flask
+
+from config import get_config
 from flask_migrate import init, migrate, upgrade
-from models import db
-from core.logging import get_logger
+from flask import Flask
+import logging
+
+logger = logging.getLogger(__name__)
+from typing import Any
 
 logger = get_logger(__name__)
 

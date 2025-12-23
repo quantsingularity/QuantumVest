@@ -6,7 +6,7 @@ Comprehensive portfolio tracking, analysis, and optimization
 import logging
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import cvxpy as cp
 import numpy as np
@@ -33,10 +33,10 @@ class PortfolioService:
     def create_portfolio(
         user_id: str,
         name: str,
-        description: str = None,
+        description: Optional[str] = None,
         currency: str = "USD",
         is_default: bool = False,
-    ) -> Dict:
+    ) -> Dict[str, Any]:
         """Create a new portfolio for user"""
         try:
             # Check if user already has a default portfolio
@@ -64,7 +64,7 @@ class PortfolioService:
             return {"success": False, "error": str(e)}
 
     @staticmethod
-    def get_user_portfolios(user_id: str) -> Dict:
+    def get_user_portfolios(user_id: str) -> Dict[str, Any]:
         """Get all portfolios for a user"""
         try:
             portfolios = Portfolio.query.filter_by(user_id=user_id).all()
@@ -88,7 +88,7 @@ class PortfolioService:
             return {"success": False, "error": str(e)}
 
     @staticmethod
-    def get_portfolio_details(portfolio_id: str, user_id: str) -> Dict:
+    def get_portfolio_details(portfolio_id: str, user_id: str) -> Dict[str, Any]:
         """Get detailed portfolio information including holdings"""
         try:
             portfolio = Portfolio.query.filter_by(
@@ -166,8 +166,8 @@ class PortfolioService:
         quantity: float,
         price: float,
         fees: float = 0,
-        notes: str = None,
-    ) -> Dict:
+        notes: Optional[str] = None,
+    ) -> Dict[str, Any]:
         """Add a transaction to portfolio"""
         try:
             # Verify portfolio ownership
@@ -258,7 +258,7 @@ class PortfolioService:
     @staticmethod
     def get_portfolio_performance(
         portfolio_id: str, user_id: str, days: int = 30
-    ) -> Dict:
+    ) -> Dict[str, Any]:
         """Get portfolio performance metrics"""
         try:
             portfolio = Portfolio.query.filter_by(
@@ -357,9 +357,9 @@ class PortfolioService:
     def optimize_portfolio(
         portfolio_id: str,
         user_id: str,
-        target_return: float = None,
+        target_return: Optional[float] = None,
         risk_tolerance: float = 0.5,
-    ) -> Dict:
+    ) -> Dict[str, Any]:
         """Optimize portfolio allocation using Modern Portfolio Theory"""
         try:
             portfolio = Portfolio.query.filter_by(
@@ -457,7 +457,7 @@ class PortfolioService:
                     ),
                     None,
                 )
-                current_weight = 0
+                current_weight = 0.0
                 if current_holding and portfolio.total_value > 0:
                     current_weight = float(
                         current_holding.market_value / portfolio.total_value

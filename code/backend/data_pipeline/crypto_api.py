@@ -96,7 +96,7 @@ class CryptoDataFetcher(DataFetcher):
             logger.error(f"Error fetching crypto data for {symbol}: {e}")
             return pd.DataFrame()
 
-    def fetch_current_price(self, symbols: List[str]) -> Dict[str, float]:
+    def fetch_current_price(self, symbols: List[str]) -> Dict[str, Optional[float]]:
         """
         Fetch current prices for multiple cryptocurrencies
 
@@ -112,7 +112,7 @@ class CryptoDataFetcher(DataFetcher):
             response = self.session.get(url, params=params)
             self._handle_request_error(response, ",".join(symbols))
             data = response.json()
-            prices = {}
+            prices: Dict[str, Optional[float]] = {}
             for symbol in symbols:
                 if symbol in data and "usd" in data[symbol]:
                     prices[symbol] = data[symbol]["usd"]

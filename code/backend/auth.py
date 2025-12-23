@@ -6,7 +6,7 @@ JWT-based authentication with role-based access control
 import re
 from datetime import datetime, timedelta, timezone
 from functools import wraps
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 import jwt
 from flask import current_app, jsonify, request
 from models import User, UserRole, db
@@ -74,8 +74,8 @@ class AuthService:
         username: str,
         email: str,
         password: str,
-        first_name: str = None,
-        last_name: str = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Register a new user"""
         try:
@@ -219,7 +219,7 @@ class RateLimiter:
     """Simple in-memory rate limiter"""
 
     def __init__(self) -> None:
-        self.requests = {}
+        self.requests: Dict[str, List[datetime]] = {}
 
     def is_allowed(self, key: str, limit: int, window: int) -> bool:
         """Check if request is allowed based on rate limit"""

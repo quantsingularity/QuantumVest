@@ -5,7 +5,7 @@ Advanced risk assessment and management tools for portfolios
 
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 from models import PortfolioHolding, PriceData
@@ -23,7 +23,7 @@ class RiskManagementService:
         confidence_level: float = 0.95,
         time_horizon: int = 1,
         method: str = "historical",
-    ) -> Dict:
+    ) -> Dict[str, Any]:
         """Calculate Value at Risk (VaR) for a portfolio"""
         try:
             # Get portfolio holdings
@@ -83,7 +83,7 @@ class RiskManagementService:
     @staticmethod
     def calculate_portfolio_metrics(
         portfolio_id: str, benchmark_symbol: str = "SPY"
-    ) -> Dict:
+    ) -> Dict[str, Any]:
         """Calculate comprehensive portfolio risk metrics"""
         try:
             # Get portfolio returns
@@ -165,13 +165,13 @@ class RiskManagementService:
                         )
                     )
                 else:
-                    metrics["beta"] = 0
-                    metrics["correlation_with_benchmark"] = 0
-                    metrics["alpha"] = 0
+                    metrics["beta"] = 0.0
+                    metrics["correlation_with_benchmark"] = 0.0
+                    metrics["alpha"] = 0.0
             else:
-                metrics["beta"] = None
-                metrics["correlation_with_benchmark"] = None
-                metrics["alpha"] = None
+                metrics["beta"] = 0.0
+                metrics["correlation_with_benchmark"] = 0.0
+                metrics["alpha"] = 0.0
 
             # Information ratio
             if benchmark_returns is not None:
@@ -182,9 +182,9 @@ class RiskManagementService:
                         np.mean(active_returns) * 252 / tracking_error
                     )
                 else:
-                    metrics["information_ratio"] = 0
+                    metrics["information_ratio"] = 0.0
             else:
-                metrics["information_ratio"] = None
+                metrics["information_ratio"] = 0.0
 
             return {"success": True, "metrics": metrics}
 
@@ -193,7 +193,9 @@ class RiskManagementService:
             return {"success": False, "error": str(e)}
 
     @staticmethod
-    def stress_test_portfolio(portfolio_id: str, scenarios: List[Dict]) -> Dict:
+    def stress_test_portfolio(
+        portfolio_id: str, scenarios: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """Perform stress testing on portfolio"""
         try:
             # Get current portfolio value and holdings

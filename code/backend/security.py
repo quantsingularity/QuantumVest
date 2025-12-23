@@ -11,13 +11,13 @@ import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from functools import wraps
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 import bcrypt
 import jwt
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from enhanced_models import AuditLog, User, UserRole, db
+from models import AuditLog, User, UserRole, db
 from flask import current_app, g, jsonify, request
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ class SecurityEvent:
 class EncryptionService:
     """Advanced encryption service for sensitive data"""
 
-    def __init__(self, master_key: Optional[str] = None) -> Any:
+    def __init__(self, master_key: Optional[str] = None) -> None:
         """Initialize encryption service with master key"""
         if master_key:
             self.master_key = master_key.encode()
@@ -277,9 +277,9 @@ class AuthorizationService:
 class SecurityMiddleware:
     """Security middleware for request processing"""
 
-    def __init__(self) -> Any:
-        self.rate_limits = {}
-        self.blocked_ips = set()
+    def __init__(self) -> None:
+        self.rate_limits: Dict[str, List[datetime]] = {}
+        self.blocked_ips: Set[str] = set()
         self.suspicious_patterns = [
             "<script.*?>.*?</script>",
             "union.*select",
@@ -332,7 +332,7 @@ class AuditService:
     """Comprehensive audit logging service"""
 
     @staticmethod
-    def log_security_event(event: SecurityEvent) -> Any:
+    def log_security_event(event: SecurityEvent) -> None:
         """Log security event to audit trail"""
         try:
             audit_log = AuditLog(

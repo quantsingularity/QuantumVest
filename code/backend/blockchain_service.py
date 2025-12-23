@@ -5,7 +5,7 @@ Web3 integration for on-chain data analysis and DeFi features
 
 import logging
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
@@ -14,14 +14,14 @@ logger = logging.getLogger(__name__)
 class BlockchainService:
     """Service for blockchain integration and on-chain analysis"""
 
-    def __init__(self, provider_url: str = None) -> Any:
+    def __init__(self, provider_url: Optional[str] = None) -> None:
         self.provider_url = (
             provider_url or "https://mainnet.infura.io/v3/your-project-id"
         )
-        self.w3 = None
+        self.w3: Optional[Web3] = None
         self.initialize_web3()
 
-    def initialize_web3(self) -> Any:
+    def initialize_web3(self) -> None:
         """Initialize Web3 connection"""
         try:
             self.w3 = Web3(Web3.HTTPProvider(self.provider_url))
@@ -34,8 +34,8 @@ class BlockchainService:
             self.w3 = None
 
     def get_wallet_balance(
-        self, address: str, token_contracts: List[str] = None
-    ) -> Dict:
+        self, address: str, token_contracts: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
         """Get wallet balance for ETH and ERC-20 tokens"""
         try:
             if not self.w3 or not self.w3.is_connected():
@@ -71,7 +71,7 @@ class BlockchainService:
             logger.error(f"Error getting wallet balance: {e}")
             return {"success": False, "error": str(e)}
 
-    def get_transaction_history(self, address: str, limit: int = 100) -> Dict:
+    def get_transaction_history(self, address: str, limit: int = 100) -> Dict[str, Any]:
         """Get transaction history for an address"""
         try:
             if not self.w3 or not self.w3.is_connected():
@@ -119,7 +119,7 @@ class BlockchainService:
             logger.error(f"Error getting transaction history: {e}")
             return {"success": False, "error": str(e)}
 
-    def analyze_whale_movements(self, min_value_eth: float = 1000) -> Dict:
+    def analyze_whale_movements(self, min_value_eth: float = 1000) -> Dict[str, Any]:
         """Analyze large transactions (whale movements)"""
         try:
             if not self.w3 or not self.w3.is_connected():
@@ -160,7 +160,7 @@ class BlockchainService:
             logger.error(f"Error analyzing whale movements: {e}")
             return {"success": False, "error": str(e)}
 
-    def get_defi_protocol_data(self, protocol: str) -> Dict:
+    def get_defi_protocol_data(self, protocol: str) -> Dict[str, Any]:
         """Get DeFi protocol data (TVL, yields, etc.)"""
         try:
             protocols_data = {
@@ -241,7 +241,7 @@ class BlockchainService:
             logger.error(f"Error getting DeFi protocol data: {e}")
             return {"success": False, "error": str(e)}
 
-    def get_gas_tracker(self) -> Dict:
+    def get_gas_tracker(self) -> Dict[str, Any]:
         """Get current gas prices and network congestion"""
         try:
             if not self.w3 or not self.w3.is_connected():
