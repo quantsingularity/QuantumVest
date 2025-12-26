@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import Config from '../config/config';
 
 const AuthContext = createContext(null);
 
@@ -65,7 +66,7 @@ export const AuthProvider = ({ children }) => {
             setLoading(true);
             setError(null);
 
-            const response = await axios.post('http://localhost:5000/api/v1/auth/login', {
+            const response = await axios.post(`${Config.API_BASE_URL}/auth/login`, {
                 username,
                 password,
             });
@@ -97,10 +98,7 @@ export const AuthProvider = ({ children }) => {
             setLoading(true);
             setError(null);
 
-            const response = await axios.post(
-                'http://localhost:5000/api/v1/auth/register',
-                userData,
-            );
+            const response = await axios.post(`${Config.API_BASE_URL}/auth/register`, userData);
 
             if (response.data.success) {
                 // Auto-login after registration
@@ -131,7 +129,7 @@ export const AuthProvider = ({ children }) => {
                 throw new Error('No refresh token available');
             }
 
-            const response = await axios.post('http://localhost:5000/api/v1/auth/refresh', {
+            const response = await axios.post(`${Config.API_BASE_URL}/auth/refresh`, {
                 refresh_token: refreshToken,
             });
 

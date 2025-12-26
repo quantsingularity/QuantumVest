@@ -11,6 +11,7 @@ module.exports = {
     ],
     coveragePathIgnorePatterns: ['/node_modules/', '/.expo/'],
     testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
+    testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     moduleNameMapper: {
         '\\.svg': '<rootDir>/__mocks__/svgMock.js',

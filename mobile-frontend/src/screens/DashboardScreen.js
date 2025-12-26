@@ -145,7 +145,11 @@ const DashboardScreen = ({ navigation }) => {
         <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
             <Appbar.Header>
                 <Appbar.Content title="QuantumVest Dashboard" />
-                <Appbar.Action icon="cog" onPress={() => navigation.navigate('Settings')} />
+                <Appbar.Action
+                    icon="cog"
+                    onPress={() => navigation.navigate('Settings')}
+                    testID="settings-button"
+                />
             </Appbar.Header>
 
             <View style={styles.contentContainer}>

@@ -149,6 +149,7 @@ const NewsScreen = ({ navigation }) => {
                     icon="refresh"
                     onPress={handleRefresh}
                     disabled={loading || refreshing}
+                    testID="refresh-news-button"
                 />
             </Appbar.Header>
 

@@ -1,10 +1,11 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Config from '../config/config';
 
 // Define the base URL for the backend API
-const API_BASE_URL = 'http://localhost:5000/api/v1';
+const API_BASE_URL = Config.API_BASE_URL;
 // Define the base URL for CoinGecko API
-const COINGECKO_API_BASE_URL = 'https://api.coingecko.com/api/v3';
+const COINGECKO_API_BASE_URL = Config.COINGECKO_API_URL;
 // Define the base URL for CryptoNews API
 const CRYPTONEWS_API_BASE_URL = 'https://cryptonews-api.com/api/v1';
 // Storage keys
@@ -63,10 +64,10 @@ export const saveCryptoNewsApiToken = async (token) => {
 export const getCryptoNewsApiToken = async () => {
     try {
         const token = await AsyncStorage.getItem(CRYPTONEWS_TOKEN_STORAGE_KEY);
-        return token;
+        return token || Config.CRYPTONEWS_API_TOKEN;
     } catch (error) {
         console.error('Error retrieving API token:', error);
-        return null;
+        return Config.CRYPTONEWS_API_TOKEN;
     }
 };
 

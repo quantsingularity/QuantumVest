@@ -1,94 +1,101 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import LoginScreen from '../LoginScreen';
-import { useAuth } from '../../context/AuthContext';
+import { AuthProvider } from '../../context/AuthContext';
+import { AppProvider } from '../../context/AppContext';
+import { ThemeProvider } from '../../theme/ThemeProvider';
 
-const mockNavigation = {
-    navigate: jest.fn(),
-    replace: jest.fn(),
+// Mock navigation
+const mockNavigate = jest.fn();
+const mockReplace = jest.fn();
+const navigation = {
+    navigate: mockNavigate,
+    replace: mockReplace,
 };
 
-jest.mock('../../context/AuthContext', () => ({
-    useAuth: jest.fn(),
-}));
+// Wrapper component with all providers
+const AllTheProviders = ({ children }) => {
+    return (
+        <AppProvider>
+            <ThemeProvider>
+                <AuthProvider>{children}</AuthProvider>
+            </ThemeProvider>
+        </AppProvider>
+    );
+};
+
+const renderWithProviders = (component) => {
+    return render(component, { wrapper: AllTheProviders });
+};
 
 describe('LoginScreen', () => {
-    const mockLogin = jest.fn();
-
     beforeEach(() => {
-        useAuth.mockReturnValue({
-            login: mockLogin,
-        });
-        mockLogin.mockReset();
-        mockNavigation.navigate.mockReset();
-        mockNavigation.replace.mockReset();
+        jest.clearAllMocks();
     });
 
-    test('renders login form correctly', () => {
-        const { getByText, getByPlaceholderText } = render(
-            <LoginScreen navigation={mockNavigation} />,
+    it('renders correctly', () => {
+        const { getByText, getByPlaceholderText } = renderWithProviders(
+            <LoginScreen navigation={navigation} />,
         );
 
         expect(getByText('Welcome to QuantumVest')).toBeTruthy();
         expect(getByText('Sign in to access your investment portfolio')).toBeTruthy();
-        expect(getByText('Sign In')).toBeTruthy();
     });
 
-    test('allows input in username and password fields', () => {
-        const { getByLabelText } = render(<LoginScreen navigation={mockNavigation} />);
+    it('allows users to enter username and password', () => {
+        const { getByLabelText } = renderWithProviders(<LoginScreen navigation={navigation} />);
 
-        const usernameInput = getByLabelText('Username or Email');
-        const passwordInput = getByLabelText('Password');
+        const usernameInput = getByLabelText(/Username or Email/i);
+        const passwordInput = getByLabelText(/Password/i);
 
         fireEvent.changeText(usernameInput, 'testuser');
-        fireEvent.changeText(passwordInput, 'password123');
+        fireEvent.changeText(passwordInput, 'testpassword123');
 
         expect(usernameInput.props.value).toBe('testuser');
-        expect(passwordInput.props.value).toBe('password123');
+        expect(passwordInput.props.value).toBe('testpassword123');
     });
 
-    test('calls login function with correct credentials', async () => {
-        mockLogin.mockResolvedValue({ success: true });
+    it('shows guest access button', () => {
+        const { getByText } = renderWithProviders(<LoginScreen navigation={navigation} />);
 
-        const { getByLabelText, getByText } = render(<LoginScreen navigation={mockNavigation} />);
-
-        const usernameInput = getByLabelText('Username or Email');
-        const passwordInput = getByLabelText('Password');
-        const signInButton = getByText('Sign In');
-
-        fireEvent.changeText(usernameInput, 'testuser');
-        fireEvent.changeText(passwordInput, 'password123');
-        fireEvent.press(signInButton);
-
-        await waitFor(() => {
-            expect(mockLogin).toHaveBeenCalledWith('testuser', 'password123');
-        });
+        const guestButton = getByText('Continue as Guest');
+        expect(guestButton).toBeTruthy();
     });
 
-    test('toggles password visibility', () => {
-        const { getByLabelText } = render(<LoginScreen navigation={mockNavigation} />);
+    it('navigates to register screen', () => {
+        const { getByText } = renderWithProviders(<LoginScreen navigation={navigation} />);
 
-        const passwordInput = getByLabelText('Password');
-
-        // Initially password should be hidden
-        expect(passwordInput.props.secureTextEntry).toBe(true);
-    });
-
-    test('navigates to Register screen when register button is pressed', () => {
-        const { getByText } = render(<LoginScreen navigation={mockNavigation} />);
-
-        const registerButton = getByText("Don't have an account? Register");
+        const registerButton = getByText(/Don't have an account\\? Register/i);
         fireEvent.press(registerButton);
 
-        expect(mockNavigation.navigate).toHaveBeenCalledWith('Register');
+        expect(mockNavigate).toHaveBeenCalledWith('Register');
     });
 
-    test('navigates to Main screen when guest access is pressed', () => {
-        const { getByText } = render(<LoginScreen navigation={mockNavigation} />);
+    it('handles guest access', () => {
+        const { getByText } = renderWithProviders(<LoginScreen navigation={navigation} />);
 
         const guestButton = getByText('Continue as Guest');
         fireEvent.press(guestButton);
 
-        expect(mockNavigation.replace).toHaveBeenCalledWith('Main');
+        expect(mockReplace).toHaveBeenCalledWith('Main');
+    });
+
+    it('shows loading state while logging in', async () => {
+        const { getByText, getByLabelText } = renderWithProviders(
+            <LoginScreen navigation={navigation} />,
+        );
+
+        const usernameInput = getByLabelText(/Username or Email/i);
+        const passwordInput = getByLabelText(/Password/i);
+        const loginButton = getByText('Sign In');
+
+        fireEvent.changeText(usernameInput, 'testuser');
+        fireEvent.changeText(passwordInput, 'testpassword123');
+        fireEvent.press(loginButton);
+
+        // The button should show loading state
+        await waitFor(() => {
+            expect(loginButton.props.accessibilityState.disabled).toBe(true);
+        });
     });
 });

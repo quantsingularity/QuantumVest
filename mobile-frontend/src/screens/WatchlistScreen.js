@@ -169,11 +169,16 @@ const WatchlistScreen = ({ navigation }) => {
                     <Appbar.BackAction onPress={() => navigation.goBack()} />
                 )}
                 <Appbar.Content title="My Watchlist" />
-                <Appbar.Action icon="plus" onPress={() => setDialogVisible(true)} />
+                <Appbar.Action
+                    icon="plus"
+                    onPress={() => setDialogVisible(true)}
+                    testID="add-coin-button"
+                />
                 <Appbar.Action
                     icon="refresh"
                     onPress={onRefresh}
                     disabled={loading || refreshing}
+                    testID="refresh-watchlist-button"
                 />
             </Appbar.Header>
 
