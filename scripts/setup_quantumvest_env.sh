@@ -16,7 +16,7 @@ set -e
 
 echo "Starting QuantumVest project setup..."
 
-PROJECT_DIR="/home/ubuntu/projects_extracted/QuantumVest"
+PROJECT_DIR="/QuantumVest"
 
 if [ ! -d "${PROJECT_DIR}" ]; then
   echo "Error: Project directory ${PROJECT_DIR} not found."
