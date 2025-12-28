@@ -1,5 +1,5 @@
 """
-Enhanced Security Module for QuantumVest
+Security Module for QuantumVest
 Financial industry-grade security features including encryption, audit logging, and threat detection
 """
 
@@ -85,7 +85,7 @@ class EncryptionService:
 
 
 class AuthenticationService:
-    """Enhanced authentication service with multi-factor support"""
+    """Authentication service with multi-factor support"""
 
     @staticmethod
     def generate_secure_password_hash(password: str) -> str:
@@ -256,18 +256,18 @@ class AuthorizationService:
         if user.role == UserRole.ADMIN:
             return True
         if resource_type == "portfolio" and user.role == UserRole.PORTFOLIO_MANAGER:
-            from enhanced_models import Portfolio
+            from models import Portfolio
 
             portfolio = Portfolio.query.get(resource_id)
             return portfolio and portfolio.user_id == user.id
         if user.role == UserRole.CLIENT:
             if resource_type == "portfolio":
-                from enhanced_models import Portfolio
+                from models import Portfolio
 
                 portfolio = Portfolio.query.get(resource_id)
                 return portfolio and portfolio.user_id == user.id
             elif resource_type == "transaction":
-                from enhanced_models import Transaction
+                from models import Transaction
 
                 transaction = Transaction.query.get(resource_id)
                 return transaction and transaction.user_id == user.id
@@ -473,7 +473,7 @@ class ThreatDetectionService:
     def analyze_transaction_patterns(self, user_id: str) -> Dict[str, Any]:
         """Analyze transaction patterns for anomalies"""
         try:
-            from enhanced_models import Transaction
+            from models import Transaction
 
             cutoff_time = datetime.now(timezone.utc) - timedelta(days=30)
             transactions = Transaction.query.filter(

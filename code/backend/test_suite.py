@@ -1,5 +1,5 @@
 """
-Comprehensive Test Suite for QuantumVest Enhanced Backend
+Comprehensive Test Suite for QuantumVest Backend
 Financial industry-grade testing with security, performance, and integration tests
 """
 
@@ -15,7 +15,7 @@ from core.logging import get_logger
 logger = get_logger(__name__)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
-    from enhanced_models import (
+    from models import (
         Asset,
         AssetType,
         Portfolio,
@@ -26,7 +26,7 @@ try:
         UserRole,
         db,
     )
-    from enhanced_security import (
+    from security import (
         AuthenticationService,
         AuthorizationService,
         EncryptionService,
@@ -509,7 +509,7 @@ def run_performance_tests() -> Any:
 def run_all_tests() -> Any:
     """Run all test suites"""
     logger.info("=" * 80)
-    logger.info("QUANTUMVEST ENHANCED BACKEND TEST SUITE")
+    logger.info("QUANTUMVEST BACKEND TEST SUITE")
     logger.info("=" * 80)
     logger.info("\n1. Running Unit Tests...")
     unittest.main(argv=[""], exit=False, verbosity=2)

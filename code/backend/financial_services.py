@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 import numpy as np
-from enhanced_models import (
+from models import (
     Alert,
     Asset,
     ComplianceCheck,

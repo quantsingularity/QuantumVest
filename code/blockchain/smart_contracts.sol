@@ -9,7 +9,7 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 /**
- * @title QuantumVest Enhanced Smart Contracts
+ * @title QuantumVest Smart Contracts
  * @dev Comprehensive smart contract suite for financial operations
  * @author QuantumVest Team
  */

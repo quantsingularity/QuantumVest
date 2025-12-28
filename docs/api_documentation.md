@@ -568,30 +568,3 @@ QuantumVest supports webhooks for real-time notifications about various events.
     }
 }
 ```
-
-## SDKs and Client Libraries
-
-We provide official client libraries for the following programming languages:
-
-- Python: [GitHub Repository](https://github.com/quantumvest/python-sdk)
-- JavaScript: [GitHub Repository](https://github.com/quantumvest/js-sdk)
-- Java: [GitHub Repository](https://github.com/quantumvest/java-sdk)
-- Ruby: [GitHub Repository](https://github.com/quantumvest/ruby-sdk)
-
-## Changelog
-
-### v1.2.0 (2025-03-15)
-
-- Added market sentiment analysis endpoint
-- Improved prediction accuracy
-- Added support for additional cryptocurrencies
-
-### v1.1.0 (2025-01-20)
-
-- Added portfolio optimization endpoints
-- Enhanced historical data retrieval
-- Improved rate limiting with more granular controls
-
-### v1.0.0 (2024-11-10)
-
-- Initial API release

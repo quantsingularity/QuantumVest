@@ -8,7 +8,7 @@ The documentation directory is organized as follows:
 
 ```
 docs/
-├── README_ENHANCEMENTS.md
+├── README.md
 ├── ai_models_documentation.md
 ├── api_documentation.md
 ├── blockchain_integration.md
@@ -57,7 +57,7 @@ docs/
 
 - **Images Directory**: The `images/` folder contains diagrams, screenshots, and other visual assets used throughout the documentation.
 
-- **README Enhancements**: The `README_ENHANCEMENTS.md` file contains planned improvements and additions to the documentation.
+- **README**: The `README.md` file contains planned improvements and additions to the documentation.
 
 ## Usage Guidelines
 

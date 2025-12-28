@@ -1,5 +1,5 @@
 """
-Enhanced Database Models for QuantumVest
+Database Models for QuantumVest
 Financial industry-grade models with comprehensive features
 """
 
@@ -70,7 +70,7 @@ class ComplianceStatus(enum.Enum):
 
 
 class User(db.Model):
-    """Enhanced user model with comprehensive financial features"""
+    """User model with comprehensive financial features"""
 
     __tablename__ = "users"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -142,7 +142,7 @@ class User(db.Model):
 
 
 class Asset(db.Model):
-    """Enhanced asset model with comprehensive market data"""
+    """Asset model with comprehensive market data"""
 
     __tablename__ = "assets"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -198,7 +198,7 @@ class Asset(db.Model):
 
 
 class Portfolio(db.Model):
-    """Enhanced portfolio model with comprehensive tracking"""
+    """Portfolio model with comprehensive tracking"""
 
     __tablename__ = "portfolios"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -321,7 +321,7 @@ class PortfolioHolding(db.Model):
 
 
 class Transaction(db.Model):
-    """Enhanced transaction model with comprehensive tracking"""
+    """Transaction model with comprehensive tracking"""
 
     __tablename__ = "transactions"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

@@ -1,4 +1,4 @@
-# Enhanced Requirements for QuantumVest Backend
+# Requirements for QuantumVest Backend
 # Financial industry-grade dependencies with AI and security features
 
 # Core Flask and web framework dependencies

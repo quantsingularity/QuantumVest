@@ -1,5 +1,5 @@
 """
-Enhanced Training Scripts for QuantumVest AI Models
+Training Scripts for QuantumVest AI Models
 Comprehensive training pipeline with data preprocessing, model training, validation, and deployment
 """
 

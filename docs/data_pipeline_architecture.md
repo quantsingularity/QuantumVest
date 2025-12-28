@@ -60,7 +60,7 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
 
 - **Purpose**: Serve predictions and data through RESTful endpoints
 - **Components**:
-    - Enhanced `app.py`: Integrates new endpoints
+    - `app.py`: Integrates new endpoints
     - `api_routes.py`: Defines API routes for data and predictions
     - `api_validators.py`: Validates API requests
 - **New Endpoints**:
@@ -121,7 +121,7 @@ This document outlines the architecture for enhancing QuantumVest with a real-ti
 The new architecture will integrate with the existing codebase as follows:
 
 1. **Backend Integration**:
-    - Enhance existing Flask app with new routes
+    - Existing Flask app with new routes
     - Maintain compatibility with existing endpoints
     - Reuse authentication and authorization mechanisms
 
