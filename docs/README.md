@@ -1,92 +1,130 @@
-# Documentation Directory
+# QuantumVest Documentation
 
-The `docs` directory serves as the central knowledge repository for the QuantumVest project, containing comprehensive technical documentation, user guides, and reference materials. This documentation is essential for developers, administrators, and end-users to understand, deploy, and utilize the QuantumVest platform effectively.
+**AI-Powered Predictive Investment Analytics Platform**
 
-## Directory Structure
+## Overview
 
-The documentation directory is organized as follows:
+QuantumVest is an enterprise-grade investment analytics platform that combines artificial intelligence, blockchain technology, and quantitative finance models to provide retail investors with institutional-quality insights. The platform offers real-time market predictions, portfolio optimization, risk management, and comprehensive analytics across multiple asset classes including stocks, cryptocurrencies, ETFs, bonds, commodities, and forex.
 
-```
-docs/
-├── README.md
-├── ai_models_documentation.md
-├── api_documentation.md
-├── blockchain_integration.md
-├── data_pipeline_architecture.md
-├── developer_guide.md
-├── getting_started.md
-├── images/
-├── infrastructure_guide.md
-├── project structure.md
-├── technical_documentation.md
-├── ui-design-plan.md
-└── user_manual.md
-```
+## Quick Start
 
-## Documentation Overview
+Get started with QuantumVest in 3 simple steps:
+
+1. **Clone and Setup**
+
+    ```bash
+    git clone https://github.com/abrar2030/QuantumVest.git
+    cd QuantumVest
+    ./scripts/setup_quantumvest_env.sh
+    ```
+
+2. **Configure Environment**
+
+    ```bash
+    # Backend: Create .env file in code/backend/
+    cp code/backend/.env.example code/backend/.env
+    # Edit .env with your database credentials and API keys
+    ```
+
+3. **Start Services**
+    ```bash
+    ./scripts/run_quantumvest.sh
+    # Or start services individually:
+    # Backend: cd code/backend && source venv/bin/activate && python app.py
+    # Frontend: cd web-frontend && npm start
+    ```
+
+Access the application at `http://localhost:3000` (frontend) and `http://localhost:5000/api/v1` (backend API).
+
+---
+
+## Documentation Index
+
+### Getting Started
+
+- **[Installation Guide](INSTALLATION.md)** — System prerequisites, installation options (Docker, pip, manual), and environment setup
+- **[Quick Start Guide](getting_started.md)** — First-time user walkthrough, account setup, and basic operations
+- **[Configuration Guide](CONFIGURATION.md)** — Environment variables, database setup, API keys, and service configuration
 
 ### Core Documentation
 
-- **Getting Started Guide**: The `getting_started.md` file provides an introduction to the QuantumVest platform, including setup instructions, prerequisites, and initial configuration steps. This is the recommended starting point for new developers and users.
+- **[Usage Guide](USAGE.md)** — Common workflows, CLI usage, library API usage, and practical examples
+- **[API Reference](API.md)** — Complete REST API documentation with endpoints, parameters, and examples
+- **[CLI Reference](CLI.md)** — Command-line interface commands, flags, and usage patterns
+- **[Feature Matrix](FEATURE_MATRIX.md)** — Comprehensive feature catalog with module mapping and availability
 
-- **Developer Guide**: The `developer_guide.md` document contains detailed information for developers working on the QuantumVest codebase, including coding standards, development workflows, and contribution guidelines.
+### Architecture & Development
 
-- **User Manual**: The `user_manual.md` file offers comprehensive instructions for end-users on how to navigate and utilize the QuantumVest application, including account management, portfolio creation, and investment strategies.
+- **[Architecture Overview](ARCHITECTURE.md)** — System design, module structure, data flow, and component diagrams
+- **[Data Pipeline Architecture](data_pipeline_architecture.md)** — ETL processes, data storage, feature engineering, and model serving
+- **[AI Models Documentation](ai_models_documentation.md)** — Machine learning models, training procedures, and inference APIs
+- **[Blockchain Integration](blockchain_integration.md)** — Smart contracts, on-chain data collection, and Web3 integration
 
-- **Technical Documentation**: The `technical_documentation.md` file provides an in-depth overview of the system architecture, design patterns, and technical decisions that shape the QuantumVest platform.
+### Advanced Topics
 
-### Component-Specific Documentation
+- **[Developer Guide](CONTRIBUTING.md)** — Contributing guidelines, code style, testing, and development workflow
+- **[Infrastructure Guide](infrastructure_guide.md)** — Kubernetes deployment, CI/CD, monitoring, and DevOps
+- **[Troubleshooting Guide](TROUBLESHOOTING.md)** — Common issues, debugging tips, and FAQ
 
-- **AI Models Documentation**: The `ai_models_documentation.md` file details the machine learning models used in QuantumVest, including their architecture, training methodologies, input/output specifications, and performance metrics.
+### Examples & Tutorials
 
-- **API Documentation**: The `api_documentation.md` file provides a comprehensive reference for all API endpoints, request/response formats, authentication mechanisms, and usage examples.
+- **[Examples Directory](EXAMPLES/)** — Working code examples demonstrating key features
+    - [Portfolio Management Example](EXAMPLES/portfolio-management.md)
+    - [AI Prediction Example](EXAMPLES/ai-prediction.md)
+    - [Risk Analysis Example](EXAMPLES/risk-analysis.md)
 
-- **Blockchain Integration**: The `blockchain_integration.md` document explains how QuantumVest integrates with blockchain technologies, including smart contract implementations, transaction flows, and security considerations.
+### Additional Resources
 
-- **Data Pipeline Architecture**: The `data_pipeline_architecture.md` file outlines the data processing workflows, from ingestion of financial data to transformation and analysis.
+- **[Technical Documentation](technical_documentation.md)** — Deep technical specifications and design decisions
+- **[User Manual](user_manual.md)** — End-user guide for web and mobile applications
+- **[Project Structure](project%20structure.md)** — Directory layout and file organization
 
-- **Infrastructure Guide**: The `infrastructure_guide.md` document provides detailed information on deployment architectures, scaling strategies, monitoring, and maintenance procedures.
+---
 
-### Design and Planning
+## Key Features at a Glance
 
-- **Project Structure**: The `project structure.md` file provides an overview of the repository organization and the relationships between different components.
+| Category            | Features                                                                                |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| **AI/ML**           | LSTM price predictions, sentiment analysis, pattern recognition, anomaly detection      |
+| **Blockchain**      | On-chain analytics, whale tracking, smart money flow, DeFi metrics                      |
+| **Quantitative**    | Portfolio optimization, Monte Carlo simulations, risk-adjusted returns, factor analysis |
+| **Asset Classes**   | Stocks, crypto, ETFs, bonds, commodities, forex, options, futures                       |
+| **Risk Management** | VaR calculation, stress testing, scenario analysis, exposure tracking                   |
+| **Authentication**  | JWT tokens, OAuth2, 2FA support, role-based access control                              |
+| **Real-time**       | WebSocket streaming, live market data, instant notifications                            |
+| **Compliance**      | KYC/AML status tracking, audit logging, regulatory reporting                            |
 
-- **UI Design Plan**: The `ui-design-plan.md` document outlines the user interface design principles, wireframes, and user experience considerations.
+---
 
-### Supporting Resources
+## System Requirements
 
-- **Images Directory**: The `images/` folder contains diagrams, screenshots, and other visual assets used throughout the documentation.
+- **Backend**: Python 3.8+, PostgreSQL 12+, Redis 5+
+- **Frontend**: Node.js 14+, npm 6+
+- **Mobile**: Expo SDK 52+, React Native 0.76+
+- **Blockchain**: Ethereum/BSC node access (optional)
+- **Infrastructure**: Docker 20+, Kubernetes 1.20+ (for production)
 
-- **README**: The `README.md` file contains planned improvements and additions to the documentation.
+---
 
-## Usage Guidelines
+## Technology Stack
 
-### For Developers
+| Layer          | Technologies                                                |
+| -------------- | ----------------------------------------------------------- |
+| **Frontend**   | React 17, TypeScript, Material-UI, D3.js, Chart.js, Web3.js |
+| **Backend**    | Flask 2.3, SQLAlchemy 2.0, Celery 5.3, Redis 5.0            |
+| **AI/ML**      | TensorFlow 2.13, PyTorch 2.0, scikit-learn 1.3, Prophet 1.1 |
+| **Data**       | PostgreSQL, InfluxDB, TimescaleDB, Pandas, NumPy            |
+| **Blockchain** | Web3.py 6.10, Solidity contracts, Ethers.js                 |
+| **DevOps**     | Docker, Kubernetes, GitHub Actions, Terraform, Ansible      |
+| **Monitoring** | Prometheus, Grafana, Sentry, ELK Stack                      |
 
-Developers should start with the `getting_started.md` and `developer_guide.md` documents to understand the development environment setup and coding standards. Component-specific documentation should be consulted when working on particular aspects of the system.
+---
 
-### For System Administrators
+## Next Steps
 
-System administrators should focus on the `infrastructure_guide.md` document for deployment and maintenance instructions, as well as the `technical_documentation.md` file for understanding system architecture.
+1. **New Users**: Start with the [Installation Guide](INSTALLATION.md)
+2. **Developers**: Read the [Developer Guide](CONTRIBUTING.md) and [Architecture Overview](ARCHITECTURE.md)
+3. **API Users**: Check the [API Reference](API.md) and [Examples](EXAMPLES/)
+4. **DevOps**: See the [Infrastructure Guide](infrastructure_guide.md) for deployment
 
-### For End Users
-
-End users should refer to the `user_manual.md` document for guidance on using the QuantumVest application effectively.
-
-## Documentation Maintenance
-
-The documentation in this directory should be kept up-to-date with the codebase. When making significant changes to the system:
-
-1. Update the relevant documentation files to reflect the changes
-2. Ensure consistency across all documentation
-3. Add new documentation files for new components or features as needed
-4. Update diagrams and visual aids in the images directory
-
-## Contributing to Documentation
-
-Contributions to improve the documentation are welcome. When contributing:
-
-1. Follow the existing documentation style and format
-2. Ensure technical accuracy and clarity
-3. Include examples and use cases where appropriate
-4. Update the table of contents and cross-references as needed
+---
