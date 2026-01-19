@@ -17,11 +17,11 @@ QuantumVest is an advanced predictive investment analytics platform that leverag
 ## Table of Contents
 
 - [Overview](#overview)
+- [Project Structure](#project-structure)
 - [Key Features](#key-features)
 - [Technology Stack](#technology-stack)
 - [Architecture](#architecture)
 - [Installation and Setup](#installation-and-setup)
-- [Directory Structure](#directory-structure)
 - [Testing](#testing)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Documentation](#documentation)
@@ -245,22 +245,6 @@ uvicorn main:app --reload
 # Start frontend
 cd ../frontend
 npm start
-```
-
-## Directory Structure
-
-```
-QuantumVest/
-├── code/
-│   ├── frontend/         # React.js web application
-│   ├── backend/          # FastAPI server and API endpoints
-│   ├── blockchain/       # Smart contracts and blockchain integrations
-│   ├── ai_models/        # Machine learning models and algorithms
-│   └── quant_engine/     # Quantitative finance tools and strategies
-├── docs/                 # Documentation and specifications
-├── infrastructure/       # Kubernetes and deployment configurations
-├── mobile-frontend/      # React Native mobile application
-└── resources/            # Sample datasets and reference materials
 ```
 
 ## Testing
