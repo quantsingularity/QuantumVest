@@ -32,6 +32,24 @@ QuantumVest is an advanced predictive investment analytics platform that leverag
 
 QuantumVest democratizes access to sophisticated investment analytics by providing retail investors with AI-driven predictions and insights previously available only to institutional investors. By combining machine learning algorithms with blockchain data transparency and quantitative finance models, the platform offers comprehensive market analysis, risk assessment, and investment recommendations across various asset classes.
 
+## Project Structure
+
+The project is organized into several main components:
+
+```
+QuantumVest/
+├── code/                   # Core backend logic, services, and shared utilities
+├── docs/                   # Project documentation
+├── infrastructure/         # DevOps, deployment, and infra-related code
+├── mobile-frontend/        # Mobile application
+├── web-frontend/           # Web dashboard
+├── scripts/                # Automation, setup, and utility scripts
+├── LICENSE                 # License information
+├── README.md               # Project overview and instructions
+├── eslint.config.js        # ESLint configuration
+└── package.json            # Node.js project metadata and dependencies
+```
+
 ## Key Features
 
 ### AI-Powered Market Predictions
