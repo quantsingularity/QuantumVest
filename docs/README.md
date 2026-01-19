@@ -13,7 +13,7 @@ Get started with QuantumVest in 3 simple steps:
 1. **Clone and Setup**
 
     ```bash
-    git clone https://github.com/abrar2030/QuantumVest.git
+    git clone https://github.com/quantsingularity/QuantumVest.git
     cd QuantumVest
     ./scripts/setup_quantumvest_env.sh
     ```

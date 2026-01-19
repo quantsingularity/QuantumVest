@@ -1,7 +1,7 @@
 # QuantumVest
 
-![CI/CD Status](https://img.shields.io/github/actions/workflow/status/abrar2030/QuantumVest/cicd.yml?branch=main&label=CI/CD&logo=github)
-[![Test Coverage](https://img.shields.io/badge/coverage-80%25-yellow)](https://github.com/abrar2030/QuantumVest/actions)
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/quantsingularity/QuantumVest/cicd.yml?branch=main&label=CI/CD&logo=github)
+[![Test Coverage](https://img.shields.io/badge/coverage-80%25-yellow)](https://github.com/quantsingularity/QuantumVest/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 🔮 AI-Powered Predictive Investment Analytics Platform
@@ -168,7 +168,7 @@ QuantumVest/
 
 ```bash
 # Clone the repository
-git clone https://github.com/abrar2030/QuantumVest.git
+git clone https://github.com/quantsingularity/QuantumVest.git
 cd QuantumVest
 
 # Run the setup script
@@ -183,7 +183,7 @@ cd QuantumVest
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/abrar2030/QuantumVest.git
+git clone https://github.com/quantsingularity/QuantumVest.git
 cd QuantumVest
 ```
 

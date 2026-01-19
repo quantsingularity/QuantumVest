@@ -65,7 +65,7 @@ The fastest way to get started. This script handles all dependencies and configu
 
 ```bash
 # Clone the repository
-git clone https://github.com/abrar2030/QuantumVest.git
+git clone https://github.com/quantsingularity/QuantumVest.git
 cd QuantumVest
 
 # Run the setup script
@@ -89,7 +89,7 @@ Best for production-like environments and easy deployment.
 
 ```bash
 # Clone the repository
-git clone https://github.com/abrar2030/QuantumVest.git
+git clone https://github.com/quantsingularity/QuantumVest.git
 cd QuantumVest
 
 # Start all services with Docker Compose
@@ -137,7 +137,7 @@ See [Infrastructure Guide](infrastructure_guide.md) for details.
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/abrar2030/QuantumVest.git
+git clone https://github.com/quantsingularity/QuantumVest.git
 cd QuantumVest/code/backend
 ```
 

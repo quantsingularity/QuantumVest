@@ -38,7 +38,7 @@ QuantumVest provides CLI tools through shell scripts and Python scripts for admi
 No separate CLI installation required. Scripts are available after repository clone.
 
 ```bash
-git clone https://github.com/abrar2030/QuantumVest.git
+git clone https://github.com/quantsingularity/QuantumVest.git
 cd QuantumVest
 chmod +x scripts/*.sh  # Make scripts executable
 ```

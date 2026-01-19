@@ -182,7 +182,7 @@ QuantumVest Platform provides:
 
 ```bash
 # Clone the repository
-git clone https://github.com/abrar2030/quantumvest.git .
+git clone https://github.com/quantsingularity/quantumvest.git .
 
 # Start all services with Docker Compose
 docker-compose up -d

@@ -18,12 +18,12 @@ Guidelines for contributing to the QuantumVest project including code style, tes
 1. Fork the repository
 2. Clone your fork:
     ```bash
-    git clone https://github.com/abrar2030/QuantumVest.git
+    git clone https://github.com/quantsingularity/QuantumVest.git
     cd QuantumVest
     ```
 3. Add upstream remote:
     ```bash
-    git remote add upstream https://github.com/abrar2030/QuantumVest.git
+    git remote add upstream https://github.com/quantsingularity/QuantumVest.git
     ```
 4. Create a feature branch:
     ```bash
