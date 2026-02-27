@@ -2,132 +2,132 @@
 
 # Role Definitions
 roles:
-    admin:
-        description: 'Full system administrator access'
-        permissions:
-            - '*:*'
-        mfa_required: true
-        session_timeout: 15 # minutes
-        ip_restrictions: true
+  admin:
+    description: "Full system administrator access"
+    permissions:
+      - "*:*"
+    mfa_required: true
+    session_timeout: 15 # minutes
+    ip_restrictions: true
 
-    security_officer:
-        description: 'Security monitoring and incident response'
-        permissions:
-            - 'security:*'
-            - 'audit:read'
-            - 'logs:read'
-            - 'monitoring:*'
-        mfa_required: true
-        session_timeout: 30
+  security_officer:
+    description: "Security monitoring and incident response"
+    permissions:
+      - "security:*"
+      - "audit:read"
+      - "logs:read"
+      - "monitoring:*"
+    mfa_required: true
+    session_timeout: 30
 
-    compliance_officer:
-        description: 'Compliance monitoring and reporting'
-        permissions:
-            - 'compliance:*'
-            - 'audit:read'
-            - 'reports:*'
-            - 'policies:read'
-        mfa_required: true
-        session_timeout: 60
+  compliance_officer:
+    description: "Compliance monitoring and reporting"
+    permissions:
+      - "compliance:*"
+      - "audit:read"
+      - "reports:*"
+      - "policies:read"
+    mfa_required: true
+    session_timeout: 60
 
-    developer:
-        description: 'Development and deployment access'
-        permissions:
-            - 'code:*'
-            - 'deploy:staging'
-            - 'logs:read'
-            - 'monitoring:read'
-        mfa_required: true
-        session_timeout: 120
+  developer:
+    description: "Development and deployment access"
+    permissions:
+      - "code:*"
+      - "deploy:staging"
+      - "logs:read"
+      - "monitoring:read"
+    mfa_required: true
+    session_timeout: 120
 
-    analyst:
-        description: 'Data analysis and reporting'
-        permissions:
-            - 'data:read'
-            - 'reports:create'
-            - 'analytics:*'
-        mfa_required: true
-        session_timeout: 240
+  analyst:
+    description: "Data analysis and reporting"
+    permissions:
+      - "data:read"
+      - "reports:create"
+      - "analytics:*"
+    mfa_required: true
+    session_timeout: 240
 
-    readonly:
-        description: 'Read-only access for auditors'
-        permissions:
-            - '*:read'
-        mfa_required: true
-        session_timeout: 60
+  readonly:
+    description: "Read-only access for auditors"
+    permissions:
+      - "*:read"
+    mfa_required: true
+    session_timeout: 60
 
 # Service Accounts
 service_accounts:
-    quantumvest-api:
-        description: 'Main API service account'
-        permissions:
-            - 'database:read'
-            - 'database:write'
-            - 'cache:*'
-            - 'storage:read'
-            - 'storage:write'
-        key_rotation_days: 30
+  quantumvest-api:
+    description: "Main API service account"
+    permissions:
+      - "database:read"
+      - "database:write"
+      - "cache:*"
+      - "storage:read"
+      - "storage:write"
+    key_rotation_days: 30
 
-    monitoring-service:
-        description: 'Monitoring and alerting service'
-        permissions:
-            - 'metrics:read'
-            - 'logs:read'
-            - 'alerts:create'
-        key_rotation_days: 30
+  monitoring-service:
+    description: "Monitoring and alerting service"
+    permissions:
+      - "metrics:read"
+      - "logs:read"
+      - "alerts:create"
+    key_rotation_days: 30
 
-    backup-service:
-        description: 'Backup and disaster recovery service'
-        permissions:
-            - 'storage:read'
-            - 'storage:write'
-            - 'backup:*'
-        key_rotation_days: 15
+  backup-service:
+    description: "Backup and disaster recovery service"
+    permissions:
+      - "storage:read"
+      - "storage:write"
+      - "backup:*"
+    key_rotation_days: 15
 
 # Access Control Policies
 access_policies:
-    production_access:
-        conditions:
-            - mfa_verified: true
-            - ip_whitelist: true
-            - time_based: 'business_hours'
-        approval_required: true
-        approvers_count: 2
+  production_access:
+    conditions:
+      - mfa_verified: true
+      - ip_whitelist: true
+      - time_based: "business_hours"
+    approval_required: true
+    approvers_count: 2
 
-    sensitive_data_access:
-        conditions:
-            - background_check: true
-            - training_completed: 'data_privacy'
-            - manager_approval: true
-        audit_level: 'detailed'
+  sensitive_data_access:
+    conditions:
+      - background_check: true
+      - training_completed: "data_privacy"
+      - manager_approval: true
+    audit_level: "detailed"
 
-    emergency_access:
-        conditions:
-            - incident_declared: true
-            - emergency_contact_verified: true
-        duration_hours: 4
-        auto_revoke: true
+  emergency_access:
+    conditions:
+      - incident_declared: true
+      - emergency_contact_verified: true
+    duration_hours: 4
+    auto_revoke: true
 
 # Multi-Factor Authentication
 mfa_config:
-    required_for_roles:
-        - 'admin'
-        - 'security_officer'
-        - 'compliance_officer'
-        - 'developer'
-    methods:
-        - 'totp'
-        - 'hardware_token'
-        - 'sms' # backup only
-    backup_codes: 10
+  required_for_roles:
+    - "admin"
+    - "security_officer"
+    - "compliance_officer"
+    - "developer"
+  methods:
+    - "totp"
+    - "hardware_token"
+    - "sms" # backup only
+  backup_codes: 10
 
 # Password Requirements by Role
 password_requirements:
-    admin:
-        min_length: 16
-        complexity_score: 4
-        history_count: 24
-    default:
-        min_length: 12
-        complexity_score: 3
-        history_count: 12
+  admin:
+    min_length: 16
+    complexity_score: 4
+    history_count: 24
+  default:
+    min_length: 12
+    complexity_score: 3
+    history_count: 12

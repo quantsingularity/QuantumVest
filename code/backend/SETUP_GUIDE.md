@@ -92,14 +92,14 @@ Expected response:
 
 ```json
 {
-    "status": "healthy",
-    "version": "2.0.0",
-    "services": {
-        "database": true,
-        "prediction": true,
-        "data_fetching": true,
-        "storage": true
-    }
+  "status": "healthy",
+  "version": "2.0.0",
+  "services": {
+    "database": true,
+    "prediction": true,
+    "data_fetching": true,
+    "storage": true
+  }
 }
 ```
 

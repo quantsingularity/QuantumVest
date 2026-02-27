@@ -12,27 +12,27 @@ Get started with QuantumVest in 3 simple steps:
 
 1. **Clone and Setup**
 
-    ```bash
-    git clone https://github.com/quantsingularity/QuantumVest.git
-    cd QuantumVest
-    ./scripts/setup_quantumvest_env.sh
-    ```
+   ```bash
+   git clone https://github.com/quantsingularity/QuantumVest.git
+   cd QuantumVest
+   ./scripts/setup_quantumvest_env.sh
+   ```
 
 2. **Configure Environment**
 
-    ```bash
-    # Backend: Create .env file in code/backend/
-    cp code/backend/.env.example code/backend/.env
-    # Edit .env with your database credentials and API keys
-    ```
+   ```bash
+   # Backend: Create .env file in code/backend/
+   cp code/backend/.env.example code/backend/.env
+   # Edit .env with your database credentials and API keys
+   ```
 
 3. **Start Services**
-    ```bash
-    ./scripts/run_quantumvest.sh
-    # Or start services individually:
-    # Backend: cd code/backend && source venv/bin/activate && python app.py
-    # Frontend: cd web-frontend && npm start
-    ```
+   ```bash
+   ./scripts/run_quantumvest.sh
+   # Or start services individually:
+   # Backend: cd code/backend && source venv/bin/activate && python app.py
+   # Frontend: cd web-frontend && npm start
+   ```
 
 Access the application at `http://localhost:3000` (frontend) and `http://localhost:5000/api/v1` (backend API).
 
@@ -69,9 +69,9 @@ Access the application at `http://localhost:3000` (frontend) and `http://localho
 ### Examples & Tutorials
 
 - **[Examples Directory](EXAMPLES/)** — Working code examples demonstrating key features
-    - [Portfolio Management Example](EXAMPLES/portfolio-management.md)
-    - [AI Prediction Example](EXAMPLES/ai-prediction.md)
-    - [Risk Analysis Example](EXAMPLES/risk-analysis.md)
+  - [Portfolio Management Example](EXAMPLES/portfolio-management.md)
+  - [AI Prediction Example](EXAMPLES/ai-prediction.md)
+  - [Risk Analysis Example](EXAMPLES/risk-analysis.md)
 
 ### Additional Resources
 

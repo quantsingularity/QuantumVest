@@ -242,15 +242,15 @@ terraform init -backend-config=backend.hcl
 
 1. **Never commit secrets** to version control
 2. **Use environment variables** for sensitive values:
-    ```bash
-    export TF_VAR_db_password="secure-password"
-    ```
+   ```bash
+   export TF_VAR_db_password="secure-password"
+   ```
 3. **Use AWS Secrets Manager** in production:
-    ```hcl
-    data "aws_secretsmanager_secret_version" "db_password" {
-      secret_id = "quantumvest/db/password"
-    }
-    ```
+   ```hcl
+   data "aws_secretsmanager_secret_version" "db_password" {
+     secret_id = "quantumvest/db/password"
+   }
+   ```
 
 ### State File Security
 

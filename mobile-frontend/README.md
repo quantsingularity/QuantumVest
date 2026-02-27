@@ -43,34 +43,34 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository** (if not already done):
 
-    ```bash
-    cd mobile-frontend
-    ```
+   ```bash
+   cd mobile-frontend
+   ```
 
 2. **Install dependencies**:
 
-    ```bash
-    npm install
-    # or
-    yarn install
-    ```
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
 3. **Configure environment variables**:
 
-    ```bash
-    cp .env.example .env
-    # Edit .env and update the values as needed
-    ```
+   ```bash
+   cp .env.example .env
+   # Edit .env and update the values as needed
+   ```
 
 4. **Start the backend API** (required for full functionality):
-    ```bash
-    # In a separate terminal, navigate to the backend directory
-    cd ../code/backend
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    pip install -r requirements.txt
-    python app.py
-    ```
+   ```bash
+   # In a separate terminal, navigate to the backend directory
+   cd ../code/backend
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   python app.py
+   ```
 
 ## Running the Application
 
@@ -78,30 +78,30 @@ Before you begin, ensure you have the following installed:
 
 1. **Start the Expo development server**:
 
-    ```bash
-    npm start
-    # or
-    yarn start
-    ```
+   ```bash
+   npm start
+   # or
+   yarn start
+   ```
 
 2. **Run on specific platform**:
 
-    ```bash
-    # iOS (Mac only)
-    npm run ios
-    # or
-    yarn ios
+   ```bash
+   # iOS (Mac only)
+   npm run ios
+   # or
+   yarn ios
 
-    # Android
-    npm run android
-    # or
-    yarn android
+   # Android
+   npm run android
+   # or
+   yarn android
 
-    # Web
-    npm run web
-    # or
-    yarn web
-    ```
+   # Web
+   npm run web
+   # or
+   yarn web
+   ```
 
 3. **Scan QR code** with Expo Go app on your physical device for quick testing.
 
@@ -143,23 +143,23 @@ yarn test:watch
 
 1. **Build the app for testing**:
 
-    ```bash
-    # iOS
-    npm run test:e2e:build -- --configuration ios.sim.debug
+   ```bash
+   # iOS
+   npm run test:e2e:build -- --configuration ios.sim.debug
 
-    # Android
-    npm run test:e2e:build -- --configuration android.emu.debug
-    ```
+   # Android
+   npm run test:e2e:build -- --configuration android.emu.debug
+   ```
 
 2. **Run E2E tests**:
 
-    ```bash
-    # iOS
-    npm run test:e2e -- --configuration ios.sim.debug
+   ```bash
+   # iOS
+   npm run test:e2e -- --configuration ios.sim.debug
 
-    # Android
-    npm run test:e2e -- --configuration android.emu.debug
-    ```
+   # Android
+   npm run test:e2e -- --configuration android.emu.debug
+   ```
 
 ## Project Structure
 
@@ -215,12 +215,12 @@ The mobile frontend integrates with the following APIs:
 
 - **Base URL**: `http://localhost:5000/api/v1`
 - **Endpoints**:
-    - `/auth/login` - User authentication
-    - `/auth/register` - User registration
-    - `/predictions/crypto/{symbol}` - Crypto predictions
-    - `/predictions/stocks/{symbol}` - Stock predictions
-    - `/portfolios/{id}/optimize` - Portfolio optimization
-    - `/health` - API health check
+  - `/auth/login` - User authentication
+  - `/auth/register` - User registration
+  - `/predictions/crypto/{symbol}` - Crypto predictions
+  - `/predictions/stocks/{symbol}` - Stock predictions
+  - `/portfolios/{id}/optimize` - Portfolio optimization
+  - `/health` - API health check
 
 ### External APIs (Optional - fallback to mock data)
 
@@ -305,31 +305,31 @@ ENABLE_MOCK_DATA=false
 
 1. **Metro bundler not starting**:
 
-    ```bash
-    npm start -- --reset-cache
-    ```
+   ```bash
+   npm start -- --reset-cache
+   ```
 
 2. **iOS build fails**:
 
-    ```bash
-    cd ios && pod install && cd ..
-    ```
+   ```bash
+   cd ios && pod install && cd ..
+   ```
 
 3. **Android build fails**:
-    - Ensure Android SDK is properly installed
-    - Check `ANDROID_HOME` environment variable
-    - Clean gradle: `cd android && ./gradlew clean && cd ..`
+   - Ensure Android SDK is properly installed
+   - Check `ANDROID_HOME` environment variable
+   - Clean gradle: `cd android && ./gradlew clean && cd ..`
 
 4. **API connection errors**:
-    - Verify backend is running on `http://localhost:5000`
-    - For Android emulator, use `http://10.0.2.2:5000` instead
-    - For iOS simulator, use `http://localhost:5000` or your machine's IP
-    - Update `API_BASE_URL` in `src/services/api.js` if needed
+   - Verify backend is running on `http://localhost:5000`
+   - For Android emulator, use `http://10.0.2.2:5000` instead
+   - For iOS simulator, use `http://localhost:5000` or your machine's IP
+   - Update `API_BASE_URL` in `src/services/api.js` if needed
 
 5. **Test failures**:
-    ```bash
-    npm test -- --clearCache
-    ```
+   ```bash
+   npm test -- --clearCache
+   ```
 
 ## Development Guidelines
 

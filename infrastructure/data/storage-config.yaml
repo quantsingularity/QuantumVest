@@ -2,454 +2,456 @@
 
 # Block Storage Configuration
 block_storage:
-    provider: 'aws_ebs'
+  provider: "aws_ebs"
 
-    # Storage classes
-    storage_classes:
-        high_performance:
-            type: 'gp3'
-            iops: 16000
-            throughput: 1000 # MB/s
-            encryption: true
-            kms_key_id: 'arn:aws:kms:us-east-1:account:key/storage-key'
-            use_cases:
-                - 'database_primary'
-                - 'high_frequency_access'
+  # Storage classes
+  storage_classes:
+    high_performance:
+      type: "gp3"
+      iops: 16000
+      throughput: 1000 # MB/s
+      encryption: true
+      kms_key_id: "arn:aws:kms:us-east-1:account:key/storage-key"
+      use_cases:
+        - "database_primary"
+        - "high_frequency_access"
 
-        standard_performance:
-            type: 'gp3'
-            iops: 3000
-            throughput: 125 # MB/s
-            encryption: true
-            kms_key_id: 'arn:aws:kms:us-east-1:account:key/storage-key'
-            use_cases:
-                - 'application_data'
-                - 'log_storage'
+    standard_performance:
+      type: "gp3"
+      iops: 3000
+      throughput: 125 # MB/s
+      encryption: true
+      kms_key_id: "arn:aws:kms:us-east-1:account:key/storage-key"
+      use_cases:
+        - "application_data"
+        - "log_storage"
 
-        archive_storage:
-            type: 'sc1'
-            throughput: 250 # MB/s
-            encryption: true
-            kms_key_id: 'arn:aws:kms:us-east-1:account:key/storage-key'
-            use_cases:
-                - 'long_term_archive'
-                - 'compliance_data'
+    archive_storage:
+      type: "sc1"
+      throughput: 250 # MB/s
+      encryption: true
+      kms_key_id: "arn:aws:kms:us-east-1:account:key/storage-key"
+      use_cases:
+        - "long_term_archive"
+        - "compliance_data"
 
-    # Volume configurations
-    volumes:
-        database_primary:
-            size: '500GB'
-            type: 'high_performance'
-            snapshot_schedule: 'daily'
-            retention: '30_days'
-            multi_attach: false
+  # Volume configurations
+  volumes:
+    database_primary:
+      size: "500GB"
+      type: "high_performance"
+      snapshot_schedule: "daily"
+      retention: "30_days"
+      multi_attach: false
 
-        database_replica:
-            size: '500GB'
-            type: 'standard_performance'
-            snapshot_schedule: 'daily'
-            retention: '7_days'
-            multi_attach: false
+    database_replica:
+      size: "500GB"
+      type: "standard_performance"
+      snapshot_schedule: "daily"
+      retention: "7_days"
+      multi_attach: false
 
-        application_logs:
-            size: '100GB'
-            type: 'standard_performance'
-            snapshot_schedule: 'weekly'
-            retention: '4_weeks'
-            multi_attach: false
+    application_logs:
+      size: "100GB"
+      type: "standard_performance"
+      snapshot_schedule: "weekly"
+      retention: "4_weeks"
+      multi_attach: false
 
-        backup_storage:
-            size: '1TB'
-            type: 'archive_storage'
-            snapshot_schedule: 'monthly'
-            retention: '12_months'
-            multi_attach: false
+    backup_storage:
+      size: "1TB"
+      type: "archive_storage"
+      snapshot_schedule: "monthly"
+      retention: "12_months"
+      multi_attach: false
 
-    # Snapshot management
-    snapshots:
-        automated: true
-        encryption: true
-        cross_region_copy: true
-        destination_regions:
-            - 'us-west-2'
-            - 'eu-west-1'
-        lifecycle_policy:
-            - retain_daily: 7
-            - retain_weekly: 4
-            - retain_monthly: 12
-            - retain_yearly: 7
+  # Snapshot management
+  snapshots:
+    automated: true
+    encryption: true
+    cross_region_copy: true
+    destination_regions:
+      - "us-west-2"
+      - "eu-west-1"
+    lifecycle_policy:
+      - retain_daily: 7
+      - retain_weekly: 4
+      - retain_monthly: 12
+      - retain_yearly: 7
 
 # File Storage Configuration
 file_storage:
-    provider: 'aws_efs'
+  provider: "aws_efs"
 
-    # File systems
-    file_systems:
-        shared_application_data:
-            performance_mode: 'generalPurpose'
-            throughput_mode: 'provisioned'
-            provisioned_throughput: '100' # MB/s
-            encryption_at_rest: true
-            encryption_in_transit: true
-            kms_key_id: 'arn:aws:kms:us-east-1:account:key/efs-key'
-            backup: true
-            lifecycle_policy:
-                - transition_to_ia: '30_days'
-                - transition_to_archive: '90_days'
+  # File systems
+  file_systems:
+    shared_application_data:
+      performance_mode: "generalPurpose"
+      throughput_mode: "provisioned"
+      provisioned_throughput: "100" # MB/s
+      encryption_at_rest: true
+      encryption_in_transit: true
+      kms_key_id: "arn:aws:kms:us-east-1:account:key/efs-key"
+      backup: true
+      lifecycle_policy:
+        - transition_to_ia: "30_days"
+        - transition_to_archive: "90_days"
 
-        document_storage:
-            performance_mode: 'generalPurpose'
-            throughput_mode: 'bursting'
-            encryption_at_rest: true
-            encryption_in_transit: true
-            kms_key_id: 'arn:aws:kms:us-east-1:account:key/efs-key'
-            backup: true
-            versioning: true
+    document_storage:
+      performance_mode: "generalPurpose"
+      throughput_mode: "bursting"
+      encryption_at_rest: true
+      encryption_in_transit: true
+      kms_key_id: "arn:aws:kms:us-east-1:account:key/efs-key"
+      backup: true
+      versioning: true
 
-        temp_processing:
-            performance_mode: 'maxIO'
-            throughput_mode: 'provisioned'
-            provisioned_throughput: '500' # MB/s
-            encryption_at_rest: true
-            encryption_in_transit: true
-            lifecycle_policy:
-                - delete_after: '7_days'
+    temp_processing:
+      performance_mode: "maxIO"
+      throughput_mode: "provisioned"
+      provisioned_throughput: "500" # MB/s
+      encryption_at_rest: true
+      encryption_in_transit: true
+      lifecycle_policy:
+        - delete_after: "7_days"
 
-    # Access points
-    access_points:
-        - name: 'application_data_ap'
-          file_system: 'shared_application_data'
-          path: '/app-data'
-          posix_user:
-              uid: 10001
-              gid: 10001
-          creation_info:
-              owner_uid: 10001
-              owner_gid: 10001
-              permissions: '755'
+  # Access points
+  access_points:
+    - name: "application_data_ap"
+      file_system: "shared_application_data"
+      path: "/app-data"
+      posix_user:
+        uid: 10001
+        gid: 10001
+      creation_info:
+        owner_uid: 10001
+        owner_gid: 10001
+        permissions: "755"
 
-        - name: 'document_storage_ap'
-          file_system: 'document_storage'
-          path: '/documents'
-          posix_user:
-              uid: 10001
-              gid: 10001
-          creation_info:
-              owner_uid: 10001
-              owner_gid: 10001
-              permissions: '750'
+    - name: "document_storage_ap"
+      file_system: "document_storage"
+      path: "/documents"
+      posix_user:
+        uid: 10001
+        gid: 10001
+      creation_info:
+        owner_uid: 10001
+        owner_gid: 10001
+        permissions: "750"
 
 # Object Storage Detailed Configuration
 object_storage_detailed:
-    # Bucket policies
-    bucket_policies:
-        app_data_policy:
-            version: '2012-10-17'
-            statements:
-                - sid: 'DenyInsecureConnections'
-                  effect: 'Deny'
-                  principal: '*'
-                  action: 's3:*'
-                  resource:
-                      - 'arn:aws:s3:::quantumvest-app-data'
-                      - 'arn:aws:s3:::quantumvest-app-data/*'
-                  condition:
-                      Bool:
-                          'aws:SecureTransport': 'false'
+  # Bucket policies
+  bucket_policies:
+    app_data_policy:
+      version: "2012-10-17"
+      statements:
+        - sid: "DenyInsecureConnections"
+          effect: "Deny"
+          principal: "*"
+          action: "s3:*"
+          resource:
+            - "arn:aws:s3:::quantumvest-app-data"
+            - "arn:aws:s3:::quantumvest-app-data/*"
+          condition:
+            Bool:
+              "aws:SecureTransport": "false"
 
-                - sid: 'AllowApplicationAccess'
-                  effect: 'Allow'
-                  principal:
-                      AWS: 'arn:aws:iam::account:role/QuantumVestApplicationRole'
-                  action:
-                      - 's3:GetObject'
-                      - 's3:PutObject'
-                      - 's3:DeleteObject'
-                  resource: 'arn:aws:s3:::quantumvest-app-data/*'
+        - sid: "AllowApplicationAccess"
+          effect: "Allow"
+          principal:
+            AWS: "arn:aws:iam::account:role/QuantumVestApplicationRole"
+          action:
+            - "s3:GetObject"
+            - "s3:PutObject"
+            - "s3:DeleteObject"
+          resource: "arn:aws:s3:::quantumvest-app-data/*"
 
-    # CORS configuration
-    cors_configuration:
-        - allowed_headers: ['*']
-          allowed_methods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD']
-          allowed_origins: ['https://quantumvest.com', 'https://app.quantumvest.com']
-          expose_headers: ['ETag', 'x-amz-meta-*']
-          max_age_seconds: 3000
+  # CORS configuration
+  cors_configuration:
+    - allowed_headers: ["*"]
+      allowed_methods: ["GET", "PUT", "POST", "DELETE", "HEAD"]
+      allowed_origins:
+        ["https://quantumvest.com", "https://app.quantumvest.com"]
+      expose_headers: ["ETag", "x-amz-meta-*"]
+      max_age_seconds: 3000
 
-    # Notification configuration
-    notifications:
-        - id: 'ObjectCreatedNotification'
-          events: ['s3:ObjectCreated:*']
-          destination:
-              type: 'sqs'
-              arn: 'arn:aws:sqs:us-east-1:account:object-created-queue'
+  # Notification configuration
+  notifications:
+    - id: "ObjectCreatedNotification"
+      events: ["s3:ObjectCreated:*"]
+      destination:
+        type: "sqs"
+        arn: "arn:aws:sqs:us-east-1:account:object-created-queue"
 
-        - id: 'ObjectRemovedNotification'
-          events: ['s3:ObjectRemoved:*']
-          destination:
-              type: 'sns'
-              arn: 'arn:aws:sns:us-east-1:account:object-removed-topic'
+    - id: "ObjectRemovedNotification"
+      events: ["s3:ObjectRemoved:*"]
+      destination:
+        type: "sns"
+        arn: "arn:aws:sns:us-east-1:account:object-removed-topic"
 
 # Content Delivery Network (CDN)
 cdn:
-    provider: 'aws_cloudfront'
+  provider: "aws_cloudfront"
 
-    distributions:
-        static_assets:
-            origins:
-                - domain_name: 'quantumvest-static-assets.s3.amazonaws.com'
-                  origin_id: 'S3-quantumvest-static-assets'
-                  s3_origin_config:
-                      origin_access_identity: 'origin-access-identity/cloudfront/ABCDEFG1234567'
+  distributions:
+    static_assets:
+      origins:
+        - domain_name: "quantumvest-static-assets.s3.amazonaws.com"
+          origin_id: "S3-quantumvest-static-assets"
+          s3_origin_config:
+            origin_access_identity: "origin-access-identity/cloudfront/ABCDEFG1234567"
 
-            default_cache_behavior:
-                target_origin_id: 'S3-quantumvest-static-assets'
-                viewer_protocol_policy: 'redirect-to-https'
-                allowed_methods: ['GET', 'HEAD', 'OPTIONS']
-                cached_methods: ['GET', 'HEAD']
-                compress: true
-                cache_policy_id: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad' # Managed-CachingOptimized
+      default_cache_behavior:
+        target_origin_id: "S3-quantumvest-static-assets"
+        viewer_protocol_policy: "redirect-to-https"
+        allowed_methods: ["GET", "HEAD", "OPTIONS"]
+        cached_methods: ["GET", "HEAD"]
+        compress: true
+        cache_policy_id: "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # Managed-CachingOptimized
 
-            price_class: 'PriceClass_100' # US, Canada, Europe
+      price_class: "PriceClass_100" # US, Canada, Europe
 
-            geo_restriction:
-                restriction_type: 'none'
+      geo_restriction:
+        restriction_type: "none"
 
-            viewer_certificate:
-                acm_certificate_arn: 'arn:aws:acm:us-east-1:account:certificate/cert-id'
-                ssl_support_method: 'sni-only'
-                minimum_protocol_version: 'TLSv1.2_2021'
+      viewer_certificate:
+        acm_certificate_arn: "arn:aws:acm:us-east-1:account:certificate/cert-id"
+        ssl_support_method: "sni-only"
+        minimum_protocol_version: "TLSv1.2_2021"
 
-        api_distribution:
-            origins:
-                - domain_name: 'api.quantumvest.com'
-                  origin_id: 'API-quantumvest'
-                  custom_origin_config:
-                      http_port: 80
-                      https_port: 443
-                      origin_protocol_policy: 'https-only'
-                      origin_ssl_protocols: ['TLSv1.2']
+    api_distribution:
+      origins:
+        - domain_name: "api.quantumvest.com"
+          origin_id: "API-quantumvest"
+          custom_origin_config:
+            http_port: 80
+            https_port: 443
+            origin_protocol_policy: "https-only"
+            origin_ssl_protocols: ["TLSv1.2"]
 
-            default_cache_behavior:
-                target_origin_id: 'API-quantumvest'
-                viewer_protocol_policy: 'https-only'
-                allowed_methods: ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT']
-                cached_methods: ['GET', 'HEAD']
-                cache_policy_id: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad'
-                origin_request_policy_id: '88a5eaf4-2fd4-4709-b370-b4c650ea3fcf' # Managed-CORS-S3Origin
+      default_cache_behavior:
+        target_origin_id: "API-quantumvest"
+        viewer_protocol_policy: "https-only"
+        allowed_methods:
+          ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+        cached_methods: ["GET", "HEAD"]
+        cache_policy_id: "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+        origin_request_policy_id: "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf" # Managed-CORS-S3Origin
 
 # Data Archival Strategy
 data_archival:
-    policies:
-        financial_records:
-            retention_period: '7_years'
-            archive_after: '1_year'
-            storage_class: 'GLACIER'
-            deep_archive_after: '3_years'
-            encryption: 'aws:kms'
+  policies:
+    financial_records:
+      retention_period: "7_years"
+      archive_after: "1_year"
+      storage_class: "GLACIER"
+      deep_archive_after: "3_years"
+      encryption: "aws:kms"
 
-        audit_logs:
-            retention_period: '7_years'
-            archive_after: '90_days'
-            storage_class: 'GLACIER'
-            deep_archive_after: '1_year'
-            encryption: 'aws:kms'
-            immutable: true
+    audit_logs:
+      retention_period: "7_years"
+      archive_after: "90_days"
+      storage_class: "GLACIER"
+      deep_archive_after: "1_year"
+      encryption: "aws:kms"
+      immutable: true
 
-        user_data:
-            retention_period: '7_years'
-            archive_after: '2_years'
-            storage_class: 'GLACIER'
-            deep_archive_after: '5_years'
-            encryption: 'aws:kms'
+    user_data:
+      retention_period: "7_years"
+      archive_after: "2_years"
+      storage_class: "GLACIER"
+      deep_archive_after: "5_years"
+      encryption: "aws:kms"
 
-        system_logs:
-            retention_period: '1_year'
-            archive_after: '30_days'
-            storage_class: 'STANDARD_IA'
-            delete_after: '1_year'
+    system_logs:
+      retention_period: "1_year"
+      archive_after: "30_days"
+      storage_class: "STANDARD_IA"
+      delete_after: "1_year"
 
-    automation:
-        enabled: true
-        monitoring: true
-        cost_optimization: true
-        compliance_validation: true
+  automation:
+    enabled: true
+    monitoring: true
+    cost_optimization: true
+    compliance_validation: true
 
 # Storage Monitoring and Alerting
 storage_monitoring:
-    metrics:
-        - name: 'storage_utilization'
-          threshold: 80 # percent
-          alert_channels: ['email', 'slack']
+  metrics:
+    - name: "storage_utilization"
+      threshold: 80 # percent
+      alert_channels: ["email", "slack"]
 
-        - name: 'iops_utilization'
-          threshold: 80 # percent
-          alert_channels: ['email', 'slack']
+    - name: "iops_utilization"
+      threshold: 80 # percent
+      alert_channels: ["email", "slack"]
 
-        - name: 'throughput_utilization'
-          threshold: 80 # percent
-          alert_channels: ['email', 'slack']
+    - name: "throughput_utilization"
+      threshold: 80 # percent
+      alert_channels: ["email", "slack"]
 
-        - name: 'storage_cost'
-          threshold: 1000 # USD per month
-          alert_channels: ['email']
+    - name: "storage_cost"
+      threshold: 1000 # USD per month
+      alert_channels: ["email"]
 
-    dashboards:
-        - name: 'Storage Overview'
-          panels:
-              - 'Total Storage Usage'
-              - 'Storage Cost Trends'
-              - 'IOPS Utilization'
-              - 'Throughput Metrics'
+  dashboards:
+    - name: "Storage Overview"
+      panels:
+        - "Total Storage Usage"
+        - "Storage Cost Trends"
+        - "IOPS Utilization"
+        - "Throughput Metrics"
 
-        - name: 'Backup Status'
-          panels:
-              - 'Backup Success Rate'
-              - 'Backup Duration'
-              - 'Recovery Point Objective'
-              - 'Storage Growth Rate'
+    - name: "Backup Status"
+      panels:
+        - "Backup Success Rate"
+        - "Backup Duration"
+        - "Recovery Point Objective"
+        - "Storage Growth Rate"
 
 # Storage Security
 storage_security:
-    encryption:
-        at_rest:
-            enabled: true
-            algorithm: 'AES-256'
-            key_management: 'aws_kms'
-            key_rotation: 'annual'
+  encryption:
+    at_rest:
+      enabled: true
+      algorithm: "AES-256"
+      key_management: "aws_kms"
+      key_rotation: "annual"
 
-        in_transit:
-            enabled: true
-            protocol: 'TLS_1_3'
-            certificate_validation: true
+    in_transit:
+      enabled: true
+      protocol: "TLS_1_3"
+      certificate_validation: true
 
-    access_control:
-        principle: 'least_privilege'
+  access_control:
+    principle: "least_privilege"
 
-        roles:
-            - name: 'StorageAdmin'
-              permissions:
-                  - 'storage:*'
-              conditions:
-                  - 'mfa_required'
-                  - 'ip_restriction'
+    roles:
+      - name: "StorageAdmin"
+        permissions:
+          - "storage:*"
+        conditions:
+          - "mfa_required"
+          - "ip_restriction"
 
-            - name: 'ApplicationAccess'
-              permissions:
-                  - 'storage:read'
-                  - 'storage:write'
-              conditions:
-                  - 'service_account_only'
+      - name: "ApplicationAccess"
+        permissions:
+          - "storage:read"
+          - "storage:write"
+        conditions:
+          - "service_account_only"
 
-            - name: 'ReadOnlyAccess'
-              permissions:
-                  - 'storage:read'
-              conditions:
-                  - 'audit_logged'
+      - name: "ReadOnlyAccess"
+        permissions:
+          - "storage:read"
+        conditions:
+          - "audit_logged"
 
-    data_loss_prevention:
-        enabled: true
-        scanning: true
-        quarantine: true
-        notification: true
+  data_loss_prevention:
+    enabled: true
+    scanning: true
+    quarantine: true
+    notification: true
 
-    compliance:
-        sox_compliance: true
-        pci_dss_compliance: true
-        gdpr_compliance: true
-        audit_logging: true
+  compliance:
+    sox_compliance: true
+    pci_dss_compliance: true
+    gdpr_compliance: true
+    audit_logging: true
 
 # Storage Performance Optimization
 performance_optimization:
-    caching:
-        levels:
-            - name: 'application_cache'
-              type: 'redis'
-              size: '16GB'
-              ttl: '1h'
+  caching:
+    levels:
+      - name: "application_cache"
+        type: "redis"
+        size: "16GB"
+        ttl: "1h"
 
-            - name: 'cdn_cache'
-              type: 'cloudfront'
-              ttl: '24h'
+      - name: "cdn_cache"
+        type: "cloudfront"
+        ttl: "24h"
 
-        strategies:
-            - 'read_through'
-            - 'write_behind'
-            - 'cache_aside'
+    strategies:
+      - "read_through"
+      - "write_behind"
+      - "cache_aside"
 
-    compression:
-        enabled: true
-        algorithms: ['gzip', 'brotli']
-        level: 6
+  compression:
+    enabled: true
+    algorithms: ["gzip", "brotli"]
+    level: 6
 
-    deduplication:
-        enabled: false # Not recommended for financial data
+  deduplication:
+    enabled: false # Not recommended for financial data
 
-    tiering:
-        automated: true
-        policies:
-            - name: 'hot_to_warm'
-              condition: 'age > 30_days'
-              action: 'move_to_standard_ia'
+  tiering:
+    automated: true
+    policies:
+      - name: "hot_to_warm"
+        condition: "age > 30_days"
+        action: "move_to_standard_ia"
 
-            - name: 'warm_to_cold'
-              condition: 'age > 90_days'
-              action: 'move_to_glacier'
+      - name: "warm_to_cold"
+        condition: "age > 90_days"
+        action: "move_to_glacier"
 
-            - name: 'cold_to_deep_archive'
-              condition: 'age > 365_days'
-              action: 'move_to_deep_archive'
+      - name: "cold_to_deep_archive"
+        condition: "age > 365_days"
+        action: "move_to_deep_archive"
 
 # Disaster Recovery for Storage
 storage_disaster_recovery:
-    replication:
-        cross_region:
-            enabled: true
-            source_region: 'us-east-1'
-            destination_regions:
-                - 'us-west-2'
-                - 'eu-west-1'
-            replication_time: '15_minutes'
+  replication:
+    cross_region:
+      enabled: true
+      source_region: "us-east-1"
+      destination_regions:
+        - "us-west-2"
+        - "eu-west-1"
+      replication_time: "15_minutes"
 
-        cross_account:
-            enabled: true
-            destination_account: 'backup-account-id'
+    cross_account:
+      enabled: true
+      destination_account: "backup-account-id"
 
-    backup_validation:
-        enabled: true
-        schedule: 'weekly'
-        integrity_checks: true
-        restore_testing: true
+  backup_validation:
+    enabled: true
+    schedule: "weekly"
+    integrity_checks: true
+    restore_testing: true
 
-    recovery_procedures:
-        rpo: '15_minutes'
-        rto: '4_hours'
-        automated_failover: true
-        manual_override: true
+  recovery_procedures:
+    rpo: "15_minutes"
+    rto: "4_hours"
+    automated_failover: true
+    manual_override: true
 
 # Cost Optimization
 cost_optimization:
-    strategies:
-        - name: 'lifecycle_management'
-          description: 'Automatically transition data to cheaper storage classes'
-          savings_potential: '40%'
+  strategies:
+    - name: "lifecycle_management"
+      description: "Automatically transition data to cheaper storage classes"
+      savings_potential: "40%"
 
-        - name: 'unused_volume_detection'
-          description: 'Identify and remove unused storage volumes'
-          savings_potential: '15%'
+    - name: "unused_volume_detection"
+      description: "Identify and remove unused storage volumes"
+      savings_potential: "15%"
 
-        - name: 'right_sizing'
-          description: 'Optimize storage size based on usage patterns'
-          savings_potential: '25%'
+    - name: "right_sizing"
+      description: "Optimize storage size based on usage patterns"
+      savings_potential: "25%"
 
-    monitoring:
-        cost_alerts:
-            - threshold: '$1000/month'
-              action: 'email_notification'
+  monitoring:
+    cost_alerts:
+      - threshold: "$1000/month"
+        action: "email_notification"
 
-            - threshold: '$5000/month'
-              action: 'immediate_review'
+      - threshold: "$5000/month"
+        action: "immediate_review"
 
-        usage_analytics:
-            enabled: true
-            reporting: 'weekly'
-            recommendations: true
+    usage_analytics:
+      enabled: true
+      reporting: "weekly"
+      recommendations: true

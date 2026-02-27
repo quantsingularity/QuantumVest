@@ -263,8 +263,8 @@ Example vault.yml:
 
 ```yaml
 ---
-vault_mysql_root_password: 'supersecret'
-vault_db_password: 'anothersecret'
+vault_mysql_root_password: "supersecret"
+vault_db_password: "anothersecret"
 ```
 
 ## Ad-Hoc Commands
@@ -449,10 +449,10 @@ ansible-playbook playbooks/main.yml --start-at-task="Install nginx"
 
 - Commit playbooks and roles
 - Use `.gitignore` for:
-    - `*.retry`
-    - `hosts.yml` (use hosts.example.yml as template)
-    - `group_vars/*/vault.yml` (encrypted files are OK)
-    - `.vault_pass`
+  - `*.retry`
+  - `hosts.yml` (use hosts.example.yml as template)
+  - `group_vars/*/vault.yml` (encrypted files are OK)
+  - `.vault_pass`
 
 ## Common Tasks
 
@@ -517,11 +517,11 @@ ansible all -m reboot -a "msg='Security updates' test_command='uptime'" --become
 
 ```yaml
 ansible-deploy:
-    stage: deploy
-    script:
-        - ansible-playbook playbooks/main.yml --vault-password-file $VAULT_PASS
-    only:
-        - main
+  stage: deploy
+  script:
+    - ansible-playbook playbooks/main.yml --vault-password-file $VAULT_PASS
+  only:
+    - main
 ```
 
 ### GitHub Actions
@@ -530,8 +530,8 @@ ansible-deploy:
 - name: Run Ansible
   uses: dawidd6/action-ansible-playbook@v2
   with:
-      playbook: playbooks/main.yml
-      directory: ./ansible
-      key: ${{secrets.SSH_PRIVATE_KEY}}
-      vault_password: ${{secrets.VAULT_PASSWORD}}
+    playbook: playbooks/main.yml
+    directory: ./ansible
+    key: ${{secrets.SSH_PRIVATE_KEY}}
+    vault_password: ${{secrets.VAULT_PASSWORD}}
 ```

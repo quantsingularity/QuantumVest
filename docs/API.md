@@ -9,15 +9,15 @@ Complete REST API documentation for QuantumVest platform with endpoints, paramet
 - [Rate Limiting](#rate-limiting)
 - [Error Handling](#error-handling)
 - [Endpoints](#endpoints)
-    - [Authentication](#authentication-endpoints)
-    - [User Profile](#user-profile-endpoints)
-    - [Portfolios](#portfolio-endpoints)
-    - [Transactions](#transaction-endpoints)
-    - [Market Data](#market-data-endpoints)
-    - [Predictions](#prediction-endpoints)
-    - [Watchlists](#watchlist-endpoints)
-    - [Risk Management](#risk-management-endpoints)
-    - [System](#system-endpoints)
+  - [Authentication](#authentication-endpoints)
+  - [User Profile](#user-profile-endpoints)
+  - [Portfolios](#portfolio-endpoints)
+  - [Transactions](#transaction-endpoints)
+  - [Market Data](#market-data-endpoints)
+  - [Predictions](#prediction-endpoints)
+  - [Watchlists](#watchlist-endpoints)
+  - [Risk Management](#risk-management-endpoints)
+  - [System](#system-endpoints)
 
 ---
 
@@ -96,12 +96,12 @@ X-RateLimit-Reset: 1704036000
 
 ```json
 {
-    "success": false,
-    "error": "Error type",
-    "message": "Human-readable error description",
-    "details": {
-        "field": "Additional error context"
-    }
+  "success": false,
+  "error": "Error type",
+  "message": "Human-readable error description",
+  "details": {
+    "field": "Additional error context"
+  }
 }
 ```
 
@@ -159,21 +159,21 @@ curl -X POST http://localhost:5000/api/v1/auth/register \
 
 ```json
 {
-    "success": true,
-    "user": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "username": "johndoe",
-        "email": "john@example.com",
-        "first_name": "John",
-        "last_name": "Doe",
-        "role": "client",
-        "is_active": true,
-        "is_verified": false,
-        "created_at": "2024-12-30T15:30:00Z"
-    },
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-    "token_type": "Bearer"
+  "success": true,
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "johndoe",
+    "email": "john@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "role": "client",
+    "is_active": true,
+    "is_verified": false,
+    "created_at": "2024-12-30T15:30:00Z"
+  },
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "token_type": "Bearer"
 }
 ```
 
@@ -210,17 +210,17 @@ curl -X POST http://localhost:5000/api/v1/auth/login \
 
 ```json
 {
-    "success": true,
-    "user": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "username": "johndoe",
-        "email": "john@example.com",
-        "role": "client"
-    },
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-    "token_type": "Bearer",
-    "expires_in": 3600
+  "success": true,
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "johndoe",
+    "email": "john@example.com",
+    "role": "client"
+  },
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "token_type": "Bearer",
+  "expires_in": 3600
 }
 ```
 
@@ -252,10 +252,10 @@ curl -X POST http://localhost:5000/api/v1/auth/refresh \
 
 ```json
 {
-    "success": true,
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
-    "token_type": "Bearer",
-    "expires_in": 3600
+  "success": true,
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "token_type": "Bearer",
+  "expires_in": 3600
 }
 ```
 
@@ -282,20 +282,20 @@ curl -X GET http://localhost:5000/api/v1/auth/profile \
 
 ```json
 {
-    "success": true,
-    "user": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "username": "johndoe",
-        "email": "john@example.com",
-        "first_name": "John",
-        "last_name": "Doe",
-        "role": "client",
-        "risk_tolerance": 0.65,
-        "investment_experience": "intermediate",
-        "kyc_status": "compliant",
-        "aml_status": "compliant",
-        "created_at": "2024-12-30T15:30:00Z"
-    }
+  "success": true,
+  "user": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "username": "johndoe",
+    "email": "john@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "role": "client",
+    "risk_tolerance": 0.65,
+    "investment_experience": "intermediate",
+    "kyc_status": "compliant",
+    "aml_status": "compliant",
+    "created_at": "2024-12-30T15:30:00Z"
+  }
 }
 ```
 
@@ -355,30 +355,30 @@ curl -X GET http://localhost:5000/api/v1/portfolios \
 
 ```json
 {
-    "success": true,
-    "portfolios": [
-        {
-            "id": "660e8400-e29b-41d4-a716-446655440000",
-            "name": "Growth Portfolio",
-            "description": "Long-term growth stocks",
-            "currency": "USD",
-            "total_value": 125430.5,
-            "total_return": 15.75,
-            "is_default": true,
-            "created_at": "2024-01-15T10:00:00Z"
-        },
-        {
-            "id": "770e8400-e29b-41d4-a716-446655440000",
-            "name": "Crypto Portfolio",
-            "description": "Cryptocurrency investments",
-            "currency": "USD",
-            "total_value": 45230.25,
-            "total_return": -5.2,
-            "is_default": false,
-            "created_at": "2024-03-20T14:30:00Z"
-        }
-    ],
-    "count": 2
+  "success": true,
+  "portfolios": [
+    {
+      "id": "660e8400-e29b-41d4-a716-446655440000",
+      "name": "Growth Portfolio",
+      "description": "Long-term growth stocks",
+      "currency": "USD",
+      "total_value": 125430.5,
+      "total_return": 15.75,
+      "is_default": true,
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "770e8400-e29b-41d4-a716-446655440000",
+      "name": "Crypto Portfolio",
+      "description": "Cryptocurrency investments",
+      "currency": "USD",
+      "total_value": 45230.25,
+      "total_return": -5.2,
+      "is_default": false,
+      "created_at": "2024-03-20T14:30:00Z"
+    }
+  ],
+  "count": 2
 }
 ```
 
@@ -419,16 +419,16 @@ curl -X POST http://localhost:5000/api/v1/portfolios \
 
 ```json
 {
-    "success": true,
-    "portfolio": {
-        "id": "880e8400-e29b-41d4-a716-446655440000",
-        "name": "Tech Portfolio",
-        "description": "Technology sector investments",
-        "currency": "USD",
-        "total_value": 0.0,
-        "is_default": false,
-        "created_at": "2024-12-30T15:45:00Z"
-    }
+  "success": true,
+  "portfolio": {
+    "id": "880e8400-e29b-41d4-a716-446655440000",
+    "name": "Tech Portfolio",
+    "description": "Technology sector investments",
+    "currency": "USD",
+    "total_value": 0.0,
+    "is_default": false,
+    "created_at": "2024-12-30T15:45:00Z"
+  }
 }
 ```
 
@@ -459,45 +459,45 @@ curl -X GET http://localhost:5000/api/v1/portfolios/880e8400-e29b-41d4-a716-4466
 
 ```json
 {
-    "success": true,
-    "portfolio": {
-        "id": "880e8400-e29b-41d4-a716-446655440000",
-        "name": "Tech Portfolio",
-        "description": "Technology sector investments",
-        "currency": "USD",
-        "total_value": 52340.75,
-        "total_cost_basis": 48000.0,
-        "total_return": 4340.75,
-        "total_return_percent": 9.04,
-        "positions": [
-            {
-                "asset_symbol": "AAPL",
-                "asset_name": "Apple Inc.",
-                "quantity": 50,
-                "average_price": 180.0,
-                "current_price": 185.5,
-                "total_value": 9275.0,
-                "unrealized_gain": 275.0,
-                "unrealized_gain_percent": 3.06
-            },
-            {
-                "asset_symbol": "GOOGL",
-                "asset_name": "Alphabet Inc.",
-                "quantity": 75,
-                "average_price": 140.0,
-                "current_price": 142.3,
-                "total_value": 10672.5,
-                "unrealized_gain": 172.5,
-                "unrealized_gain_percent": 1.64
-            }
-        ],
-        "metrics": {
-            "sharpe_ratio": 1.45,
-            "volatility": 0.185,
-            "beta": 1.12,
-            "var_95": 2850.5
-        }
+  "success": true,
+  "portfolio": {
+    "id": "880e8400-e29b-41d4-a716-446655440000",
+    "name": "Tech Portfolio",
+    "description": "Technology sector investments",
+    "currency": "USD",
+    "total_value": 52340.75,
+    "total_cost_basis": 48000.0,
+    "total_return": 4340.75,
+    "total_return_percent": 9.04,
+    "positions": [
+      {
+        "asset_symbol": "AAPL",
+        "asset_name": "Apple Inc.",
+        "quantity": 50,
+        "average_price": 180.0,
+        "current_price": 185.5,
+        "total_value": 9275.0,
+        "unrealized_gain": 275.0,
+        "unrealized_gain_percent": 3.06
+      },
+      {
+        "asset_symbol": "GOOGL",
+        "asset_name": "Alphabet Inc.",
+        "quantity": 75,
+        "average_price": 140.0,
+        "current_price": 142.3,
+        "total_value": 10672.5,
+        "unrealized_gain": 172.5,
+        "unrealized_gain_percent": 1.64
+      }
+    ],
+    "metrics": {
+      "sharpe_ratio": 1.45,
+      "volatility": 0.185,
+      "beta": 1.12,
+      "var_95": 2850.5
     }
+  }
 }
 ```
 
@@ -537,26 +537,26 @@ curl -X GET "http://localhost:5000/api/v1/data/stocks/AAPL?include_historical=fa
 
 ```json
 {
-    "success": true,
-    "asset": {
-        "symbol": "AAPL",
-        "name": "Apple Inc.",
-        "type": "stock",
-        "exchange": "NASDAQ"
-    },
-    "data": {
-        "price": 185.5,
-        "change": 2.35,
-        "change_percent": 1.28,
-        "volume": 52340890,
-        "market_cap": 2890000000000,
-        "pe_ratio": 28.5,
-        "day_high": 186.2,
-        "day_low": 183.4,
-        "open": 184.1,
-        "previous_close": 183.15,
-        "timestamp": "2024-12-30T20:00:00Z"
-    }
+  "success": true,
+  "asset": {
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "type": "stock",
+    "exchange": "NASDAQ"
+  },
+  "data": {
+    "price": 185.5,
+    "change": 2.35,
+    "change_percent": 1.28,
+    "volume": 52340890,
+    "market_cap": 2890000000000,
+    "pe_ratio": 28.5,
+    "day_high": 186.2,
+    "day_low": 183.4,
+    "open": 184.1,
+    "previous_close": 183.15,
+    "timestamp": "2024-12-30T20:00:00Z"
+  }
 }
 ```
 
@@ -587,23 +587,23 @@ curl -X GET http://localhost:5000/api/v1/data/crypto/BTC \
 
 ```json
 {
-    "success": true,
-    "asset": {
-        "symbol": "BTC",
-        "name": "Bitcoin",
-        "type": "crypto"
-    },
-    "data": {
-        "price": 42580.75,
-        "change_24h": 1250.3,
-        "change_percent_24h": 3.03,
-        "volume_24h": 28340000000,
-        "market_cap": 834000000000,
-        "circulating_supply": 19580000,
-        "high_24h": 43100.0,
-        "low_24h": 41200.5,
-        "timestamp": "2024-12-30T20:05:00Z"
-    }
+  "success": true,
+  "asset": {
+    "symbol": "BTC",
+    "name": "Bitcoin",
+    "type": "crypto"
+  },
+  "data": {
+    "price": 42580.75,
+    "change_24h": 1250.3,
+    "change_percent_24h": 3.03,
+    "volume_24h": 28340000000,
+    "market_cap": 834000000000,
+    "circulating_supply": 19580000,
+    "high_24h": 43100.0,
+    "low_24h": 41200.5,
+    "timestamp": "2024-12-30T20:05:00Z"
+  }
 }
 ```
 
@@ -643,42 +643,42 @@ curl -X GET "http://localhost:5000/api/v1/predictions/stocks/AAPL?timeframe=1w" 
 
 ```json
 {
-    "success": true,
-    "asset": {
-        "symbol": "AAPL",
-        "name": "Apple Inc.",
-        "type": "stock"
+  "success": true,
+  "asset": {
+    "symbol": "AAPL",
+    "name": "Apple Inc.",
+    "type": "stock"
+  },
+  "prediction": {
+    "current_price": 185.5,
+    "predicted_price": 192.45,
+    "predicted_change": 6.95,
+    "predicted_change_percent": 3.75,
+    "direction": "up",
+    "confidence_score": 0.82,
+    "confidence_interval": {
+      "lower": 188.3,
+      "upper": 196.6
     },
-    "prediction": {
-        "current_price": 185.5,
-        "predicted_price": 192.45,
-        "predicted_change": 6.95,
-        "predicted_change_percent": 3.75,
-        "direction": "up",
-        "confidence_score": 0.82,
-        "confidence_interval": {
-            "lower": 188.3,
-            "upper": 196.6
-        },
-        "timeframe": "1w",
-        "generated_at": "2024-12-30T20:10:00Z",
-        "valid_until": "2025-01-06T20:10:00Z"
-    },
-    "factors": {
-        "technical_score": 0.78,
-        "sentiment_score": 0.85,
-        "fundamental_score": 0.8,
-        "key_drivers": [
-            "Strong earnings momentum",
-            "Positive market sentiment",
-            "Technical breakout pattern"
-        ]
-    },
-    "historical_accuracy": {
-        "1d": 0.84,
-        "1w": 0.78,
-        "1m": 0.72
-    }
+    "timeframe": "1w",
+    "generated_at": "2024-12-30T20:10:00Z",
+    "valid_until": "2025-01-06T20:10:00Z"
+  },
+  "factors": {
+    "technical_score": 0.78,
+    "sentiment_score": 0.85,
+    "fundamental_score": 0.8,
+    "key_drivers": [
+      "Strong earnings momentum",
+      "Positive market sentiment",
+      "Technical breakout pattern"
+    ]
+  },
+  "historical_accuracy": {
+    "1d": 0.84,
+    "1w": 0.78,
+    "1m": 0.72
+  }
 }
 ```
 
@@ -717,14 +717,14 @@ curl -X POST http://localhost:5000/api/v1/watchlists \
 
 ```json
 {
-    "success": true,
-    "watchlist": {
-        "id": "990e8400-e29b-41d4-a716-446655440000",
-        "name": "Tech Stocks",
-        "description": "Technology sector watchlist",
-        "asset_count": 0,
-        "created_at": "2024-12-30T20:15:00Z"
-    }
+  "success": true,
+  "watchlist": {
+    "id": "990e8400-e29b-41d4-a716-446655440000",
+    "name": "Tech Stocks",
+    "description": "Technology sector watchlist",
+    "asset_count": 0,
+    "created_at": "2024-12-30T20:15:00Z"
+  }
 }
 ```
 
@@ -750,14 +750,14 @@ curl -X GET http://localhost:5000/api/v1/health
 
 ```json
 {
-    "status": "healthy",
-    "version": "1.0.0",
-    "timestamp": "2024-12-30T20:20:00Z",
-    "services": {
-        "database": "connected",
-        "redis": "connected",
-        "ai_models": "loaded"
-    }
+  "status": "healthy",
+  "version": "1.0.0",
+  "timestamp": "2024-12-30T20:20:00Z",
+  "services": {
+    "database": "connected",
+    "redis": "connected",
+    "ai_models": "loaded"
+  }
 }
 ```
 
@@ -782,26 +782,26 @@ curl -X GET http://localhost:5000/api/v1/models/status \
 
 ```json
 {
-    "success": true,
-    "models": {
-        "stock_predictor": {
-            "status": "ready",
-            "version": "2.1.0",
-            "last_trained": "2024-12-25T10:00:00Z",
-            "accuracy": 0.78
-        },
-        "crypto_predictor": {
-            "status": "ready",
-            "version": "2.0.5",
-            "last_trained": "2024-12-26T14:30:00Z",
-            "accuracy": 0.74
-        },
-        "sentiment_analyzer": {
-            "status": "ready",
-            "version": "1.5.2",
-            "last_trained": "2024-12-28T09:00:00Z"
-        }
+  "success": true,
+  "models": {
+    "stock_predictor": {
+      "status": "ready",
+      "version": "2.1.0",
+      "last_trained": "2024-12-25T10:00:00Z",
+      "accuracy": 0.78
+    },
+    "crypto_predictor": {
+      "status": "ready",
+      "version": "2.0.5",
+      "last_trained": "2024-12-26T14:30:00Z",
+      "accuracy": 0.74
+    },
+    "sentiment_analyzer": {
+      "status": "ready",
+      "version": "1.5.2",
+      "last_trained": "2024-12-28T09:00:00Z"
     }
+  }
 }
 ```
 
@@ -863,15 +863,15 @@ curl -X POST http://localhost:5000/api/v1/webhooks \
 
 ```json
 {
-    "event_type": "price_alert",
-    "timestamp": "2024-12-30T20:25:00Z",
-    "data": {
-        "asset_symbol": "AAPL",
-        "current_price": 185.5,
-        "alert_price": 185.0,
-        "alert_type": "above"
-    },
-    "signature": "sha256=abcdef123456..."
+  "event_type": "price_alert",
+  "timestamp": "2024-12-30T20:25:00Z",
+  "data": {
+    "asset_symbol": "AAPL",
+    "current_price": 185.5,
+    "alert_price": 185.0,
+    "alert_type": "above"
+  },
+  "signature": "sha256=abcdef123456..."
 }
 ```
 

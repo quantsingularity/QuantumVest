@@ -332,29 +332,29 @@ code/backend/
 ### Security Layers
 
 1. **Network Security**
-    - HTTPS/TLS encryption
-    - VPC isolation
-    - Firewall rules
-    - DDoS protection
+   - HTTPS/TLS encryption
+   - VPC isolation
+   - Firewall rules
+   - DDoS protection
 
 2. **Application Security**
-    - JWT authentication
-    - Rate limiting
-    - Input validation
-    - SQL injection prevention
-    - XSS protection
+   - JWT authentication
+   - Rate limiting
+   - Input validation
+   - SQL injection prevention
+   - XSS protection
 
 3. **Data Security**
-    - Encryption at rest (AES-256)
-    - Encryption in transit (TLS 1.3)
-    - Password hashing (bcrypt)
-    - Audit logging
+   - Encryption at rest (AES-256)
+   - Encryption in transit (TLS 1.3)
+   - Password hashing (bcrypt)
+   - Audit logging
 
 4. **Compliance**
-    - KYC/AML tracking
-    - GDPR compliance
-    - SOC 2 controls
-    - Audit trails
+   - KYC/AML tracking
+   - GDPR compliance
+   - SOC 2 controls
+   - Audit trails
 
 ---
 

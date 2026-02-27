@@ -2,41 +2,41 @@
 # roles/common/tasks/main.yml
 - name: Update all packages
   yum:
-      name: '*'
-      state: latest
-      update_only: true
+    name: "*"
+    state: latest
+    update_only: true
 
 - name: Install common packages
   yum:
-      name:
-          - vim
-          - git
-          - wget
-          - unzip
-          - htop
-          - net-tools
-          - python3
-          - python3-pip
-      state: present
+    name:
+      - vim
+      - git
+      - wget
+      - unzip
+      - htop
+      - net-tools
+      - python3
+      - python3-pip
+    state: present
 
 - name: Set timezone
   timezone:
-      name: UTC
+    name: UTC
 
 - name: Configure firewall
   firewalld:
-      service: '{{ item }}'
-      permanent: true
-      state: enabled
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
   loop:
-      - http
-      - https
-      - ssh
+    - http
+    - https
+    - ssh
   when: ansible_os_family == "RedHat"
 
 - name: Start and enable firewalld
   systemd:
-      name: firewalld
-      state: started
-      enabled: true
+    name: firewalld
+    state: started
+    enabled: true
   when: ansible_os_family == "RedHat"

@@ -8,13 +8,13 @@ Command-line interface reference for QuantumVest administration, data operations
 - [Installation](#installation)
 - [Global Options](#global-options)
 - [Commands](#commands)
-    - [Setup Commands](#setup-commands)
-    - [Server Commands](#server-commands)
-    - [Database Commands](#database-commands)
-    - [Data Pipeline Commands](#data-pipeline-commands)
-    - [Model Commands](#model-commands)
-    - [Testing Commands](#testing-commands)
-    - [Deployment Commands](#deployment-commands)
+  - [Setup Commands](#setup-commands)
+  - [Server Commands](#server-commands)
+  - [Database Commands](#database-commands)
+  - [Data Pipeline Commands](#data-pipeline-commands)
+  - [Model Commands](#model-commands)
+  - [Testing Commands](#testing-commands)
+  - [Deployment Commands](#deployment-commands)
 
 ---
 

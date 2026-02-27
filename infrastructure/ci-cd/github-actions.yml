@@ -4,442 +4,442 @@
 name: QuantumVest CI/CD Pipeline
 
 on:
-    push:
-        branches: [main, develop, release/*]
-    pull_request:
-        branches: [main, develop]
-    schedule:
-        - cron: '0 2 * * *' # Daily security scans
+  push:
+    branches: [main, develop, release/*]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: "0 2 * * *" # Daily security scans
 
 env:
-    REGISTRY: ghcr.io
-    IMAGE_NAME: quantumvest
-    HELM_VERSION: 3.12.0
-    KUBECTL_VERSION: 1.27.0
-    DOCKER_BUILDKIT: 1
-    BUILDX_VERSION: 0.11.0
+  REGISTRY: ghcr.io
+  IMAGE_NAME: quantumvest
+  HELM_VERSION: 3.12.0
+  KUBECTL_VERSION: 1.27.0
+  DOCKER_BUILDKIT: 1
+  BUILDX_VERSION: 0.11.0
 
 jobs:
-    security-scan:
-        name: Security Scanning
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            security-events: write
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            - name: Run Trivy vulnerability scanner
-              uses: aquasecurity/trivy-action@master
-              with:
-                  scan-type: 'fs'
-                  scan-ref: '.'
-                  format: 'sarif'
-                  output: 'trivy-results.sarif'
-                  severity: 'CRITICAL,HIGH,MEDIUM'
-
-            - name: Upload Trivy scan results
-              uses: github/codeql-action/upload-sarif@v2
-              with:
-                  sarif_file: 'trivy-results.sarif'
-
-            - name: Run Snyk security scan
-              uses: snyk/actions/node@master
-              env:
-                  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-              with:
-                  args: --severity-threshold=medium
-
-            - name: SAST with CodeQL
-              uses: github/codeql-action/init@v2
-              with:
-                  languages: javascript, python
-
-            - name: Perform CodeQL Analysis
-              uses: github/codeql-action/analyze@v2
-
-            - name: Secret scanning with GitLeaks
-              uses: zricethezav/gitleaks-action@master
-
-    quality-gate:
-        name: Quality Gate
-        runs-on: ubuntu-latest
-        needs: security-scan
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: '18'
-                  cache: 'npm'
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Run linting
-              run: npm run lint
-
-            - name: Run unit tests
-              run: npm run test:unit -- --coverage
-
-            - name: Run integration tests
-              run: npm run test:integration
-
-            - name: SonarCloud Scan
-              uses: SonarSource/sonarcloud-github-action@master
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-            - name: Upload coverage to Codecov
-              uses: codecov/codecov-action@v3
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-
-    build-and-push:
-        name: Build and Push Images
-        runs-on: ubuntu-latest
-        needs: quality-gate
-        permissions:
-            contents: read
-            packages: write
-        strategy:
-            matrix:
-                component: [backend, frontend, analytics]
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  version: v${{ env.BUILDX_VERSION }}
-
-            - name: Log in to Container Registry
-              uses: docker/login-action@v3
-              with:
-                  registry: ${{ env.REGISTRY }}
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Extract metadata
-              id: meta
-              uses: docker/metadata-action@v5
-              with:
-                  images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.component }}
-                  tags: |
-                      type=ref,event=branch
-                      type=ref,event=pr
-                      type=sha,prefix={{branch}}-
-                      type=raw,value=latest,enable={{is_default_branch}}
-
-            - name: Build and push Docker image
-              uses: docker/build-push-action@v5
-              with:
-                  context: ./${{ matrix.component }}
-                  file: ./${{ matrix.component }}/Dockerfile
-                  push: true
-                  tags: ${{ steps.meta.outputs.tags }}
-                  labels: ${{ steps.meta.outputs.labels }}
-                  cache-from: type=gha
-                  cache-to: type=gha,mode=max
-                  platforms: linux/amd64,linux/arm64
-                  build-args: |
-                      BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-                      VCS_REF=${{ github.sha }}
-                      VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-
-            - name: Sign container image
-              run: |
-                  cosign sign --yes ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.component }}@${{ steps.build.outputs.digest }}
-              env:
-                  COSIGN_EXPERIMENTAL: 1
-
-            - name: Generate SBOM
-              uses: anchore/sbom-action@v0
-              with:
-                  image: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.component }}@${{ steps.build.outputs.digest }}
-                  format: spdx-json
-                  output-file: sbom-${{ matrix.component }}.spdx.json
-
-            - name: Upload SBOM
-              uses: actions/upload-artifact@v3
-              with:
-                  name: sbom-${{ matrix.component }}
-                  path: sbom-${{ matrix.component }}.spdx.json
-
-    infrastructure-validation:
-        name: Infrastructure Validation
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v2
-              with:
-                  terraform_version: 1.5.0
-
-            - name: Terraform Format Check
-              run: terraform fmt -check -recursive infrastructure/terraform/
-
-            - name: Terraform Init
-              run: terraform init -backend=false
-              working-directory: infrastructure/terraform/
-
-            - name: Terraform Validate
-              run: terraform validate
-              working-directory: infrastructure/terraform/
-
-            - name: Run Checkov
-              uses: bridgecrewio/checkov-action@master
-              with:
-                  directory: infrastructure/
-                  framework: terraform,kubernetes,dockerfile
-                  output_format: sarif
-                  output_file_path: checkov-results.sarif
-
-            - name: Upload Checkov results
-              uses: github/codeql-action/upload-sarif@v2
-              with:
-                  sarif_file: checkov-results.sarif
-
-            - name: Validate Kubernetes manifests
-              run: |
-                  kubectl --dry-run=client apply -f infrastructure/kubernetes/base/
-
-            - name: Helm lint
-              run: |
-                  helm lint infrastructure/helm/quantumvest/
-
-    deploy-staging:
-        name: Deploy to Staging
-        runs-on: ubuntu-latest
-        needs: [build-and-push, infrastructure-validation]
-        if: github.ref == 'refs/heads/develop'
-        environment:
-            name: staging
-            url: https://staging.quantumvest.com
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup kubectl
-              uses: azure/setup-kubectl@v3
-              with:
-                  version: v${{ env.KUBECTL_VERSION }}
-
-            - name: Setup Helm
-              uses: azure/setup-helm@v3
-              with:
-                  version: v${{ env.HELM_VERSION }}
-
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: us-east-1
-
-            - name: Update kubeconfig
-              run: |
-                  aws eks update-kubeconfig --name quantumvest-staging --region us-east-1
-
-            - name: Deploy with Helm
-              run: |
-                  helm upgrade --install quantumvest \
-                    ./infrastructure/helm/quantumvest \
-                    --namespace quantumvest-staging \
-                    --create-namespace \
-                    --values ./infrastructure/helm/quantumvest/values-staging.yaml \
-                    --set image.tag=${{ github.sha }} \
-                    --set environment=staging \
-                    --wait --timeout=10m
-
-            - name: Run smoke tests
-              run: |
-                  kubectl wait --for=condition=ready pod -l app=quantumvest-backend -n quantumvest-staging --timeout=300s
-                  npm run test:smoke -- --env=staging
-
-            - name: Run security tests
-              run: |
-                  npm run test:security -- --env=staging
-
-    deploy-production:
-        name: Deploy to Production
-        runs-on: ubuntu-latest
-        needs: [build-and-push, infrastructure-validation]
-        if: github.ref == 'refs/heads/main'
-        environment:
-            name: production
-            url: https://quantumvest.com
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup kubectl
-              uses: azure/setup-kubectl@v3
-              with:
-                  version: v${{ env.KUBECTL_VERSION }}
-
-            - name: Setup Helm
-              uses: azure/setup-helm@v3
-              with:
-                  version: v${{ env.HELM_VERSION }}
-
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
-                  aws-region: us-east-1
-
-            - name: Update kubeconfig
-              run: |
-                  aws eks update-kubeconfig --name quantumvest-production --region us-east-1
-
-            - name: Pre-deployment validation
-              run: |
-                  # Validate cluster health
-                  kubectl get nodes
-                  kubectl get pods --all-namespaces
-
-                  # Check resource availability
-                  kubectl top nodes
-                  kubectl top pods -n quantumvest-production
-
-            - name: Blue-Green Deployment
-              run: |
-                  # Deploy to green environment
-                  helm upgrade --install quantumvest-green \
-                    ./infrastructure/helm/quantumvest \
-                    --namespace quantumvest-green \
-                    --create-namespace \
-                    --values ./infrastructure/helm/quantumvest/values-production.yaml \
-                    --set image.tag=${{ github.sha }} \
-                    --set environment=production \
-                    --set deployment.color=green \
-                    --wait --timeout=15m
-
-            - name: Health check green deployment
-              run: |
-                  kubectl wait --for=condition=ready pod -l app=quantumvest-backend,color=green -n quantumvest-green --timeout=600s
-
-                  # Run comprehensive health checks
-                  npm run test:health -- --env=production --target=green
-                  npm run test:performance -- --env=production --target=green
-                  npm run test:security -- --env=production --target=green
-
-            - name: Switch traffic to green
-              run: |
-                  # Update ingress to point to green deployment
-                  kubectl patch ingress quantumvest-ingress -n quantumvest-production \
-                    -p '{"spec":{"rules":[{"host":"quantumvest.com","http":{"paths":[{"path":"/","pathType":"Prefix","backend":{"service":{"name":"quantumvest-green","port":{"number":80}}}}]}}]}}'
-
-                  # Wait for traffic switch
-                  sleep 30
-
-            - name: Validate production deployment
-              run: |
-                  # Final validation
-                  npm run test:smoke -- --env=production
-                  npm run test:integration -- --env=production
-
-            - name: Cleanup blue deployment
-              run: |
-                  # Remove old blue deployment after successful green deployment
-                  kubectl delete namespace quantumvest-blue --ignore-not-found=true
-
-                  # Rename green to blue for next deployment
-                  kubectl patch namespace quantumvest-green -p '{"metadata":{"name":"quantumvest-blue"}}'
-
-    compliance-audit:
-        name: Compliance Audit
-        runs-on: ubuntu-latest
-        if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[audit]')
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Run compliance checks
-              run: |
-                  # SOX compliance checks
-                  npm run audit:sox
-
-                  # PCI DSS compliance checks
-                  npm run audit:pci
-
-                  # GDPR compliance checks
-                  npm run audit:gdpr
-
-                  # ISO 27001 compliance checks
-                  npm run audit:iso27001
-
-            - name: Generate compliance report
-              run: |
-                  npm run report:compliance
-
-            - name: Upload compliance artifacts
-              uses: actions/upload-artifact@v3
-              with:
-                  name: compliance-report
-                  path: reports/compliance/
-                  retention-days: 2555 # 7 years for financial compliance
-
-    disaster-recovery-test:
-        name: Disaster Recovery Test
-        runs-on: ubuntu-latest
-        if: github.event_name == 'schedule'
-        environment: dr-test
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup AWS CLI
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DR }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DR }}
-                  aws-region: us-west-2
-
-            - name: Test backup restoration
-              run: |
-                  # Test database backup restoration
-                  npm run test:backup-restore
-
-                  # Test application recovery
-                  npm run test:app-recovery
-
-                  # Test data integrity
-                  npm run test:data-integrity
-
-            - name: Generate DR test report
-              run: |
-                  npm run report:disaster-recovery
-
-            - name: Notify stakeholders
-              if: failure()
-              uses: 8398a7/action-slack@v3
-              with:
-                  status: failure
-                  channel: '#critical-alerts'
-                  webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-    notification:
-        name: Deployment Notification
-        runs-on: ubuntu-latest
-        needs: [deploy-staging, deploy-production]
-        if: always()
-        steps:
-            - name: Notify deployment status
-              uses: 8398a7/action-slack@v3
-              with:
-                  status: ${{ job.status }}
-                  channel: '#deployments'
-                  webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-                  fields: repo,message,commit,author,action,eventName,ref,workflow
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: "trivy-results.sarif"
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
+
+      - name: SAST with CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, python
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: Secret scanning with GitLeaks
+        uses: zricethezav/gitleaks-action@master
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: security-scan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm run test:unit -- --coverage
+
+      - name: Run integration tests
+        run: npm run test:integration
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  build-and-push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    needs: quality-gate
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        component: [backend, frontend, analytics]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          version: v${{ env.BUILDX_VERSION }}
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.component }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.component }}
+          file: ./${{ matrix.component }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+
+      - name: Sign container image
+        run: |
+          cosign sign --yes ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.component }}@${{ steps.build.outputs.digest }}
+        env:
+          COSIGN_EXPERIMENTAL: 1
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.component }}@${{ steps.build.outputs.digest }}
+          format: spdx-json
+          output-file: sbom-${{ matrix.component }}.spdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom-${{ matrix.component }}
+          path: sbom-${{ matrix.component }}.spdx.json
+
+  infrastructure-validation:
+    name: Infrastructure Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive infrastructure/terraform/
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+        working-directory: infrastructure/terraform/
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: infrastructure/terraform/
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: infrastructure/
+          framework: terraform,kubernetes,dockerfile
+          output_format: sarif
+          output_file_path: checkov-results.sarif
+
+      - name: Upload Checkov results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: checkov-results.sarif
+
+      - name: Validate Kubernetes manifests
+        run: |
+          kubectl --dry-run=client apply -f infrastructure/kubernetes/base/
+
+      - name: Helm lint
+        run: |
+          helm lint infrastructure/helm/quantumvest/
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-and-push, infrastructure-validation]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.quantumvest.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: v${{ env.KUBECTL_VERSION }}
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v${{ env.HELM_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name quantumvest-staging --region us-east-1
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install quantumvest \
+            ./infrastructure/helm/quantumvest \
+            --namespace quantumvest-staging \
+            --create-namespace \
+            --values ./infrastructure/helm/quantumvest/values-staging.yaml \
+            --set image.tag=${{ github.sha }} \
+            --set environment=staging \
+            --wait --timeout=10m
+
+      - name: Run smoke tests
+        run: |
+          kubectl wait --for=condition=ready pod -l app=quantumvest-backend -n quantumvest-staging --timeout=300s
+          npm run test:smoke -- --env=staging
+
+      - name: Run security tests
+        run: |
+          npm run test:security -- --env=staging
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, infrastructure-validation]
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://quantumvest.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: v${{ env.KUBECTL_VERSION }}
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v${{ env.HELM_VERSION }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: us-east-1
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name quantumvest-production --region us-east-1
+
+      - name: Pre-deployment validation
+        run: |
+          # Validate cluster health
+          kubectl get nodes
+          kubectl get pods --all-namespaces
+
+          # Check resource availability
+          kubectl top nodes
+          kubectl top pods -n quantumvest-production
+
+      - name: Blue-Green Deployment
+        run: |
+          # Deploy to green environment
+          helm upgrade --install quantumvest-green \
+            ./infrastructure/helm/quantumvest \
+            --namespace quantumvest-green \
+            --create-namespace \
+            --values ./infrastructure/helm/quantumvest/values-production.yaml \
+            --set image.tag=${{ github.sha }} \
+            --set environment=production \
+            --set deployment.color=green \
+            --wait --timeout=15m
+
+      - name: Health check green deployment
+        run: |
+          kubectl wait --for=condition=ready pod -l app=quantumvest-backend,color=green -n quantumvest-green --timeout=600s
+
+          # Run comprehensive health checks
+          npm run test:health -- --env=production --target=green
+          npm run test:performance -- --env=production --target=green
+          npm run test:security -- --env=production --target=green
+
+      - name: Switch traffic to green
+        run: |
+          # Update ingress to point to green deployment
+          kubectl patch ingress quantumvest-ingress -n quantumvest-production \
+            -p '{"spec":{"rules":[{"host":"quantumvest.com","http":{"paths":[{"path":"/","pathType":"Prefix","backend":{"service":{"name":"quantumvest-green","port":{"number":80}}}}]}}]}}'
+
+          # Wait for traffic switch
+          sleep 30
+
+      - name: Validate production deployment
+        run: |
+          # Final validation
+          npm run test:smoke -- --env=production
+          npm run test:integration -- --env=production
+
+      - name: Cleanup blue deployment
+        run: |
+          # Remove old blue deployment after successful green deployment
+          kubectl delete namespace quantumvest-blue --ignore-not-found=true
+
+          # Rename green to blue for next deployment
+          kubectl patch namespace quantumvest-green -p '{"metadata":{"name":"quantumvest-blue"}}'
+
+  compliance-audit:
+    name: Compliance Audit
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || contains(github.event.head_commit.message, '[audit]')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run compliance checks
+        run: |
+          # SOX compliance checks
+          npm run audit:sox
+
+          # PCI DSS compliance checks
+          npm run audit:pci
+
+          # GDPR compliance checks
+          npm run audit:gdpr
+
+          # ISO 27001 compliance checks
+          npm run audit:iso27001
+
+      - name: Generate compliance report
+        run: |
+          npm run report:compliance
+
+      - name: Upload compliance artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: compliance-report
+          path: reports/compliance/
+          retention-days: 2555 # 7 years for financial compliance
+
+  disaster-recovery-test:
+    name: Disaster Recovery Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    environment: dr-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DR }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DR }}
+          aws-region: us-west-2
+
+      - name: Test backup restoration
+        run: |
+          # Test database backup restoration
+          npm run test:backup-restore
+
+          # Test application recovery
+          npm run test:app-recovery
+
+          # Test data integrity
+          npm run test:data-integrity
+
+      - name: Generate DR test report
+        run: |
+          npm run report:disaster-recovery
+
+      - name: Notify stakeholders
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          channel: "#critical-alerts"
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  notification:
+    name: Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production]
+    if: always()
+    steps:
+      - name: Notify deployment status
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: "#deployments"
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow

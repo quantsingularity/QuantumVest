@@ -110,24 +110,24 @@ The CI/CD pipeline expects these scripts in `package.json`:
 
 ```json
 {
-    "scripts": {
-        "lint": "eslint . && prettier --check .",
-        "test:unit": "jest --coverage",
-        "test:integration": "jest --config jest.integration.config.js",
-        "test:smoke": "jest --config jest.smoke.config.js",
-        "test:security": "npm audit && snyk test",
-        "test:health": "node scripts/health-check.js",
-        "test:performance": "artillery run tests/performance.yml",
-        "test:backup-restore": "node scripts/test-backup.js",
-        "test:app-recovery": "node scripts/test-recovery.js",
-        "test:data-integrity": "node scripts/test-integrity.js",
-        "audit:sox": "node scripts/compliance/sox-audit.js",
-        "audit:pci": "node scripts/compliance/pci-audit.js",
-        "audit:gdpr": "node scripts/compliance/gdpr-audit.js",
-        "audit:iso27001": "node scripts/compliance/iso27001-audit.js",
-        "report:compliance": "node scripts/compliance/generate-report.js",
-        "report:disaster-recovery": "node scripts/dr/generate-report.js"
-    }
+  "scripts": {
+    "lint": "eslint . && prettier --check .",
+    "test:unit": "jest --coverage",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:smoke": "jest --config jest.smoke.config.js",
+    "test:security": "npm audit && snyk test",
+    "test:health": "node scripts/health-check.js",
+    "test:performance": "artillery run tests/performance.yml",
+    "test:backup-restore": "node scripts/test-backup.js",
+    "test:app-recovery": "node scripts/test-recovery.js",
+    "test:data-integrity": "node scripts/test-integrity.js",
+    "audit:sox": "node scripts/compliance/sox-audit.js",
+    "audit:pci": "node scripts/compliance/pci-audit.js",
+    "audit:gdpr": "node scripts/compliance/gdpr-audit.js",
+    "audit:iso27001": "node scripts/compliance/iso27001-audit.js",
+    "report:compliance": "node scripts/compliance/generate-report.js",
+    "report:disaster-recovery": "node scripts/dr/generate-report.js"
+  }
 }
 ```
 
@@ -404,9 +404,9 @@ gh secret set SECRET_NAME
 
 - ✅ Require pull request reviews (2 approvals)
 - ✅ Require status checks to pass:
-    - security-scan
-    - quality-gate
-    - infrastructure-validation
+  - security-scan
+  - quality-gate
+  - infrastructure-validation
 - ✅ Require branches to be up to date
 - ✅ Require conversation resolution
 - ✅ Require signed commits
@@ -416,8 +416,8 @@ gh secret set SECRET_NAME
 
 - ✅ Require pull request reviews (1 approval)
 - ✅ Require status checks to pass:
-    - security-scan
-    - quality-gate
+  - security-scan
+  - quality-gate
 
 ## Deployment Approvals
 
@@ -492,14 +492,14 @@ helm rollback quantumvest-green <revision> -n quantumvest-green
 # Use caching
 - uses: actions/cache@v3
   with:
-      path: ~/.npm
-      key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
 # Use BuildKit cache
 - uses: docker/build-push-action@v5
   with:
-      cache-from: type=gha
-      cache-to: type=gha,mode=max
+    cache-from: type=gha
+    cache-to: type=gha,mode=max
 ```
 
 ### Parallel jobs
@@ -507,10 +507,10 @@ helm rollback quantumvest-green <revision> -n quantumvest-green
 ```yaml
 # Run independent jobs in parallel
 jobs:
-    test-unit:
-        # runs in parallel with test-integration
-    test-integration:
-        # runs in parallel with test-unit
+  test-unit:
+    # runs in parallel with test-integration
+  test-integration:
+    # runs in parallel with test-unit
 ```
 
 ## Cost Optimization
@@ -528,7 +528,7 @@ if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
 # Only run on specific paths
 paths:
-    - 'src/**'
-    - 'tests/**'
-    - '!docs/**'
+  - "src/**"
+  - "tests/**"
+  - "!docs/**"
 ```

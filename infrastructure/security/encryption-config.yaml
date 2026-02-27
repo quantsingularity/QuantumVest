@@ -2,227 +2,227 @@
 
 # Encryption at Rest
 encryption_at_rest:
-    databases:
-        postgresql:
-            enabled: true
-            algorithm: 'AES-256-GCM'
-            key_rotation_days: 30
-            transparent_data_encryption: true
+  databases:
+    postgresql:
+      enabled: true
+      algorithm: "AES-256-GCM"
+      key_rotation_days: 30
+      transparent_data_encryption: true
 
-        redis:
-            enabled: true
-            algorithm: 'AES-256-GCM'
-            key_rotation_days: 30
+    redis:
+      enabled: true
+      algorithm: "AES-256-GCM"
+      key_rotation_days: 30
 
-    storage:
-        object_storage:
-            enabled: true
-            algorithm: 'AES-256-GCM'
-            key_rotation_days: 30
-            server_side_encryption: true
+  storage:
+    object_storage:
+      enabled: true
+      algorithm: "AES-256-GCM"
+      key_rotation_days: 30
+      server_side_encryption: true
 
-        block_storage:
-            enabled: true
-            algorithm: 'AES-256-XTS'
-            key_rotation_days: 30
+    block_storage:
+      enabled: true
+      algorithm: "AES-256-XTS"
+      key_rotation_days: 30
 
-        backup_storage:
-            enabled: true
-            algorithm: 'AES-256-GCM'
-            key_rotation_days: 15 # More frequent for backups
-            compression_before_encryption: true
+    backup_storage:
+      enabled: true
+      algorithm: "AES-256-GCM"
+      key_rotation_days: 15 # More frequent for backups
+      compression_before_encryption: true
 
 # Encryption in Transit
 encryption_in_transit:
-    api_endpoints:
-        tls_version: '1.3'
-        certificate_type: 'EV_SSL' # Extended Validation
-        hsts_enabled: true
-        hsts_max_age: 31536000
+  api_endpoints:
+    tls_version: "1.3"
+    certificate_type: "EV_SSL" # Extended Validation
+    hsts_enabled: true
+    hsts_max_age: 31536000
 
-    database_connections:
-        ssl_mode: 'require'
-        ssl_cert_verification: true
-        ssl_cipher_suites:
-            - 'ECDHE-RSA-AES256-GCM-SHA384'
-            - 'ECDHE-RSA-AES128-GCM-SHA256'
+  database_connections:
+    ssl_mode: "require"
+    ssl_cert_verification: true
+    ssl_cipher_suites:
+      - "ECDHE-RSA-AES256-GCM-SHA384"
+      - "ECDHE-RSA-AES128-GCM-SHA256"
 
-    internal_services:
-        mutual_tls: true
-        certificate_rotation_days: 30
+  internal_services:
+    mutual_tls: true
+    certificate_rotation_days: 30
 
-    message_queues:
-        encryption_enabled: true
-        algorithm: 'AES-256-GCM'
+  message_queues:
+    encryption_enabled: true
+    algorithm: "AES-256-GCM"
 
 # Key Management Service (KMS)
 kms_config:
-    provider: 'cloud_native' # AWS KMS, Azure Key Vault, etc.
+  provider: "cloud_native" # AWS KMS, Azure Key Vault, etc.
 
-    master_keys:
-        - name: 'quantumvest-master-key'
-          purpose: 'data_encryption'
-          algorithm: 'AES-256'
-          rotation_schedule: 'monthly'
-          multi_region: true
+  master_keys:
+    - name: "quantumvest-master-key"
+      purpose: "data_encryption"
+      algorithm: "AES-256"
+      rotation_schedule: "monthly"
+      multi_region: true
 
-        - name: 'quantumvest-signing-key'
-          purpose: 'digital_signatures'
-          algorithm: 'RSA-4096'
-          rotation_schedule: 'quarterly'
+    - name: "quantumvest-signing-key"
+      purpose: "digital_signatures"
+      algorithm: "RSA-4096"
+      rotation_schedule: "quarterly"
 
-    data_encryption_keys:
-        automatic_rotation: true
-        rotation_days: 30
-        versioning: true
+  data_encryption_keys:
+    automatic_rotation: true
+    rotation_days: 30
+    versioning: true
 
-    access_policies:
-        - principal: 'quantumvest-api'
-          permissions: ['encrypt', 'decrypt']
-          conditions:
-              - 'source_ip_range': '10.0.1.0/24'
+  access_policies:
+    - principal: "quantumvest-api"
+      permissions: ["encrypt", "decrypt"]
+      conditions:
+        - "source_ip_range": "10.0.1.0/24"
 
-        - principal: 'backup-service'
-          permissions: ['encrypt', 'decrypt']
-          conditions:
-              - 'time_based': 'backup_window'
+    - principal: "backup-service"
+      permissions: ["encrypt", "decrypt"]
+      conditions:
+        - "time_based": "backup_window"
 
-    audit_logging: true
-    cross_region_replication: true
+  audit_logging: true
+  cross_region_replication: true
 
 # Field-Level Encryption
 field_encryption:
-    sensitive_fields:
-        - field: 'ssn'
-          algorithm: 'AES-256-GCM'
-          tokenization: true
+  sensitive_fields:
+    - field: "ssn"
+      algorithm: "AES-256-GCM"
+      tokenization: true
 
-        - field: 'credit_card_number'
-          algorithm: 'AES-256-GCM'
-          tokenization: true
-          format_preserving: true
+    - field: "credit_card_number"
+      algorithm: "AES-256-GCM"
+      tokenization: true
+      format_preserving: true
 
-        - field: 'bank_account_number'
-          algorithm: 'AES-256-GCM'
-          tokenization: true
+    - field: "bank_account_number"
+      algorithm: "AES-256-GCM"
+      tokenization: true
 
-        - field: 'personal_email'
-          algorithm: 'AES-256-GCM'
-          searchable_encryption: true
+    - field: "personal_email"
+      algorithm: "AES-256-GCM"
+      searchable_encryption: true
 
-        - field: 'phone_number'
-          algorithm: 'AES-256-GCM'
-          format_preserving: true
+    - field: "phone_number"
+      algorithm: "AES-256-GCM"
+      format_preserving: true
 
-    tokenization_service:
-        enabled: true
-        token_format: 'format_preserving'
-        detokenization_audit: true
+  tokenization_service:
+    enabled: true
+    token_format: "format_preserving"
+    detokenization_audit: true
 
 # Certificate Management
 certificate_management:
-    ca_hierarchy:
-        root_ca:
-            algorithm: 'RSA-4096'
-            validity_years: 20
-            offline_storage: true
+  ca_hierarchy:
+    root_ca:
+      algorithm: "RSA-4096"
+      validity_years: 20
+      offline_storage: true
 
-        intermediate_ca:
-            algorithm: 'RSA-4096'
-            validity_years: 10
+    intermediate_ca:
+      algorithm: "RSA-4096"
+      validity_years: 10
 
-        leaf_certificates:
-            algorithm: 'RSA-2048'
-            validity_days: 90
-            auto_renewal: true
+    leaf_certificates:
+      algorithm: "RSA-2048"
+      validity_days: 90
+      auto_renewal: true
 
-    certificate_transparency: true
-    ocsp_stapling: true
+  certificate_transparency: true
+  ocsp_stapling: true
 
-    monitoring:
-        expiry_alerts: true
-        alert_days_before: [30, 7, 1]
-        revocation_monitoring: true
+  monitoring:
+    expiry_alerts: true
+    alert_days_before: [30, 7, 1]
+    revocation_monitoring: true
 
 # Hardware Security Modules (HSM)
 hsm_config:
-    enabled: true
-    type: 'cloud_hsm' # or "network_attached"
+  enabled: true
+  type: "cloud_hsm" # or "network_attached"
 
-    key_storage:
-        master_keys: true
-        signing_keys: true
-        ssl_certificates: false # Use KMS for SSL certs
+  key_storage:
+    master_keys: true
+    signing_keys: true
+    ssl_certificates: false # Use KMS for SSL certs
 
-    high_availability: true
-    backup_strategy: 'cross_region'
+  high_availability: true
+  backup_strategy: "cross_region"
 
-    access_control:
-        authentication_required: true
-        role_based_access: true
-        audit_logging: true
+  access_control:
+    authentication_required: true
+    role_based_access: true
+    audit_logging: true
 
 # Data Loss Prevention (DLP)
 dlp_config:
-    enabled: true
+  enabled: true
 
-    policies:
-        - name: 'credit_card_detection'
-          pattern: 'credit_card_regex'
-          action: 'block'
-          notification: true
+  policies:
+    - name: "credit_card_detection"
+      pattern: "credit_card_regex"
+      action: "block"
+      notification: true
 
-        - name: 'ssn_detection'
-          pattern: 'ssn_regex'
-          action: 'block'
-          notification: true
+    - name: "ssn_detection"
+      pattern: "ssn_regex"
+      action: "block"
+      notification: true
 
-        - name: 'financial_data'
-          pattern: 'financial_account_regex'
-          action: 'encrypt'
-          notification: true
+    - name: "financial_data"
+      pattern: "financial_account_regex"
+      action: "encrypt"
+      notification: true
 
-    channels:
-        - 'email'
-        - 'file_transfer'
-        - 'api_responses'
-        - 'database_exports'
+  channels:
+    - "email"
+    - "file_transfer"
+    - "api_responses"
+    - "database_exports"
 
-    exceptions:
-        - user_role: 'compliance_officer'
-          justification_required: true
+  exceptions:
+    - user_role: "compliance_officer"
+      justification_required: true
 
 # Secure Key Storage
 key_storage:
-    encryption_keys:
-        storage_type: 'hsm'
-        backup_frequency: 'daily'
-        geographic_distribution: true
+  encryption_keys:
+    storage_type: "hsm"
+    backup_frequency: "daily"
+    geographic_distribution: true
 
-    api_keys:
-        storage_type: 'kms'
-        rotation_frequency: 'monthly'
-        access_logging: true
+  api_keys:
+    storage_type: "kms"
+    rotation_frequency: "monthly"
+    access_logging: true
 
-    certificates:
-        storage_type: 'kms'
-        auto_renewal: true
-        monitoring: true
+  certificates:
+    storage_type: "kms"
+    auto_renewal: true
+    monitoring: true
 
 # Compliance Requirements
 compliance_encryption:
-    pci_dss:
-        cardholder_data_encryption: true
-        key_management_compliance: true
+  pci_dss:
+    cardholder_data_encryption: true
+    key_management_compliance: true
 
-    sox:
-        financial_data_encryption: true
-        audit_trail_encryption: true
+  sox:
+    financial_data_encryption: true
+    audit_trail_encryption: true
 
-    gdpr:
-        personal_data_encryption: true
-        right_to_erasure_support: true
+  gdpr:
+    personal_data_encryption: true
+    right_to_erasure_support: true
 
-    iso27001:
-        information_security_controls: true
-        risk_management_integration: true
+  iso27001:
+    information_security_controls: true
+    risk_management_integration: true

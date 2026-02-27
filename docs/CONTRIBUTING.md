@@ -17,18 +17,18 @@ Guidelines for contributing to the QuantumVest project including code style, tes
 
 1. Fork the repository
 2. Clone your fork:
-    ```bash
-    git clone https://github.com/quantsingularity/QuantumVest.git
-    cd QuantumVest
-    ```
+   ```bash
+   git clone https://github.com/quantsingularity/QuantumVest.git
+   cd QuantumVest
+   ```
 3. Add upstream remote:
-    ```bash
-    git remote add upstream https://github.com/quantsingularity/QuantumVest.git
-    ```
+   ```bash
+   git remote add upstream https://github.com/quantsingularity/QuantumVest.git
+   ```
 4. Create a feature branch:
-    ```bash
-    git checkout -b feature/your-feature-name
-    ```
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
 
 ---
 
@@ -203,34 +203,34 @@ npm test -- --watch
 
 1. **Sync with upstream:**
 
-    ```bash
-    git fetch upstream
-    git rebase upstream/main
-    ```
+   ```bash
+   git fetch upstream
+   git rebase upstream/main
+   ```
 
 2. **Ensure all tests pass:**
 
-    ```bash
-    ./scripts/run_all_tests.sh
-    ```
+   ```bash
+   ./scripts/run_all_tests.sh
+   ```
 
 3. **Ensure code is formatted:**
 
-    ```bash
-    ./scripts/lint-all.sh --fix
-    ```
+   ```bash
+   ./scripts/lint-all.sh --fix
+   ```
 
 4. **Push to your fork:**
 
-    ```bash
-    git push origin feature/your-feature-name
-    ```
+   ```bash
+   git push origin feature/your-feature-name
+   ```
 
 5. **Create Pull Request** on GitHub with:
-    - Clear title and description
-    - Reference to related issues
-    - Screenshots (if UI changes)
-    - Test evidence
+   - Clear title and description
+   - Reference to related issues
+   - Screenshots (if UI changes)
+   - Test evidence
 
 6. **Address review feedback**
 

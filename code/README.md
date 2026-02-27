@@ -529,20 +529,20 @@ python test_suite.py --performance
 name: CI/CD Pipeline
 on: [push, pull_request]
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - name: Setup Python
-              uses: actions/setup-python@v4
-              with:
-                  python-version: '3.11'
-            - name: Install dependencies
-              run: pip install -r requirements.txt
-            - name: Run tests
-              run: pytest --cov=./ --cov-report=xml
-            - name: Security scan
-              run: bandit -r ./
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest --cov=./ --cov-report=xml
+      - name: Security scan
+        run: bandit -r ./
 ```
 
 ## 🚀 Deployment
@@ -569,28 +569,28 @@ docker-compose -f docker-compose.prod.yml up -d --scale backend=3
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: quantumvest-backend
+  name: quantumvest-backend
 spec:
-    replicas: 3
-    selector:
-        matchLabels:
-            app: quantumvest-backend
-    template:
-        metadata:
-            labels:
-                app: quantumvest-backend
-        spec:
-            containers:
-                - name: backend
-                  image: quantumvest/backend:latest
-                  ports:
-                      - containerPort: 5000
-                  env:
-                      - name: DATABASE_URL
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: url
+  replicas: 3
+  selector:
+    matchLabels:
+      app: quantumvest-backend
+  template:
+    metadata:
+      labels:
+        app: quantumvest-backend
+    spec:
+      containers:
+        - name: backend
+          image: quantumvest/backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: url
 ```
 
 ## 🔄 CI/CD Pipeline
@@ -602,38 +602,38 @@ spec:
 name: Deploy to Production
 
 on:
-    push:
-        branches: [main]
+  push:
+    branches: [main]
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - name: Run tests
-              run: |
-                  python -m pytest
-                  npm test
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: |
+          python -m pytest
+          npm test
 
-    build:
-        needs: test
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - name: Build Docker images
-              run: |
-                  docker build -t quantumvest/backend:${{ github.sha }} ./code/backend
-                  docker push quantumvest/backend:${{ github.sha }}
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker images
+        run: |
+          docker build -t quantumvest/backend:${{ github.sha }} ./code/backend
+          docker push quantumvest/backend:${{ github.sha }}
 
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - name: Deploy to Kubernetes
-              run: |
-                  kubectl set image deployment/quantumvest-backend backend=quantumvest/backend:${{ github.sha }} -n quantumvest
-                  kubectl rollout status deployment/quantumvest-backend -n quantumvest
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/quantumvest-backend backend=quantumvest/backend:${{ github.sha }} -n quantumvest
+          kubectl rollout status deployment/quantumvest-backend -n quantumvest
 ```
 
 ### 2. Blue-Green Deployment
@@ -668,24 +668,24 @@ fi
 
 1. **Database Connection Issues**
 
-    ```bash
-    # Check database connectivity
-    docker-compose exec backend python -c "from app import db; print(db.engine.execute("SELECT 1").scalar())"
-    ```
+   ```bash
+   # Check database connectivity
+   docker-compose exec backend python -c "from app import db; print(db.engine.execute("SELECT 1").scalar())"
+   ```
 
 2. **Memory Issues**
 
-    ```bash
-    # Monitor memory usage
-    docker stats
-    kubectl top pods -n quantumvest
-    ```
+   ```bash
+   # Monitor memory usage
+   docker stats
+   kubectl top pods -n quantumvest
+   ```
 
 3. **SSL Certificate Issues**
-    ```bash
-    # Check certificate expiration
-    openssl x509 -in /etc/nginx/ssl/cert.pem -text -noout | grep "Not After"
-    ```
+   ```bash
+   # Check certificate expiration
+   openssl x509 -in /etc/nginx/ssl/cert.pem -text -noout | grep "Not After"
+   ```
 
 ### Log Analysis
 

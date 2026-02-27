@@ -538,27 +538,27 @@ print(f'Debug: {config.DEBUG}')
 
 1. **Never commit secrets**
 
-    ```bash
-    # Add to .gitignore
-    .env
-    .env.*
-    !.env.example
-    ```
+   ```bash
+   # Add to .gitignore
+   .env
+   .env.*
+   !.env.example
+   ```
 
 2. **Use strong secrets**
 
-    ```bash
-    # Generate secure secret key
-    python -c "import secrets; print(secrets.token_urlsafe(32))"
-    ```
+   ```bash
+   # Generate secure secret key
+   python -c "import secrets; print(secrets.token_urlsafe(32))"
+   ```
 
 3. **Environment-specific configs**
-    - Keep separate `.env` files for each environment
-    - Use secrets management tools (AWS Secrets Manager, HashiCorp Vault)
+   - Keep separate `.env` files for each environment
+   - Use secrets management tools (AWS Secrets Manager, HashiCorp Vault)
 
 4. **Minimal permissions**
-    - Grant only necessary database permissions
-    - Use read-only API keys where possible
+   - Grant only necessary database permissions
+   - Use read-only API keys where possible
 
 ---
 

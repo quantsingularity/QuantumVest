@@ -1,78 +1,78 @@
-import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import PredictionChart from '../../components/pages/PredictionChart';
-import { predictionAPI } from '../../services/api';
+import React from "react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import PredictionChart from "../../components/pages/PredictionChart";
+import { predictionAPI } from "../../services/api";
 
-jest.mock('../../services/api');
+jest.mock("../../services/api");
 
-describe('PredictionChart Component', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+describe("PredictionChart Component", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("renders prediction chart title", async () => {
+    predictionAPI.getPrediction.mockRejectedValue(new Error("API unavailable"));
+
+    render(<PredictionChart />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Price Predictions")).toBeInTheDocument();
     });
+  });
 
-    test('renders prediction chart title', async () => {
-        predictionAPI.getPrediction.mockRejectedValue(new Error('API unavailable'));
+  test("displays asset selector", async () => {
+    predictionAPI.getPrediction.mockRejectedValue(new Error("API unavailable"));
 
-        render(<PredictionChart />);
+    render(<PredictionChart />);
 
-        await waitFor(() => {
-            expect(screen.getByText('Price Predictions')).toBeInTheDocument();
-        });
+    await waitFor(() => {
+      expect(screen.getByLabelText("Asset:")).toBeInTheDocument();
+      expect(screen.getByLabelText("Timeframe:")).toBeInTheDocument();
     });
+  });
 
-    test('displays asset selector', async () => {
-        predictionAPI.getPrediction.mockRejectedValue(new Error('API unavailable'));
+  test("allows changing asset selection", async () => {
+    predictionAPI.getPrediction.mockRejectedValue(new Error("API unavailable"));
 
-        render(<PredictionChart />);
+    render(<PredictionChart />);
 
-        await waitFor(() => {
-            expect(screen.getByLabelText('Asset:')).toBeInTheDocument();
-            expect(screen.getByLabelText('Timeframe:')).toBeInTheDocument();
-        });
+    await waitFor(() => {
+      const assetSelect = screen.getByLabelText("Asset:");
+      fireEvent.change(assetSelect, { target: { value: "ETH" } });
+      expect(assetSelect.value).toBe("ETH");
     });
+  });
 
-    test('allows changing asset selection', async () => {
-        predictionAPI.getPrediction.mockRejectedValue(new Error('API unavailable'));
+  test("allows changing timeframe selection", async () => {
+    predictionAPI.getPrediction.mockRejectedValue(new Error("API unavailable"));
 
-        render(<PredictionChart />);
+    render(<PredictionChart />);
 
-        await waitFor(() => {
-            const assetSelect = screen.getByLabelText('Asset:');
-            fireEvent.change(assetSelect, { target: { value: 'ETH' } });
-            expect(assetSelect.value).toBe('ETH');
-        });
+    await waitFor(() => {
+      const timeframeSelect = screen.getByLabelText("Timeframe:");
+      fireEvent.change(timeframeSelect, { target: { value: "30d" } });
+      expect(timeframeSelect.value).toBe("30d");
     });
+  });
 
-    test('allows changing timeframe selection', async () => {
-        predictionAPI.getPrediction.mockRejectedValue(new Error('API unavailable'));
+  test("displays analysis summary", async () => {
+    predictionAPI.getPrediction.mockRejectedValue(new Error("API unavailable"));
 
-        render(<PredictionChart />);
+    render(<PredictionChart />);
 
-        await waitFor(() => {
-            const timeframeSelect = screen.getByLabelText('Timeframe:');
-            fireEvent.change(timeframeSelect, { target: { value: '30d' } });
-            expect(timeframeSelect.value).toBe('30d');
-        });
+    await waitFor(() => {
+      expect(screen.getByText("Analysis Summary")).toBeInTheDocument();
     });
+  });
 
-    test('displays analysis summary', async () => {
-        predictionAPI.getPrediction.mockRejectedValue(new Error('API unavailable'));
+  test("generates fallback predictions when API fails", async () => {
+    predictionAPI.getPrediction.mockRejectedValue(new Error("API unavailable"));
 
-        render(<PredictionChart />);
+    render(<PredictionChart />);
 
-        await waitFor(() => {
-            expect(screen.getByText('Analysis Summary')).toBeInTheDocument();
-        });
+    await waitFor(() => {
+      expect(screen.getByText(/is predicted to/i)).toBeInTheDocument();
     });
-
-    test('generates fallback predictions when API fails', async () => {
-        predictionAPI.getPrediction.mockRejectedValue(new Error('API unavailable'));
-
-        render(<PredictionChart />);
-
-        await waitFor(() => {
-            expect(screen.getByText(/is predicted to/i)).toBeInTheDocument();
-        });
-    });
+  });
 });

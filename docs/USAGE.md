@@ -467,27 +467,27 @@ ws.run_forever()
 const ws = new WebSocket(`ws://localhost:5000/ws?token=${accessToken}`);
 
 ws.onopen = () => {
-    // Subscribe to channels
-    ws.send(
-        JSON.stringify({
-            action: 'subscribe',
-            channels: ['prices', 'predictions'],
-            assets: ['AAPL', 'ETH'],
-        }),
-    );
+  // Subscribe to channels
+  ws.send(
+    JSON.stringify({
+      action: "subscribe",
+      channels: ["prices", "predictions"],
+      assets: ["AAPL", "ETH"],
+    }),
+  );
 };
 
 ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Real-time update:', data);
+  const data = JSON.parse(event.data);
+  console.log("Real-time update:", data);
 
-    if (data.type === 'price_update') {
-        updatePriceDisplay(data.asset, data.price);
-    }
+  if (data.type === "price_update") {
+    updatePriceDisplay(data.asset, data.price);
+  }
 };
 
 ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
+  console.error("WebSocket error:", error);
 };
 ```
 

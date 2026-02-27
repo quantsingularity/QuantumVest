@@ -99,8 +99,8 @@ psql -U quantumvest -d quantumvest -h localhost
 
 ```json
 {
-    "success": false,
-    "error": "Token has expired"
+  "success": false,
+  "error": "Token has expired"
 }
 ```
 
@@ -252,8 +252,8 @@ sudo systemctl restart postgresql
 
 ```json
 {
-    "success": false,
-    "error": "Rate limit exceeded"
+  "success": false,
+  "error": "Rate limit exceeded"
 }
 ```
 
@@ -426,10 +426,10 @@ If issues persist:
 1. **Check logs** in `/var/log/quantumvest/`
 2. **Search issues** on GitHub
 3. **Open new issue** with:
-    - System information
-    - Error messages
-    - Steps to reproduce
-    - Log excerpts
+   - System information
+   - Error messages
+   - Steps to reproduce
+   - Log excerpts
 
 ---
 
