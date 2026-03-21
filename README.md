@@ -4,7 +4,7 @@
 [![Test Coverage](https://img.shields.io/badge/coverage-80%25-yellow)](https://github.com/quantsingularity/QuantumVest/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## 🔮 AI-Powered Predictive Investment Analytics Platform
+## AI-Powered Predictive Investment Analytics Platform
 
 QuantumVest is an advanced predictive investment analytics platform that leverages artificial intelligence, blockchain technology, and quantitative finance models to provide retail investors with actionable insights for smarter investment decisions.
 
