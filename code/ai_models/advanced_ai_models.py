@@ -30,7 +30,7 @@ class AdvancedTimeSeriesPredictor:
     Advanced time series prediction model using ensemble methods and deep learning
     """
 
-    def __init__(self, model_type: str = "ensemble") -> Any:
+    def __init__(self, model_type: str = "ensemble") -> None:
         """
         Initialize the predictor
 
@@ -405,7 +405,7 @@ class PortfolioOptimizer:
     Advanced portfolio optimization using modern portfolio theory and machine learning
     """
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.expected_returns = None
         self.covariance_matrix = None
         self.risk_free_rate = 0.02
@@ -623,7 +623,7 @@ class RiskAssessmentModel:
     Advanced risk assessment model using machine learning
     """
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.var_model = None
         self.volatility_model = None
         self.correlation_model = None

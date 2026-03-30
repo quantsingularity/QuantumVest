@@ -33,7 +33,7 @@ class DataPreprocessor:
     Advanced data preprocessing for financial time series
     """
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.scalers = {}
         self.feature_stats = {}
 
@@ -221,7 +221,7 @@ class ModelTrainer:
     Comprehensive model training pipeline
     """
 
-    def __init__(self, config: Dict[str, Any]) -> Any:
+    def __init__(self, config: Dict[str, Any]) -> None:
         self.config = config
         self.models = {}
         self.training_results = {}
@@ -395,7 +395,7 @@ class ModelValidator:
     Model validation and backtesting
     """
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.validation_results = {}
 
     def backtest_predictions(

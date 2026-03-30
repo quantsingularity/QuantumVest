@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class ModelEvaluator:
     """Evaluates model performance and generates metrics"""
 
-    def __init__(self, reports_dir: str = "../../resources/model_reports") -> Any:
+    def __init__(self, reports_dir: str = "../../resources/model_reports") -> None:
         """
         Initialize the model evaluator
 

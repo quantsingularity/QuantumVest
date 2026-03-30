@@ -424,7 +424,7 @@ class AuditService:
 class ThreatDetectionService:
     """Advanced threat detection and prevention"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.failed_login_threshold = 5
         self.suspicious_activity_threshold = 10
         self.monitoring_window = timedelta(hours=1)

@@ -262,7 +262,7 @@ class WebSocketService:
 class PriceStreamManager:
     """Manager for real-time price streaming"""
 
-    def __init__(self, websocket_service: WebSocketService) -> Any:
+    def __init__(self, websocket_service: WebSocketService) -> None:
         self.websocket_service = websocket_service
         self.is_running = False
         self.update_interval = 5
