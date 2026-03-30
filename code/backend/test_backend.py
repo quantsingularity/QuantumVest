@@ -1,3 +1,5 @@
+from typing import Any
+
 """
 Test Suite for QuantumVest Backend
 Comprehensive tests for all backend components

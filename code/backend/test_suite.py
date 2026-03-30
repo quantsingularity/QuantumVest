@@ -1,3 +1,5 @@
+from typing import Any
+
 """
 Comprehensive Test Suite for QuantumVest Backend
 Financial industry-grade testing with security, performance, and integration tests

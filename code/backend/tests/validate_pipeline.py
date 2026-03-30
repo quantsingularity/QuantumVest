@@ -1,3 +1,5 @@
+from typing import Any
+
 """
 Validation Script
 Tests the data pipeline, model training, and API endpoints
