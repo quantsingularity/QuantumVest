@@ -237,9 +237,7 @@ class PortfolioService:
                     return {"success": False, "error": "Insufficient holdings to sell"}
 
                 # Calculate realized P&L
-                realized_pnl = (Decimal(str(price)) - holding.average_cost) * Decimal(
-                    str(quantity)
-                )
+                (Decimal(str(price)) - holding.average_cost) * Decimal(str(quantity))
                 holding.quantity -= Decimal(str(quantity))
 
                 # Remove holding if quantity becomes zero

@@ -46,7 +46,7 @@ def train_optimization_model(
         cleaned_weights = ef.clean_weights(cutoff=1e-4, verbose=True)
 
         logger.info("Optimization complete. Portfolio performance:")
-        performance = ef.portfolio_performance(verbose=True)
+        ef.portfolio_performance(verbose=True)
 
         joblib.dump(cleaned_weights, model_path)
         logger.info(f"Optimal portfolio weights saved to {model_path}")

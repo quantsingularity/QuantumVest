@@ -617,7 +617,7 @@ def main() -> Any:
                     f"  {model_type}: R² = {metrics['r2']:.4f}, Direction Accuracy = {metrics['direction_accuracy']:.4f}"
                 )
         if "total_return" in portfolio_validation:
-            logger.info(f"\nPortfolio Optimization Backtest:")
+            logger.info("\nPortfolio Optimization Backtest:")
             logger.info(f"  Total Return: {portfolio_validation['total_return']:.2%}")
             logger.info(
                 f"  Annualized Return: {portfolio_validation['annualized_return']:.2%}"

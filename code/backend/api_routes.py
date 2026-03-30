@@ -311,7 +311,7 @@ def search_assets(current_user: Any) -> Tuple[Response, int]:
                 jsonify({"success": False, "error": "Search query is required"}),
                 400,
             )
-        search_query = Asset.query.filter(Asset.is_active == True)
+        search_query = Asset.query.filter(Asset.is_active)
         if asset_type:
             search_query = search_query.filter(Asset.asset_type == asset_type)
         search_query = search_query.filter(
