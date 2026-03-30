@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
   useLocation,
 } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import "./styles/App.css";
 
+import Footer from "./components/layout/Footer";
+import Header from "./components/layout/Header";
+import Sidebar from "./components/layout/Sidebar";
+import Analytics from "./components/pages/Analytics";
 // Components
 import Dashboard from "./components/pages/Dashboard";
-import PredictionChart from "./components/pages/PredictionChart";
-import PortfolioOptimization from "./components/pages/PortfolioOptimization";
-import Analytics from "./components/pages/Analytics";
-import Settings from "./components/pages/Settings";
 import Homepage from "./components/pages/Homepage/Homepage";
-import Sidebar from "./components/layout/Sidebar";
-import Header from "./components/layout/Header";
-import Footer from "./components/layout/Footer";
+import PortfolioOptimization from "./components/pages/PortfolioOptimization";
+import PredictionChart from "./components/pages/PredictionChart";
+import Settings from "./components/pages/Settings";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 import ToastManager from "./components/ui/ToastManager";
 
@@ -35,7 +35,7 @@ function AppContent() {
     // Update isHomepage state whenever location changes
     setIsHomepage(location.pathname === "/");
     updatePageTitle(location.pathname);
-  }, [location]);
+  }, [location, updatePageTitle]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);

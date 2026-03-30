@@ -1,18 +1,17 @@
-import React from "react";
-import { motion } from "framer-motion";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
+  ArcElement,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
-  ArcElement,
 } from "chart.js";
-import { Line, Bar, Pie } from "react-chartjs-2";
+import { motion } from "framer-motion";
+import { Bar, Line, Pie } from "react-chartjs-2";
 
 // Register ChartJS components
 ChartJS.register(

@@ -1,5 +1,4 @@
-import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import ToastManager, { showToast } from "../../components/ui/ToastManager";
 
 describe("ToastManager Component", () => {

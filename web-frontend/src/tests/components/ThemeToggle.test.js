@@ -1,10 +1,9 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import ThemeToggle from "../../components/ui/ThemeToggle";
 import { ThemeProvider } from "../../contexts/ThemeContext";
 
 // Mock localStorage
-const localStorageMock = (function () {
+const localStorageMock = (() => {
   let store = {};
   return {
     getItem: jest.fn((key) => store[key] || null),

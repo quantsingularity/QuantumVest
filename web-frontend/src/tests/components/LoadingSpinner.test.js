@@ -1,5 +1,4 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 describe("LoadingSpinner Component", () => {

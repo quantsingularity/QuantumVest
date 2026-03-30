@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../../styles/Homepage.css";
 import HomepageNavMenu from "./HomepageNavMenu";

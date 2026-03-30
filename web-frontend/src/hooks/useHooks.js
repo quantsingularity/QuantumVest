@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Custom hook for handling API requests with loading and error states
 export const useApi = (
@@ -32,7 +32,7 @@ export const useApi = (
     if (immediate) {
       execute();
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [execute, immediate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { data, loading, error, execute, setData };
 };

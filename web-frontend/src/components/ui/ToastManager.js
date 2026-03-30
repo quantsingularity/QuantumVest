@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Toast from "./Toast";
 import "../../styles/ToastManager.css";
 

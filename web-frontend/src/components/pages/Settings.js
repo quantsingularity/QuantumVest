@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { authAPI, settingsAPI } from "../../services/api";
-import { showToast } from "../ui/ToastManager";
 import LoadingSpinner from "../ui/LoadingSpinner";
+import { showToast } from "../ui/ToastManager";
 
 const Settings = () => {
   const [loading, setLoading] = useState(true);
@@ -36,7 +36,7 @@ const Settings = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [fetchUserData]);
 
   const fetchUserData = async () => {
     try {

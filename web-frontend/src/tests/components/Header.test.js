@@ -1,9 +1,8 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import Header from "../../components/layout/Header";
-import { ThemeProvider } from "../../contexts/ThemeContext";
 import { NotificationProvider } from "../../contexts/NotificationContext";
+import { ThemeProvider } from "../../contexts/ThemeContext";
 
 describe("Header Component", () => {
   const mockToggleSidebar = jest.fn();

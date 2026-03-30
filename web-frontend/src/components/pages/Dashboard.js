@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { marketDataAPI, portfolioAPI } from "../../services/api";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import "../../styles/Dashboard.css";
@@ -161,7 +161,8 @@ export default function Dashboard() {
                   </span>
                 </p>
                 <p className="volume">
-                  Volume: <span>{parseInt(entry.volume).toLocaleString()}</span>
+                  Volume:{" "}
+                  <span>{parseInt(entry.volume, 10).toLocaleString()}</span>
                 </p>
               </div>
             </div>

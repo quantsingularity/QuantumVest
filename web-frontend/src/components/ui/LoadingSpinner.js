@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/LoadingSpinner.css";
 
 const LoadingSpinner = ({
@@ -12,7 +12,7 @@ const LoadingSpinner = ({
     const interval = setInterval(() => {
       setDots((prev) => {
         if (prev.length >= 3) return ".";
-        return prev + ".";
+        return `${prev}.`;
       });
     }, 500);
 

@@ -1,5 +1,4 @@
-import React from "react";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import PredictionChart from "../../components/pages/PredictionChart";
 import { predictionAPI } from "../../services/api";

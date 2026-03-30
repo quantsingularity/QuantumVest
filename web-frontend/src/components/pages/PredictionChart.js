@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { predictionAPI } from "../../services/api";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import "../../styles/PredictionChart.css";
@@ -66,7 +66,12 @@ export default function PredictionChart() {
     };
 
     fetchPredictions();
-  }, [selectedAsset, timeframe]);
+  }, [
+    selectedAsset,
+    timeframe, // Generate fallback prediction data
+    generateFallbackPredictions, // Generate visualization data from API response
+    generatePredictionData,
+  ]);
 
   const generatePredictionData = (apiResponse) => {
     const days = timeframe === "7d" ? 7 : timeframe === "30d" ? 30 : 90;
