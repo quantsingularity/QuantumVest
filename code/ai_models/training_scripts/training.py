@@ -17,7 +17,6 @@ import pandas as pd
 
 warnings.filterwarnings("ignore")
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import logging
 
 from advanced_ai_models import AdvancedTimeSeriesPredictor, ModelFactory
 
@@ -428,7 +427,7 @@ class ModelValidator:
                             )
                             predictions.append(prediction[0])
                             actuals.append(actual_value)
-                        except:
+                        except Exception:
                             continue
                     if len(predictions) > 10:
                         from sklearn.metrics import (

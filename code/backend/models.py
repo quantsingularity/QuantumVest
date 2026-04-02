@@ -24,15 +24,24 @@ if USE_POSTGRES:
     from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
     JsonType = JSONB
-    UUIDColumn = lambda: PG_UUID(as_uuid=True)
-    uuid_default = lambda: uuid.uuid4
+
+    def UUIDColumn():
+        return PG_UUID(as_uuid=True)
+
+    def uuid_default():
+        return uuid.uuid4
+
 else:
     from sqlalchemy import JSON, String
-    from werkzeug.security import check_password_hash, generate_password_hash
 
     JsonType = JSON
-    UUIDColumn = lambda: String(36)
-    uuid_default = lambda: (lambda: str(uuid.uuid4()))
+
+    def UUIDColumn():
+        return String(36)
+
+    def uuid_default():
+        return lambda: str(uuid.uuid4())
+
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
