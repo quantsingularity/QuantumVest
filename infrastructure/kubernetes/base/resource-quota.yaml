@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: "{{ .Values.appName }}-quota"
+  namespace: "{{ .Values.namespace }}"
+  labels:
+    app: "{{ .Values.appName }}"
+    environment: "{{ .Values.environment }}"
+spec:
+  hard:
+    requests.cpu: '{{ .Values.resourceQuota.hard.requests_cpu | default "20" }}'
+    requests.memory: '{{ .Values.resourceQuota.hard.requests_memory | default "40Gi" }}'
+    limits.cpu: '{{ .Values.resourceQuota.hard.limits_cpu | default "40" }}'
+    limits.memory: '{{ .Values.resourceQuota.hard.limits_memory | default "80Gi" }}'
+    persistentvolumeclaims: '{{ .Values.resourceQuota.hard.persistentvolumeclaims | default "20" }}'
+    pods: "100"
+    services: "20"
+    secrets: "50"
+    configmaps: "50"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: "{{ .Values.appName }}-limitrange"
+  namespace: "{{ .Values.namespace }}"
+  labels:
+    app: "{{ .Values.appName }}"
+    environment: "{{ .Values.environment }}"
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: "500m"
+        memory: "1Gi"
+      defaultRequest:
+        cpu: "100m"
+        memory: "256Mi"
+      max:
+        cpu: "4"
+        memory: "8Gi"
+      min:
+        cpu: "50m"
+        memory: "128Mi"
+    - type: PersistentVolumeClaim
+      max:
+        storage: "200Gi"
+      min:
+        storage: "1Gi"

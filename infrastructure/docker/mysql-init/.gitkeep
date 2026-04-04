@@ -1,0 +1,4 @@
+# Place SQL initialization scripts here (*.sql).
+# They are run once on first startup of the database container.
+# Example: 01-schema.sql, 02-seed-data.sql
+# These files are excluded from git via .gitignore if they contain sensitive data.

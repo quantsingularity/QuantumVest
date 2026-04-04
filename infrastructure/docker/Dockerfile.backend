@@ -1,0 +1,57 @@
+# syntax=docker/dockerfile:1.6
+
+# ---- Build Stage ----
+FROM node:20-alpine AS builder
+
+WORKDIR /build
+
+# Install dependencies first (layer caching)
+COPY package*.json ./
+RUN npm ci --omit=dev --ignore-scripts && \
+    npm cache clean --force
+
+# Copy source and build
+COPY . .
+RUN npm run build 2>/dev/null || true
+
+# ---- Production Stage ----
+FROM node:20-alpine AS production
+
+LABEL org.opencontainers.image.title="QuantumVest Backend" \
+      org.opencontainers.image.description="QuantumVest financial platform API service" \
+      org.opencontainers.image.vendor="QuantumVest" \
+      org.opencontainers.image.licenses="Proprietary"
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init=~1 && \
+    rm -rf /var/cache/apk/*
+
+# Create non-root user
+RUN addgroup -g 10001 -S appgroup && \
+    adduser -u 10001 -S appuser -G appgroup
+
+WORKDIR /app
+
+# Copy built artifacts and production node_modules
+COPY --from=builder --chown=appuser:appgroup /build/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appgroup /build/dist ./dist
+COPY --from=builder --chown=appuser:appgroup /build/package.json ./
+
+# Create writable directories
+RUN mkdir -p /tmp /var/cache/app && \
+    chown -R appuser:appgroup /tmp /var/cache/app
+
+USER appuser
+
+ENV NODE_ENV=production \
+    PORT=8080 \
+    METRICS_PORT=9090 \
+    LOG_LEVEL=info
+
+EXPOSE 8080 9090
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget -qO- http://localhost:8080/health/live || exit 1
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["node", "dist/server.js"]

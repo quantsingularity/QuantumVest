@@ -7,11 +7,21 @@ variable "aws_region" {
 variable "environment" {
   description = "Environment name (dev, staging, prod)"
   type        = string
+
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.environment)
+    error_message = "Environment must be one of: dev, staging, prod."
+  }
 }
 
 variable "app_name" {
   description = "Application name"
   type        = string
+
+  validation {
+    condition     = can(regex("^[a-z][a-z0-9-]{2,30}$", var.app_name))
+    error_message = "App name must be 3-31 lowercase alphanumeric characters or hyphens, starting with a letter."
+  }
 }
 
 variable "vpc_cidr" {
@@ -45,9 +55,15 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  description = "SSH key name"
+  description = "SSH key name (optional; leave null to disable SSH access)"
   type        = string
   default     = null
+}
+
+variable "allowed_ssh_cidr" {
+  description = "CIDR block allowed to SSH into instances (use your office/VPN IP, not 0.0.0.0/0)"
+  type        = string
+  default     = "10.0.0.0/8"
 }
 
 variable "db_instance_class" {
@@ -71,6 +87,11 @@ variable "db_password" {
   description = "Database password"
   type        = string
   sensitive   = true
+
+  validation {
+    condition     = length(var.db_password) >= 16
+    error_message = "Database password must be at least 16 characters."
+  }
 }
 
 variable "default_tags" {
@@ -78,6 +99,6 @@ variable "default_tags" {
   type        = map(string)
   default = {
     Terraform   = "true"
-    Environment = "dev"
+    Project     = "quantumvest"
   }
 }

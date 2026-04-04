@@ -23,7 +23,6 @@ spec:
   selector:
     matchLabels:
       app: "{{ .Values.appName }}-backend"
-      version: "{{ .Values.backend.image.tag }}"
   template:
     metadata:
       labels:
@@ -235,7 +234,7 @@ spec:
                   - -c
                   - sleep 15
         - name: vault-agent
-          image: 'vault:{{ .Values.vault.image.tag | default "1.15.2" }}'
+          image: 'hashicorp/vault:{{ .Values.vault.image.tag | default "1.15.2" }}'
           command:
             - vault
             - agent

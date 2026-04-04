@@ -2,8 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "{{ .Values.appName }}-redis"
+  namespace: "{{ .Values.namespace }}"
   labels:
     app: "{{ .Values.appName }}-redis"
+    tier: cache
+    component: redis
+    environment: "{{ .Values.environment }}"
 spec:
   type: ClusterIP
   ports:

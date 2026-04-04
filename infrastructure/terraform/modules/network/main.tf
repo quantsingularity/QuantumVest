@@ -17,8 +17,9 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.environment}-public-subnet-${count.index + 1}"
-    Environment = var.environment
+    Name                     = "${var.environment}-public-subnet-${count.index + 1}"
+    Environment              = var.environment
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -29,8 +30,9 @@ resource "aws_subnet" "private" {
   availability_zone = var.availability_zones[count.index]
 
   tags = {
-    Name        = "${var.environment}-private-subnet-${count.index + 1}"
-    Environment = var.environment
+    Name                              = "${var.environment}-private-subnet-${count.index + 1}"
+    Environment                       = var.environment
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 
@@ -44,13 +46,15 @@ resource "aws_internet_gateway" "main" {
 }
 
 resource "aws_eip" "nat" {
-  count = length(var.public_subnet_cidrs)
-  vpc   = true
+  count  = length(var.public_subnet_cidrs)
+  domain = "vpc"
 
   tags = {
     Name        = "${var.environment}-nat-eip-${count.index + 1}"
     Environment = var.environment
   }
+
+  depends_on = [aws_internet_gateway.main]
 }
 
 resource "aws_nat_gateway" "main" {
@@ -106,3 +110,17 @@ resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private[count.index].id
 }
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids   = aws_route_table.private[*].id
+
+  tags = {
+    Name        = "${var.environment}-s3-endpoint"
+    Environment = var.environment
+  }
+}
+
+data "aws_region" "current" {}

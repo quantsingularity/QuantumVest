@@ -1,6 +1,6 @@
-resource "aws_security_group" "app" {
-  name        = "${var.app_name}-${var.environment}-app-sg"
-  description = "Security group for ${var.app_name} application in ${var.environment}"
+resource "aws_security_group" "alb" {
+  name        = "${var.app_name}-${var.environment}-alb-sg"
+  description = "Security group for ${var.app_name} ALB in ${var.environment}"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -8,7 +8,7 @@ resource "aws_security_group" "app" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTP"
+    description = "HTTP from internet"
   }
 
   ingress {
@@ -16,15 +16,42 @@ resource "aws_security_group" "app" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTPS"
+    description = "HTTPS from internet"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
+  }
+
+  tags = {
+    Name        = "${var.app_name}-${var.environment}-alb-sg"
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "app" {
+  name        = "${var.app_name}-${var.environment}-app-sg"
+  description = "Security group for ${var.app_name} application in ${var.environment}"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
+    description     = "App port from ALB only"
   }
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SSH"
+    cidr_blocks = [var.allowed_ssh_cidr]
+    description = "SSH from allowed CIDR only"
   }
 
   egress {
@@ -51,7 +78,7 @@ resource "aws_security_group" "db" {
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.app.id]
-    description     = "MySQL from application"
+    description     = "MySQL from application only"
   }
 
   egress {

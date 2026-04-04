@@ -1,0 +1,47 @@
+# syntax=docker/dockerfile:1.6
+
+# ---- Build Stage ----
+FROM node:20-alpine AS builder
+
+WORKDIR /build
+
+COPY package*.json ./
+RUN npm ci --ignore-scripts && \
+    npm cache clean --force
+
+COPY . .
+
+ARG REACT_APP_API_URL=/api
+ARG REACT_APP_ENV=production
+ENV REACT_APP_API_URL=$REACT_APP_API_URL \
+    REACT_APP_ENV=$REACT_APP_ENV
+
+RUN npm run build
+
+# ---- Production Stage ----
+FROM nginx:1.25-alpine AS production
+
+LABEL org.opencontainers.image.title="QuantumVest Frontend" \
+      org.opencontainers.image.description="QuantumVest financial platform web interface" \
+      org.opencontainers.image.vendor="QuantumVest" \
+      org.opencontainers.image.licenses="Proprietary"
+
+# Create non-root user
+RUN addgroup -g 10001 -S appgroup && \
+    adduser -u 10001 -S appuser -G appgroup && \
+    # Configure nginx to run as non-root
+    chown -R appuser:appgroup /var/cache/nginx /var/log/nginx && \
+    touch /var/run/nginx.pid && \
+    chown appuser:appgroup /var/run/nginx.pid
+
+COPY --chown=appuser:appgroup docker/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder --chown=appuser:appgroup /build/build /usr/share/nginx/html
+
+USER appuser
+
+EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD wget -qO- http://localhost:80/health || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

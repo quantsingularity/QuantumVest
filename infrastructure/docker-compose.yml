@@ -1,0 +1,216 @@
+version: "3.9"
+
+# QuantumVest - Docker Compose for local development and integration testing
+# Usage:
+#   docker compose up -d                   # Start all services
+#   docker compose --profile monitoring up # Include Prometheus + Grafana
+#   docker compose logs -f backend         # Tail backend logs
+
+x-common-env: &common-env
+  TZ: UTC
+
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s
+
+networks:
+  frontend-net:
+    driver: bridge
+  backend-net:
+    driver: bridge
+  monitoring-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+services:
+  # ─── Database ───────────────────────────────────────────────────────────────
+  database:
+    image: mysql:8.0
+    container_name: quantumvest-db
+    restart: unless-stopped
+    environment:
+      <<: *common-env
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?err}
+      MYSQL_DATABASE: ${DB_NAME:-quantumvestdb}
+      MYSQL_USER: ${DB_USER:-appuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?err}
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - backend-net
+    healthcheck:
+      <<: *healthcheck-defaults
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD}",
+        ]
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-buffer-pool-size=256M
+      - --require-secure-transport=OFF
+    security_opt:
+      - no-new-privileges:true
+
+  # ─── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: quantumvest-redis
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly yes
+      - --maxmemory 256mb
+      - --maxmemory-policy allkeys-lru
+      - --requirepass ${REDIS_PASSWORD:?err}
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend-net
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  # ─── Backend ────────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ..
+      dockerfile: infrastructure/docker/Dockerfile.backend
+      target: production
+    image: quantumvest/backend:local
+    container_name: quantumvest-backend
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: "8080"
+      METRICS_PORT: "9090"
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      DATABASE_URL: mysql://${DB_USER:-appuser}:${DB_PASSWORD}@database:3306/${DB_NAME:-quantumvestdb}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      JWT_SECRET: ${JWT_SECRET:?err}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?err}
+      API_KEY_HASH: ${API_KEY_HASH:-}
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:9090:9090"
+    networks:
+      - backend-net
+      - frontend-net
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health/live"]
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=100m
+      - /var/cache:size=100m
+
+  # ─── Frontend ───────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ..
+      dockerfile: infrastructure/docker/Dockerfile.frontend
+      target: production
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-/api}
+        REACT_APP_ENV: ${NODE_ENV:-development}
+    image: quantumvest/frontend:local
+    container_name: quantumvest-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:80"
+    networks:
+      - frontend-net
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "wget", "-qO-", "http://localhost:80/health"]
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=50m
+      - /var/cache/nginx:size=100m
+      - /var/run:size=10m
+
+  # ─── Prometheus (monitoring profile) ────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    container_name: quantumvest-prometheus
+    restart: unless-stopped
+    profiles: ["monitoring"]
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
+    ports:
+      - "127.0.0.1:9091:9090"
+    volumes:
+      - ./monitoring/prometheus-local.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - monitoring-net
+      - backend-net
+    security_opt:
+      - no-new-privileges:true
+
+  # ─── Grafana (monitoring profile) ───────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.2.3
+    container_name: quantumvest-grafana
+    restart: unless-stopped
+    profiles: ["monitoring"]
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?err}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_DOMAIN: localhost
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    ports:
+      - "127.0.0.1:3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - monitoring-net
+    security_opt:
+      - no-new-privileges:true

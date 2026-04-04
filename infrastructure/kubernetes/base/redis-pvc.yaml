@@ -2,6 +2,11 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: "{{ .Values.appName }}-redis-pvc"
+  namespace: "{{ .Values.namespace }}"
+  labels:
+    app: "{{ .Values.appName }}-redis"
+    tier: cache
+    environment: "{{ .Values.environment }}"
 spec:
   accessModes:
     - ReadWriteOnce

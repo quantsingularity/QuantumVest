@@ -1,20 +1,28 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.3.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.5"
     }
   }
   backend "s3" {
-    # Will be configured per environment
+    # Configured per environment via -backend-config flag:
+    # terraform init -backend-config=backend-config.example
   }
 }
 
 provider "aws" {
   region = var.aws_region
   default_tags {
-    tags = var.default_tags
+    tags = merge(var.default_tags, {
+      Environment = var.environment
+      ManagedBy   = "terraform"
+    })
   }
 }
 
@@ -26,6 +34,15 @@ module "network" {
   availability_zones   = var.availability_zones
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
+}
+
+module "security" {
+  source = "./modules/security"
+
+  environment      = var.environment
+  vpc_id           = module.network.vpc_id
+  app_name         = var.app_name
+  allowed_ssh_cidr = var.allowed_ssh_cidr
 }
 
 module "compute" {
@@ -58,13 +75,5 @@ module "storage" {
   source = "./modules/storage"
 
   environment = var.environment
-  app_name    = var.app_name
-}
-
-module "security" {
-  source = "./modules/security"
-
-  environment = var.environment
-  vpc_id      = module.network.vpc_id
   app_name    = var.app_name
 }

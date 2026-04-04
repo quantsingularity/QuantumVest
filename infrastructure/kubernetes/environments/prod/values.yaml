@@ -1,27 +1,58 @@
 appName: quantumvest
+namespace: quantumvest-production
 environment: prod
 
-# Backend configuration
 backend:
   replicas: 5
   image:
     repository: registry.example.com/app/backend
     tag: production
     pullPolicy: Always
-  containerPort: 3000
+  containerPort: 8080
   servicePort: 80
+  metrics:
+    port: 9090
   resources:
     limits:
       cpu: 2000m
       memory: 2Gi
+      storage: 2Gi
     requests:
       cpu: 1000m
       memory: 1Gi
-  apiUrl: http://app-backend
-  jwtSecret: prod-jwt-secret
-  apiKey: prod-api-key
+      storage: 1Gi
+  autoscaling:
+    minReplicas: 5
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  deployment:
+    maxSurge: "25%"
+    maxUnavailable: "0"
+  probes:
+    liveness:
+      initialDelaySeconds: 60
+      periodSeconds: 30
+      timeoutSeconds: 10
+      failureThreshold: 3
+    readiness:
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+    startup:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 30
+  apiUrl: http://quantumvest-backend
+  jwtSecret: ""
+  apiKey: ""
+  encryptionKey: ""
+  apiKeyHash: ""
+  logLevel: warn
+  terminationGracePeriodSeconds: 60
 
-# Frontend configuration
 frontend:
   replicas: 5
   image:
@@ -40,21 +71,21 @@ frontend:
     requests:
       cpu: 500m
       memory: 512Mi
+  autoscaling:
+    minReplicas: 5
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
 
-# Database configuration
 database:
   replicas: 3
   image:
     repository: mysql
-    tag: 8.0
+    tag: "8.0"
     pullPolicy: IfNotPresent
   containerPort: 3306
   servicePort: 3306
   name: quantumvestdb
   user: appuser
-  password: prod-password
-  rootPassword: prod-root-password
-  url: mysql://appuser:prod-password@app-database:3306/appdb
   storageClass: premium-rwo
   storage: 50Gi
   resources:
@@ -65,12 +96,11 @@ database:
       cpu: 2000m
       memory: 4Gi
 
-# Redis configuration
 redis:
   replicas: 3
   image:
     repository: redis
-    tag: 6.2
+    tag: "7.2-alpine"
     pullPolicy: IfNotPresent
   containerPort: 6379
   servicePort: 6379
@@ -84,14 +114,17 @@ redis:
       cpu: 500m
       memory: 1Gi
 
-# Ingress configuration
 ingress:
-  host: quantumvest.example.com
+  host: quantumvest.com
   class: nginx
   sslRedirect: "true"
   certManager:
     issuer: letsencrypt-prod
 
-# General configuration
+vault:
+  address: https://vault.quantumvest.com
+  image:
+    tag: "1.15.2"
+
 logLevel: warn
 imagePullSecrets: regcred

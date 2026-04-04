@@ -1,15 +1,24 @@
 ---
-# main.yml - Main playbook that includes all other playbooks
 - name: Configure web servers
   hosts: webservers
+  gather_facts: true
   become: true
+  any_errors_fatal: false
+  tags: [webservers]
   roles:
-    - common
-    - webserver
+    - role: common
+      tags: [common]
+    - role: webserver
+      tags: [webserver]
 
 - name: Configure database servers
   hosts: databases
+  gather_facts: true
   become: true
+  any_errors_fatal: false
+  tags: [databases]
   roles:
-    - common
-    - database
+    - role: common
+      tags: [common]
+    - role: database
+      tags: [database]
