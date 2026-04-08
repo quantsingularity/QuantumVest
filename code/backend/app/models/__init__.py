@@ -1,0 +1,47 @@
+"""Re-export all models from one place."""
+
+from app.extensions import db
+from app.models.financial import (
+    Alert,
+    Asset,
+    AssetType,
+    AuditLog,
+    ComplianceCheck,
+    ComplianceStatus,
+    Portfolio,
+    PortfolioHolding,
+    PortfolioPerformance,
+    PriceData,
+    PriceHistory,
+    RiskLevel,
+    RiskMetrics,
+    Transaction,
+    TransactionType,
+    User,
+    UserRole,
+    Watchlist,
+    WatchlistItem,
+)
+
+__all__ = [
+    "db",
+    "Alert",
+    "AuditLog",
+    "Asset",
+    "AssetType",
+    "ComplianceCheck",
+    "ComplianceStatus",
+    "Portfolio",
+    "PortfolioHolding",
+    "PortfolioPerformance",
+    "PriceData",
+    "PriceHistory",
+    "RiskLevel",
+    "RiskMetrics",
+    "Transaction",
+    "TransactionType",
+    "User",
+    "UserRole",
+    "Watchlist",
+    "WatchlistItem",
+]
